@@ -2,6 +2,10 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+
+    //Plugin for safeArgs
+    id "androidx.navigation.safeargs.kotlin"
+
 }
 
 android {

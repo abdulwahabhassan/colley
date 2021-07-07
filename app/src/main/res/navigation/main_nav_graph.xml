@@ -9,5 +9,14 @@
         android:id="@+id/findYourSchoolFragment"
         android:name="com.colley.android.FindYourSchoolFragment"
         android:label="Welcome"
-        tools:layout="@layout/fragment_find_your_school" />
+        tools:layout="@layout/fragment_find_your_school" >
+        <action
+            android:id="@+id/action_findYourSchoolFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.colley.android.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
 </navigation>

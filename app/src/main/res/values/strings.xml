@@ -2,4 +2,8 @@
     <string name="app_name">Colley</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="school_name_placeholder">University of Benin</string>
+    <string name="issues_tab_name">Issues</string>
+    <string name="posts_tab_name">Posts</string>
+    <string name="groups_tab_name">Groups</string>
+    <string name="school_key">SCHOOLKEY</string>
 </resources>
