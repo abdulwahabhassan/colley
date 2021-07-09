@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.school.School
-import com.colley.android.databinding.SchoolItemBinding
+import com.colley.android.databinding.ItemSchoolBinding
 
-class FindYourSchoolFragmentRecyclerAdapter() :
-    RecyclerView.Adapter<FindYourSchoolFragmentRecyclerAdapter.SchoolViewHolder>() {
+class SchoolsFragmentRecyclerAdapter() :
+    RecyclerView.Adapter<SchoolsFragmentRecyclerAdapter.SchoolViewHolder>() {
 
     var listOfSchools = arrayListOf<School>()
     private lateinit var clickListener : ItemClickedListener
@@ -17,7 +17,7 @@ class FindYourSchoolFragmentRecyclerAdapter() :
         fun onItemClick(school : School)
     }
 
-    class SchoolViewHolder(private val itemBinding : SchoolItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+    class SchoolViewHolder(private val itemBinding : ItemSchoolBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(school: School, clickListener: ItemClickedListener) = with(itemBinding) {
             schoolNameTextView.text = school.name
             Glide.with(this.root.context).load(school.logoUrl).into(schoolLogoImageView)
@@ -29,7 +29,7 @@ class FindYourSchoolFragmentRecyclerAdapter() :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SchoolViewHolder {
-        val viewBinding = SchoolItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val viewBinding = ItemSchoolBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SchoolViewHolder((viewBinding))
     }
 

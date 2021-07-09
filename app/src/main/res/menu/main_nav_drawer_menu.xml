@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+       <item android:title="@string/menu_item_account_text">
+              <menu>
+                     <item
+                         android:id="@+id/profileFragment"
+                         android:title="@string/menu_item_profile_title"
+                         android:icon="@drawable/ic_profile"/>
+                     <item
+                         android:id="@+id/messagesFragment"
+                         android:title="@string/menu_item_messages_title"
+                         android:icon="@drawable/ic_messages" />
+
+                     <item
+                         android:id="@+id/notificationsFragment"
+                         android:title="@string/menu_item_notifications_title"
+                         android:icon="@drawable/ic_notifications"/>
+
+                     <item
+                         android:id="@+id/settingsFragment"
+                         android:title="@string/menu_item_settings_title"
+                         android:icon="@drawable/ic_settings" />
+              </menu>
+       </item>
+
+       <item android:title="@string/menu_item_support_text">
+              <menu>
+                     <item
+                         android:id="@+id/faqsFragment"
+                         android:title="@string/menu_item_faqs_title"
+                         android:icon="@drawable/ic_faqs"/>
+                     <item
+                         android:id="@+id/contactUsFragment"
+                         android:title="@string/menu_item_contact_us_title"
+                         android:icon="@drawable/ic_contact_us" />
+                     <item
+                         android:id="@+id/RateAppFragment"
+                         android:title="@string/menu_item_rate_app_title"
+                         android:icon="@drawable/ic_rate_app" />
+              </menu>
+       </item>
+
+       <item android:title="@string/menu_item_policy_text">
+              <menu>
+                     <item
+                         android:id="@+id/PolicyFragment"
+                         android:title="@string/menu_item_policy_text"
+                         android:icon="@drawable/ic_policy"/>
+              </menu>
+       </item>
+
+</menu>

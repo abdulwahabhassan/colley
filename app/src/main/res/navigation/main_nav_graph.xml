@@ -3,20 +3,66 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/findYourSchoolFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/findYourSchoolFragment"
-        android:name="com.colley.android.FindYourSchoolFragment"
+        android:id="@+id/schoolsFragment"
+        android:name="com.colley.android.SchoolsFragment"
         android:label="Welcome"
-        tools:layout="@layout/fragment_find_your_school" >
+        tools:layout="@layout/fragment_schools" >
         <action
-            android:id="@+id/action_findYourSchoolFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            android:id="@+id/action_findYourSchoolFragment_to_signupFragment"
+            app:destination="@id/signupFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.colley.android.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_messagesFragment"
+            app:destination="@id/messagesFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.colley.android.SettingsFragment"
+        android:label="@string/menu_item_settings_title"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.colley.android.ProfileFragment"
+        android:label="@string/menu_item_profile_title"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/messagesFragment"
+        android:name="com.colley.android.MessagesFragment"
+        android:label="@string/menu_item_messages_title"
+        tools:layout="@layout/fragment_messages" />
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.colley.android.SignupFragment"
+        android:label="fragment_signup"
+        tools:layout="@layout/fragment_signup" >
+        <argument
+            android:name="schoolName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_signupFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.colley.android.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>

@@ -6,4 +6,18 @@
     <string name="posts_tab_name">Posts</string>
     <string name="groups_tab_name">Groups</string>
     <string name="school_key">SCHOOLKEY</string>
+    <string name="menu_item_profile_title">Profile</string>
+    <string name="menu_item_messages_title">Messages</string>
+    <string name="menu_item_settings_title">Settings</string>
+    <string name="menu_item_account_text">Account</string>
+    <string name="menu_item_support_text">Support service</string>
+    <string name="menu_item_contact_us_title">Contact us</string>
+    <string name="menu_item_faqs_title">FAQs</string>
+    <string name="menu_item_rate_app_title">Rate app</string>
+    <string name="menu_item_policy_text">Policy</string>
+    <string name="menu_item_notifications_title">Notifications</string>
+    <string name="email_placeholder">abdulwahabhassan645@gmail.com</string>
+    <string name="name_placeholder">Hassan Abdulwahab</string>
+
+
 </resources>

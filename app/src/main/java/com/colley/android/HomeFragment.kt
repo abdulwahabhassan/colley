@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.colley.android.adapter.HomeFragmentViewPagerAdapter
 import com.colley.android.databinding.FragmentHomeBinding
