@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.colley.android.school.School
+import com.colley.android.model.School
 import com.colley.android.databinding.ItemSchoolBinding
 
 class SchoolsFragmentRecyclerAdapter() :
@@ -14,7 +14,7 @@ class SchoolsFragmentRecyclerAdapter() :
     private lateinit var clickListener : ItemClickedListener
 
     interface ItemClickedListener {
-        fun onItemClick(school : School)
+        fun onItemClick(school: School)
     }
 
     class SchoolViewHolder(private val itemBinding : ItemSchoolBinding) : RecyclerView.ViewHolder(itemBinding.root) {
@@ -30,7 +30,7 @@ class SchoolsFragmentRecyclerAdapter() :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SchoolViewHolder {
         val viewBinding = ItemSchoolBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SchoolViewHolder((viewBinding))
+        return SchoolViewHolder(viewBinding)
     }
 
     override fun onBindViewHolder(holder: SchoolViewHolder, position: Int) {

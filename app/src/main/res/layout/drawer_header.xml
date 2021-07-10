@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/grey_black"
+    android:background="#E0E0E0"
     android:gravity="bottom">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -22,12 +22,12 @@
         android:id="@+id/profileNameTextView"
         android:layout_width="@dimen/width_0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginTop="@dimen/margin_8dp"
         android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/name_placeholder"
-        android:textColor="@color/white"
+        android:textColor="@color/grey_black"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/profileImageView"
@@ -41,7 +41,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/email_placeholder"
-        android:textColor="@color/white"
+        android:textColor="@color/grey_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/profileNameTextView"
         app:layout_constraintHorizontal_bias="0.0"

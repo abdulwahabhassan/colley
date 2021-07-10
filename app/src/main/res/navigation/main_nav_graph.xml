@@ -18,17 +18,7 @@
         android:id="@+id/homeFragment"
         android:name="com.colley.android.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_messagesFragment"
-            app:destination="@id/messagesFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.colley.android.SettingsFragment"
@@ -47,22 +37,40 @@
     <fragment
         android:id="@+id/signupFragment"
         android:name="com.colley.android.SignupFragment"
-        android:label="fragment_signup"
+        android:label="@string/sign_up_label"
         tools:layout="@layout/fragment_signup" >
         <argument
             android:name="schoolName"
             app:argType="string" />
-        <action
-            android:id="@+id/action_signupFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.colley.android.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
-    </fragment>
+        android:label="@string/login_label"
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/contactUsFragment"
+        android:name="com.colley.android.ContactUsFragment"
+        android:label="@string/contact_us_label"
+        tools:layout="@layout/fragment_contact_us" />
+    <fragment
+        android:id="@+id/FAQSFragment"
+        android:name="com.colley.android.FAQSFragment"
+        android:label="@string/faqs_label"
+        tools:layout="@layout/fragment_faqs" />
+    <fragment
+        android:id="@+id/policyFragment"
+        android:name="com.colley.android.PolicyFragment"
+        android:label="@string/policy_label"
+        tools:layout="@layout/fragment_policy" />
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.colley.android.NotificationsFragment"
+        android:label="@string/notifications_label"
+        tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/rateAppFragment"
+        android:name="com.colley.android.RateUsFragment"
+        android:label="@string/rate_app_label"
+        tools:layout="@layout/fragment_rate_app" />
 </navigation>

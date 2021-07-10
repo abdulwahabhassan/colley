@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.SchoolsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentSchoolsBinding
-import com.colley.android.school.School
+import com.colley.android.model.School
 
 class SchoolsFragment : Fragment(), SchoolsFragmentRecyclerAdapter.ItemClickedListener {
     private var _binding: FragmentSchoolsBinding? = null
@@ -26,7 +26,7 @@ class SchoolsFragment : Fragment(), SchoolsFragmentRecyclerAdapter.ItemClickedLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = binding.findYourSchoolRecyclerView
+        recyclerView = binding.schoolRecyclerView
         val recyclerViewAdapter = SchoolsFragmentRecyclerAdapter()
         recyclerViewAdapter.setList(School.getListOfSchools(), this)
         recyclerView.adapter = recyclerViewAdapter

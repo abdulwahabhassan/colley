@@ -27,7 +27,7 @@
        <item android:title="@string/menu_item_support_text">
               <menu>
                      <item
-                         android:id="@+id/faqsFragment"
+                         android:id="@+id/FAQSFragment"
                          android:title="@string/menu_item_faqs_title"
                          android:icon="@drawable/ic_faqs"/>
                      <item
@@ -35,7 +35,7 @@
                          android:title="@string/menu_item_contact_us_title"
                          android:icon="@drawable/ic_contact_us" />
                      <item
-                         android:id="@+id/RateAppFragment"
+                         android:id="@+id/rateAppFragment"
                          android:title="@string/menu_item_rate_app_title"
                          android:icon="@drawable/ic_rate_app" />
               </menu>
@@ -44,7 +44,7 @@
        <item android:title="@string/menu_item_policy_text">
               <menu>
                      <item
-                         android:id="@+id/PolicyFragment"
+                         android:id="@+id/policyFragment"
                          android:title="@string/menu_item_policy_text"
                          android:icon="@drawable/ic_policy"/>
               </menu>

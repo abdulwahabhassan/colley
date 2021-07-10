@@ -18,4 +18,11 @@
     <dimen name="margin_32dp">32dp</dimen>
     <dimen name="image_height_80dp">80dp</dimen>
     <dimen name="image_weight_80dp">80dp</dimen>
+    <dimen name="text_size_12sp">12sp</dimen>
+    <dimen name="padding_4dp">4dp</dimen>
+    <dimen name="margin_2dp">2dp</dimen>
+    <dimen name="margin_1dp">1dp</dimen>
+    <dimen name="text_size_13sp">13sp</dimen>
+    <dimen name="text_size_15sp">15sp</dimen>
+    <dimen name="margin_4dp">4dp</dimen>
 </resources>
