@@ -22,9 +22,9 @@ class Post (
                     "Just now",
                     "Queen Elizabeth hall",
                     "Last class for today just ended.. Friday vibes!",
-                    likes = 2,
+                    likes = 0,
                     comments = 0,
-                    promotions = 0 ),
+                    promotions = 1 ),
                 Post(
                     userPhoto = "https://rebrand.ly/00p0y9v",
                     "Ella David Andrews",

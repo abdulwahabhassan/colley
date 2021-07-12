@@ -1,17 +1,22 @@
 package com.colley.android.adapter
 
+import android.app.Application
+import android.content.Context
+import android.content.res.Resources
+import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.colley.android.R
 import com.colley.android.databinding.ItemGroupBinding
 import com.colley.android.databinding.ItemPostBinding
 import com.colley.android.databinding.ItemSchoolBinding
 import com.colley.android.model.Group
 import com.colley.android.model.Post
 
-class PostsFragmentRecyclerAdapter : RecyclerView.Adapter<PostsFragmentRecyclerAdapter.PostViewHolder>() {
+class PostsFragmentRecyclerAdapter() : RecyclerView.Adapter<PostsFragmentRecyclerAdapter.PostViewHolder>() {
 
     var listOfPosts = arrayListOf<Post>()
     private lateinit var clickListener : ItemClickedListener
@@ -34,22 +39,22 @@ class PostsFragmentRecyclerAdapter : RecyclerView.Adapter<PostsFragmentRecyclerA
                 locationTextView.text = post.location
             }
 
-            if(post.likes == 0) {
-                likeCountTextView.text = ""
-            } else {
-                likeCountTextView.text = post.likes?.toString()
+            when (post.likes) {
+                0 -> likeCountTextView.visibility = GONE
+                1 -> likeCountTextView.text = "${post.likes} like"
+                else -> likeCountTextView.text = "${post.likes} likes"
             }
 
-            if(post.comments == 0) {
-                commentCountTextView.text = ""
-            } else {
-                commentCountTextView.text = post.comments?.toString()
+            when (post.comments) {
+                0 -> commentCountTextView.visibility = GONE
+                1 -> commentCountTextView.text = "${post.comments} comment"
+                else -> commentCountTextView.text = "${post.comments} comments"
             }
 
-            if(post.promotions == 0) {
-                promoteCountTextView.text = ""
-            } else {
-                promoteCountTextView.text = post.promotions?.toString()
+            when (post.promotions) {
+                0 -> promotionCountTextView.visibility = GONE
+                1 -> promotionCountTextView.text = "${post.promotions} promotion"
+                else -> promotionCountTextView.text = "${post.promotions} promotions"
             }
 
             Glide.with(this.root.context).load(post.image).into(contentImageView)

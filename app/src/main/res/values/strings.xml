@@ -34,6 +34,14 @@
     <string name="comment_count_placeholder">1k</string>
     <string name="context_text_placeholder">Android developers community for Uniben students.</string>
     <string name="promote_count_placeholder">50</string>
+    <string name="comment_singular">comment</string>
+    <string name="comment_plural">comments</string>
+    <string name="post_singular">post</string>
+    <string name="post_plural">posts</string>
+    <string name="promotion_singular">promotion</string>
+    <string name="promotions_plural">promotions</string>
+    <string name="group_title_placeholder">Uniben Aspirants Group</string>
+    <string name="unread_conversation_count_placeholder">0</string>
 
 
 </resources>

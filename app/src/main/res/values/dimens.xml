@@ -25,4 +25,5 @@
     <dimen name="text_size_13sp">13sp</dimen>
     <dimen name="text_size_15sp">15sp</dimen>
     <dimen name="margin_4dp">4dp</dimen>
+    <dimen name="margin_12dp">12dp</dimen>
 </resources>

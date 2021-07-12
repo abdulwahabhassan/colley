@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_8dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/groupIconImageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="center"
+        android:background="@color/dark_grey"
+        android:src="@drawable/ic_group"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.School_ShapeableImageView" />
+
+
+    <TextView
+        android:id="@+id/groupNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:text="@string/group_title_placeholder"
+        android:textAlignment="viewStart"
+        android:textSize="@dimen/text_size_16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/groupIconImageView"
+        app:layout_constraintEnd_toStartOf="@+id/unreadConversationCountTextView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/groupIconImageView"
+        app:layout_constraintTop_toTopOf="@+id/groupIconImageView" />
+
+    <TextView
+        android:id="@+id/unreadConversationCountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:textAlignment="viewEnd"
+        android:text="@string/unread_conversation_count_placeholder"
+        app:layout_constraintBottom_toBottomOf="@+id/groupNameTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/groupNameTextView"
+        app:layout_constraintTop_toTopOf="@+id/groupNameTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
