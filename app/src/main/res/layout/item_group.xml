@@ -31,7 +31,7 @@
         android:lines="1"
         android:text="@string/group_title_placeholder"
         android:textAlignment="viewStart"
-        android:textSize="@dimen/text_size_16sp"
+        android:textSize="@dimen/text_size_15sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/groupIconImageView"
         app:layout_constraintEnd_toStartOf="@+id/unreadConversationCountTextView"

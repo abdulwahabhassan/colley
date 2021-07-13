@@ -42,6 +42,12 @@
     <string name="promotions_plural">promotions</string>
     <string name="group_title_placeholder">Uniben Aspirants Group</string>
     <string name="unread_conversation_count_placeholder">0</string>
+    <string name="issue_title_placeholder">SUG election palava</string>
+    <string name="issue_body_placeholder">The election which supposedly should have held peacefully</string>
+    <string name="raised_by_placeholder">Blessing Dangbana</string>
+    <string name="contributions_count_placeholder">64 contributions</string>
+    <string name="endorse_plural_placeholder">101 endorsements</string>
+    <string name="user_school_placeholder">UNIBEN</string>
 
 
 </resources>

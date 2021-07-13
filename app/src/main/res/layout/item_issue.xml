@@ -1,6 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@color/grey"
+    android:layout_marginBottom="@dimen/margin_2dp"
+    android:padding="@dimen/padding_16dp">
+
+    <TextView
+        android:id="@+id/issueTitleTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:lines="1"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:text="@string/issue_title_placeholder"
+        android:textSize="@dimen/text_size_15sp"
+        android:textColor="@color/blue"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/issueBodyTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_8dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:text="@string/issue_body_placeholder"
+        android:textSize="@dimen/text_size_15sp"
+        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="@+id/issueTitleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/issueTitleTextView" />
+
+    <TextView
+        android:id="@+id/userNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textStyle="bold"
+        android:text="@string/raised_by_placeholder"
+        android:textSize="@dimen/text_size_14sp"
+        app:layout_constraintEnd_toEndOf="@+id/issueTimeStampTextView"
+        app:layout_constraintTop_toBottomOf="@+id/issueTimeStampTextView" />
+
+    <TextView
+        android:id="@+id/contributionsTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:drawablePadding="@dimen/padding_4dp"
+        android:text="@string/contributions_count_placeholder"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/text_size_14sp"
+        app:drawableStartCompat="@drawable/ic_contributions"
+        app:drawableTint="@color/orange"
+        app:layout_constraintEnd_toStartOf="@+id/userImageView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/issueBodyTextView"
+        app:layout_constraintTop_toBottomOf="@+id/issueBodyTextView" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/userImageView"
+        android:layout_width="@dimen/width_18dp"
+        android:layout_height="@dimen/height_18dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_profile"
+        app:layout_constraintBottom_toBottomOf="@+id/userNameTextView"
+        app:layout_constraintEnd_toStartOf="@+id/userNameTextView"
+        app:layout_constraintTop_toTopOf="@+id/userNameTextView"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.School_ShapeableImageView" />
+
+    <TextView
+        android:id="@+id/issueTimeStampTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/time_stamp_placeholder"
+        android:textSize="@dimen/text_size_12sp"
+        app:layout_constraintEnd_toEndOf="@+id/issueBodyTextView"
+        app:layout_constraintTop_toBottomOf="@+id/issueBodyTextView" />
+
+    <TextView
+        android:id="@+id/endorsementTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textSize="@dimen/text_size_14sp"
+        android:textColor="@color/green"
+        android:text="@string/endorse_plural_placeholder"
+        app:drawableTint="@color/green"
+        android:drawablePadding="@dimen/padding_4dp"
+        app:layout_constraintEnd_toEndOf="@+id/contributionsTextView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/contributionsTextView"
+        app:layout_constraintTop_toBottomOf="@+id/contributionsTextView"
+        app:drawableStartCompat="@drawable/ic_endorsements" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_pin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userSchoolTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_school_placeholder"
+        android:textSize="@dimen/text_size_12sp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/userNameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/userNameTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

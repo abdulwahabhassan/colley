@@ -8,4 +8,7 @@
     <color name="grey">#EEEEEE</color>
     <color name="red">#EA4335</color>
     <color name="dark_grey">#C6C5C5</color>
+    <color name="blue">#4199d8</color>
+    <color name="green">#3BAA4A</color>
+    <color name="orange">#ee8033</color>
 </resources>

@@ -11,9 +11,10 @@
         android:id="@+id/profileImageView"
         android:layout_width="@dimen/image_weight_80dp"
         android:layout_height="@dimen/image_height_80dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="@dimen/margin_8dp"
+        android:layout_marginTop="@dimen/margin_16dp"
         android:src="@drawable/ic_launcher_foreground"
+        android:scaleType="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.School_ShapeableImageView" />
