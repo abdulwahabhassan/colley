@@ -48,6 +48,9 @@
     <string name="contributions_count_placeholder">64 contributions</string>
     <string name="endorse_plural_placeholder">101 endorsements</string>
     <string name="user_school_placeholder">UNIBEN</string>
+    <string name="comments_count_placeholder">0 comments</string>
+    <string name="likes_count_placeholder">0 likes</string>
+    <string name="promotions_count_placeholder">0 promotions</string>
 
 
 </resources>
