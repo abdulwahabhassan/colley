@@ -1,24 +1,17 @@
 package com.colley.android
 
-import android.content.res.Resources
-import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ActionMenuView
-import android.widget.Toast
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.view.menu.ActionMenuItem
-import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.navOptions
-import androidx.navigation.ui.*
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.colley.android.databinding.ActivityMainBinding
-import com.colley.android.databinding.DrawerHeaderBinding
 import com.colley.android.model.Post
 import com.google.android.material.imageview.ShapeableImageView
 
@@ -34,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        setSupportActionBar(view.findViewById(R.id.toolbar))
 
         //find the nav controller associated with the navHost contained within this activity
         navController = findNavController(R.id.mainNavGraphFragmentContainerView)

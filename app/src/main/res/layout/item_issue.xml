@@ -74,7 +74,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/userNameTextView"
         app:layout_constraintEnd_toStartOf="@+id/userNameTextView"
         app:layout_constraintTop_toTopOf="@+id/userNameTextView"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.School_ShapeableImageView" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayShapeableImageView" />
 
     <TextView
         android:id="@+id/issueTimeStampTextView"

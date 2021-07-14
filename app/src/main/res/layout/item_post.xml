@@ -25,7 +25,7 @@
             android:src="@drawable/ic_launcher_foreground"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.School_ShapeableImageView" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayShapeableImageView" />
 
         <TextView
             android:id="@+id/nameTextView"

@@ -31,4 +31,8 @@
     <dimen name="height_18dp">18dp</dimen>
     <dimen name="width_18dp">18dp</dimen>
     <dimen name="text_size_11sp">11sp</dimen>
+    <dimen name="text_size_24sp">24sp</dimen>
+    <dimen name="text_size_20sp">20sp</dimen>
+    <dimen name="text_size_22sp">22sp</dimen>
+    <dimen name="margin_24dp">24dp</dimen>
 </resources>
