@@ -2,6 +2,7 @@ package com.colley.android
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         //sets the profile photo in the header of the navigation view within the drawerLayout
         val header = binding.mainActivityNavigationView.getHeaderView(0)
         val imageView = header.findViewById<ShapeableImageView>(R.id.profileImageView)
-        Glide.with(this).load(Post.getListOfPosts()[0].userPhoto).into(imageView)
+        Glide.with(this).load(Post.getListOfPosts()[2].userPhoto).into(imageView)
 
         //connect the DrawerLayout to your navigation graph by passing it to AppBarConfiguration
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)

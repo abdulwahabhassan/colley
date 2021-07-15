@@ -39,6 +39,7 @@
             android:textSize="@dimen/text_size_15sp"
             android:text="@string/name_placeholder"
             android:textStyle="bold"
+            android:textColor="@color/navy_blue"
             app:layout_constraintEnd_toStartOf="@+id/timeStampTextView"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/userPhotoImageView"
@@ -50,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:text="@string/school_name_placeholder"
+            android:textColor="@color/navy_blue"
             app:layout_constraintEnd_toStartOf="@+id/locationTextView"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/nameTextView"
@@ -62,7 +64,8 @@
             android:layout_marginEnd="16dp"
             android:lines="1"
             android:text="@string/time_stamp_placeholder"
-            android:textSize="12sp"
+            android:textColor="@color/navy_blue_fair"
+            android:textSize="@dimen/text_size_12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/nameTextView" />
 
@@ -74,6 +77,7 @@
             android:text="@string/location_place_holder"
             android:textSize="@dimen/text_size_12sp"
             android:layout_marginTop="@dimen/margin_4dp"
+            android:textColor="@color/navy_blue_fair"
             app:drawableStartCompat="@drawable/ic_location"
             app:drawableTint="@color/red"
             app:layout_constraintEnd_toEndOf="@+id/timeStampTextView"
@@ -83,11 +87,12 @@
             android:id="@+id/contentTextView"
             android:layout_width="@dimen/width_0dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_15sp"
             android:layout_marginStart="@dimen/margin_16dp"
             android:layout_marginEnd="@dimen/margin_16dp"
             android:layout_marginTop="@dimen/margin_16dp"
+            android:textSize="@dimen/text_size_15sp"
             android:text="@string/context_text_placeholder"
+            android:textColor="@color/navy_blue_fair"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/userPhotoImageView" />
@@ -108,6 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
             android:layout_marginTop="8dp"
+            android:textColor="@color/navy_blue_fair"
             android:text="@string/likes_count_placeholder"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toStartOf="parent"
@@ -120,6 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
             android:layout_marginTop="8dp"
+            android:textColor="@color/navy_blue_fair"
             android:text="@string/comments_count_placeholder"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toEndOf="@+id/likeCountTextView"
@@ -133,6 +140,7 @@
             android:layout_marginStart="@dimen/margin_16dp"
             android:layout_marginTop="@dimen/margin_8dp"
             android:layout_marginEnd="@dimen/margin_16dp"
+            android:textColor="@color/navy_blue_fair"
             android:text="@string/promotions_count_placeholder"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintEnd_toEndOf="parent"
@@ -162,6 +170,7 @@
                 android:layout_margin="@dimen/margin_12dp"
                 android:drawablePadding="@dimen/padding_4dp"
                 android:text="@string/like_text"
+                android:textColor="@color/navy_blue"
                 app:drawableStartCompat="@drawable/ic_like" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -185,6 +194,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_12dp"
+                android:textColor="@color/navy_blue"
                 android:drawablePadding="@dimen/padding_4dp"
                 android:text="@string/comment_text"
                 app:drawableStartCompat="@drawable/ic_comment" />
@@ -214,6 +224,7 @@
                 android:layout_margin="@dimen/margin_12dp"
                 android:drawablePadding="@dimen/padding_4dp"
                 android:text="@string/promote_text"
+                android:textColor="@color/navy_blue"
                 app:drawableStartCompat="@drawable/ic_share" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

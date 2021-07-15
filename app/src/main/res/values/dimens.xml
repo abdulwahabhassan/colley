@@ -28,6 +28,7 @@
     <dimen name="margin_12dp">12dp</dimen>
     <dimen name="text_size_10sp">10sp</dimen>
     <dimen name="margin_18dp">18dp</dimen>
+    <dimen name="margin_28dp">28dp</dimen>
     <dimen name="height_18dp">18dp</dimen>
     <dimen name="width_18dp">18dp</dimen>
     <dimen name="text_size_11sp">11sp</dimen>

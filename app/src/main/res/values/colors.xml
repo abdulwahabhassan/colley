@@ -11,4 +11,7 @@
     <color name="blue">#4199d8</color>
     <color name="green">#3BAA4A</color>
     <color name="orange">#ee8033</color>
+    <color name="navy_blue">#011946</color>
+    <color name="navy_blue_fair">#3F5277</color>
+    <color name="apricot">#FBCEB1</color>
 </resources>

@@ -17,6 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             app:tabRippleColor="@color/white"
+            app:tabTextColor="@color/navy_blue_fair"
+            app:tabSelectedTextColor="@color/navy_blue"
+            app:tabIndicatorColor="@color/navy_blue"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

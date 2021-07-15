@@ -20,6 +20,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
+                app:titleTextColor="@color/navy_blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways"/>
@@ -44,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:itemTextColor="@color/grey_black"
+        app:itemTextColor="@color/navy_blue"
         android:theme="@style/NavigationViewTheme"
         app:headerLayout="@layout/drawer_header"
         app:menu="@menu/main_nav_drawer_menu" />
