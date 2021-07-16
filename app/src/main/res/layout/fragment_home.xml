@@ -9,17 +9,16 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/grey">
+        android:layout_height="match_parent">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/home_fragment_tabLayout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             app:tabRippleColor="@color/white"
-            app:tabTextColor="@color/navy_blue_fair"
-            app:tabSelectedTextColor="@color/navy_blue"
-            app:tabIndicatorColor="@color/navy_blue"
+            app:tabTextColor="@color/light_pearl"
+            app:tabSelectedTextColor="@color/pearl"
+            app:tabIndicatorColor="@color/pearl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

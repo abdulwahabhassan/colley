@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="grey_black">#403F3F</color>
+    <color name="pearl">#2F394B</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="grey">#EEEEEE</color>
+    <color name="grey">#E5E5E5</color>
     <color name="red">#EA4335</color>
     <color name="dark_grey">#C6C5C5</color>
     <color name="blue">#4199d8</color>
     <color name="green">#3BAA4A</color>
     <color name="orange">#ee8033</color>
-    <color name="navy_blue">#011946</color>
-    <color name="navy_blue_fair">#3F5277</color>
+    <color name="light_pearl">#414855</color>
     <color name="apricot">#FBCEB1</color>
 </resources>
