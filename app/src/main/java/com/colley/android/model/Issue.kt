@@ -70,8 +70,54 @@ class Issue(
                     "Ada Love",
                     "UNILAG",
                     "https://rebrand.ly/cc685c"
+                ),
+                Issue(
+                    "Let's talk about the malpractice",
+                    "Examination malpractice is as old as examination itself. However, " +
+                            "the rate at which examination malpractices occurs in the Nigerian educational " +
+                            "system is highly disturbing. The challenge therefore needs prompt " +
+                            "attention. The phenomenon which has both moral and legal dimensions is " +
+                            "considered as a hydra-headed problem that has pervaded the entire " +
+                            "educational system in Nigeria.",
+                    "Just now",
+                    2,
+                    0,
+                    "Olaniyi Anslem",
+                    "LAUTECH",
+                    "https://rebrand.ly/bfdcfd"
+                ),
+                Issue(
+                    "Bank road is not safe to walk on at the moment",
+                    "An ongoing robbery at bank road! please spread the word!!!",
+                    "45 minutes ago",
+                    114,
+                    1_219,
+                    "Maro Godwin",
+                    "AAU",
+                    "https://rebrand.ly/zlhfnjj"),
+                Issue(
+                    "Rector versus students of AUCHIPOLY",
+                    "All allegations of corruption that we brought against the rector " +
+                            "have been proven false. Where does this leave us now? I fear that we " +
+                            "have brought destruction upon ourself with our own hands. Could there be " +
+                            "more to the story than we already know?",
+                    "6 hours ago",
+                    486,
+                    72,
+                    "Ginika Ofor",
+                    "AUCHIPOLY",
+                    "https://rebrand.ly/00p0y9v"),
+                Issue(
+                    "ASUU strike looming", "Word on the street says that ASUU is cooking " +
+                            "another indefinite strike. Wahala be like ASUU.",
+                    "1 minute ago",
+                    0,
+                    0,
+                    "Linus Meganus",
+                    "ABSU",
                 )
             )
         }
+
     }
 }

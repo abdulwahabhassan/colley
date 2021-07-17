@@ -31,8 +31,8 @@ class IssuesFragment : Fragment(), IssuesFragmentRecyclerAdapter.ItemClickedList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding.issueRecyclerView
-        val recyclerViewAdapter = IssuesFragmentRecyclerAdapter()
-        recyclerViewAdapter.setList(Issue.getListOfIssues(), this)
+        val recyclerViewAdapter = IssuesFragmentRecyclerAdapter(this)
+        recyclerViewAdapter.setList(Issue.getListOfIssues())
         recyclerView.adapter = recyclerViewAdapter
     }
 

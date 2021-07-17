@@ -12,10 +12,10 @@ import com.colley.android.databinding.ItemSchoolBinding
 import com.colley.android.model.School
 import com.google.android.material.internal.TextDrawableHelper
 
-class GroupsFragmentRecyclerAdapter : RecyclerView.Adapter<GroupsFragmentRecyclerAdapter.GroupViewHolder>() {
+class GroupsFragmentRecyclerAdapter (private val clickListener: ItemClickedListener) :
+    RecyclerView.Adapter<GroupsFragmentRecyclerAdapter.GroupViewHolder>() {
 
     private var listOfGroups = arrayListOf<Group>()
-    private lateinit var clickListener : ItemClickedListener
 
     interface ItemClickedListener {
         fun onItemClick(group: Group)
@@ -44,9 +44,8 @@ class GroupsFragmentRecyclerAdapter : RecyclerView.Adapter<GroupsFragmentRecycle
         }
     }
 
-    fun setList(list: ArrayList<Group>, clickListener: ItemClickedListener) {
+    fun setList(list: ArrayList<Group>) {
         this.listOfGroups = list
-        this.clickListener = clickListener
         notifyDataSetChanged()
     }
 

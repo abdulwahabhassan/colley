@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toEndOf="@+id/cardView"
         app:layout_constraintStart_toStartOf="@+id/cardView"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayShapeableImageView" />
+        app:shapeAppearanceOverlay="@style/RoundShapeAppearance" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"

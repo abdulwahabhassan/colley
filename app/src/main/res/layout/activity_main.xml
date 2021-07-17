@@ -36,6 +36,7 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/main_nav_graph"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
@@ -49,6 +50,6 @@
         app:itemTextColor="@color/pearl"
         android:theme="@style/NavigationViewTheme"
         app:headerLayout="@layout/drawer_header"
-        app:itemShapeAppearance="@style/ShapeAppearanceOverlayShapeableImageView"
+        app:itemShapeAppearance="@style/RoundShapeAppearance"
         app:menu="@menu/main_nav_drawer_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

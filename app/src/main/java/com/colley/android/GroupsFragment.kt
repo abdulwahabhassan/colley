@@ -31,8 +31,8 @@ class GroupsFragment : Fragment(), GroupsFragmentRecyclerAdapter.ItemClickedList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding.groupRecyclerView
-        val recyclerViewAdapter = GroupsFragmentRecyclerAdapter()
-        recyclerViewAdapter.setList(Group.getListOfGroups(), this)
+        val recyclerViewAdapter = GroupsFragmentRecyclerAdapter(this)
+        recyclerViewAdapter.setList(Group.getListOfGroups())
         recyclerView.adapter = recyclerViewAdapter
     }
 

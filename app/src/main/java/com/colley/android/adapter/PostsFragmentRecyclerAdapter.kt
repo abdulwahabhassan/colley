@@ -23,14 +23,16 @@ import com.colley.android.databinding.ItemSchoolBinding
 import com.colley.android.model.Group
 import com.colley.android.model.Post
 
-class PostsFragmentRecyclerAdapter() : RecyclerView.Adapter<PostsFragmentRecyclerAdapter.PostViewHolder>() {
+class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListener) :
+    RecyclerView.Adapter<PostsFragmentRecyclerAdapter.PostViewHolder>() {
 
     var listOfPosts = arrayListOf<Post>()
-    private lateinit var clickListener : ItemClickedListener
+
 
     interface ItemClickedListener {
         fun onItemClick(post: Post)
     }
+
 
     class PostViewHolder (private val itemBinding : ItemPostBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         @SuppressLint("SetTextI18n")
@@ -71,15 +73,19 @@ class PostsFragmentRecyclerAdapter() : RecyclerView.Adapter<PostsFragmentRecycle
             root.setOnClickListener {
                 clickListener.onItemClick(post)
             }
+
             likeLinearLayout.setOnClickListener {
-                Toast.makeText(root.context, "like", Toast.LENGTH_SHORT).show()
+                //Toggles the active state of the like button when clicked
                 it.isActivated = when (it.isActivated) {
                     true -> false
                     false -> true
                 }
+                if (it.isActivated) {
+                    Toast.makeText(root.context, "like", Toast.LENGTH_SHORT).show()
+                }
             }
             commentLinearLayout.setOnClickListener {
-                Toast.makeText(root.context, "comment", Toast.LENGTH_SHORT).show()
+                clickListener.onItemClick(post)
             }
             promoteLinearLayout.setOnClickListener {
                 Toast.makeText(root.context, "promote", Toast.LENGTH_SHORT).show()
@@ -101,9 +107,8 @@ class PostsFragmentRecyclerAdapter() : RecyclerView.Adapter<PostsFragmentRecycle
         return listOfPosts.size
     }
 
-    fun setList(list: ArrayList<Post>, clickListener: ItemClickedListener) {
+    fun setList(list: ArrayList<Post>) {
         this.listOfPosts = list
-        this.clickListener = clickListener
         notifyDataSetChanged()
     }
 }

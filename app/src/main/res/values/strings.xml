@@ -51,6 +51,8 @@
     <string name="comments_count_placeholder">0 comments</string>
     <string name="likes_count_placeholder">0 likes</string>
     <string name="promotions_count_placeholder">0 promotions</string>
+    <string name="comment_placeholder">I admire your courage to come out and speak openly about this issue. I would like to add that you are my namesake</string>
+    <string name="comments_text">Comments</string>
 
 
 </resources>

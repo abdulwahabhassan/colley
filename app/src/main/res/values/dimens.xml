@@ -36,4 +36,13 @@
     <dimen name="text_size_20sp">20sp</dimen>
     <dimen name="text_size_22sp">22sp</dimen>
     <dimen name="margin_24dp">24dp</dimen>
+    <dimen name="corner_radius_8dp">8dp</dimen>
+    <dimen name="corner_radius_16dp">16dp</dimen>
+    <dimen name="height_20dp">20dp</dimen>
+    <dimen name="width_20dp">20dp</dimen>
+    <dimen name="width_35dp">35dp</dimen>
+    <dimen name="height_35dp">35dp</dimen>
+    <dimen name="height_40dp">40dp</dimen>
+    <dimen name="width_40dp">40dp</dimen>
+    <dimen name="margin_05dp">0.5dp</dimen>
 </resources>

@@ -8,10 +8,9 @@ import com.colley.android.R
 import com.colley.android.databinding.ItemIssueBinding
 import com.colley.android.model.Issue
 
-class IssuesFragmentRecyclerAdapter : RecyclerView.Adapter<IssuesFragmentRecyclerAdapter.IssueViewHolder>() {
+class IssuesFragmentRecyclerAdapter (private val clickListener: ItemClickedListener) : RecyclerView.Adapter<IssuesFragmentRecyclerAdapter.IssueViewHolder>() {
 
     private var listOfIssues = arrayListOf<Issue>()
-    private lateinit var clickListener : ItemClickedListener
 
     interface ItemClickedListener {
         fun onItemClick(issue: Issue)
@@ -40,9 +39,9 @@ class IssuesFragmentRecyclerAdapter : RecyclerView.Adapter<IssuesFragmentRecycle
         }
     }
 
-    fun setList(list: ArrayList<Issue>, clickListener: ItemClickedListener) {
+    fun setList(list: ArrayList<Issue>) {
         this.listOfIssues = list
-        this.clickListener = clickListener
+        //this.clickListener = clickListener
         notifyDataSetChanged()
     }
 

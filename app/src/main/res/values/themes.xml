@@ -14,8 +14,8 @@
         <!-- Customize your theme here. -->
     </style>
 
-<!--    style to make shapeableImageView display round images-->
-    <style name="ShapeAppearanceOverlayShapeableImageView" parent="">
+<!--    style to make shapeAbleImageView display round images-->
+    <style name="RoundShapeAppearance" parent="">
         <item name="cornerSize">50%</item>
     </style>
 

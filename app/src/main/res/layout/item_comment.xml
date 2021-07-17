@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="@dimen/height_0dp"
+    app:cardCornerRadius="@dimen/corner_radius_8dp"
+    android:layout_margin="@dimen/margin_16dp">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/commenterImageView"
+        android:layout_width="@dimen/width_40dp"
+        android:layout_height="@dimen/height_40dp"
+        android:scaleType="center"
+        android:background="@color/dark_grey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout"
+        app:shapeAppearance="@style/RoundShapeAppearance" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/constraintLayout"
+        android:layout_width="@dimen/width_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_8dp"
+        app:cardCornerRadius="@dimen/corner_radius_8dp"
+        app:cardElevation="@dimen/height_0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/commenterImageView"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_8dp"
+            android:background="@color/light_apricot">
+
+            <TextView
+                android:id="@+id/commenterNameTextView"
+                android:layout_width="@dimen/width_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_8dp"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@string/name_placeholder"
+                android:textColor="@color/pearl"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/commentTimeStampTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/commentTextTextView"
+                android:layout_width="@dimen/width_0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/comment_placeholder"
+                android:textColor="@color/light_pearl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/commenterNameTextView"
+                app:layout_constraintTop_toBottomOf="@+id/commenterNameTextView" />
+
+            <TextView
+                android:id="@+id/commentTimeStampTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_stamp_placeholder"
+                android:textColor="@color/pearl"
+                android:textSize="@dimen/text_size_12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/commenterNameTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
