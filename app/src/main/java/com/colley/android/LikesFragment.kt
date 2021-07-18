@@ -6,18 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.colley.android.adapter.GroupsFragmentRecyclerAdapter
+import com.colley.android.adapter.LikesFragmentRecyclerAdapter
 import com.colley.android.adapter.PostsFragmentRecyclerAdapter
-import com.colley.android.databinding.FragmentGroupsBinding
+import com.colley.android.databinding.FragmentLikesBinding
 import com.colley.android.databinding.FragmentPostsBinding
 import com.colley.android.model.DummyData
-import com.colley.android.model.Group
-import com.colley.android.model.Post
+import com.colley.android.model.Like
 
+class LikesFragment : Fragment(), LikesFragmentRecyclerAdapter.ItemClickedListener{
 
-class GroupsFragment : Fragment(), GroupsFragmentRecyclerAdapter.ItemClickedListener {
-
-    private var _binding: FragmentGroupsBinding? = null
+    private var _binding: FragmentLikesBinding? = null
     private val binding get() = _binding!!
     lateinit var recyclerView: RecyclerView
 
@@ -25,19 +23,24 @@ class GroupsFragment : Fragment(), GroupsFragmentRecyclerAdapter.ItemClickedList
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentGroupsBinding.inflate(inflater, container, false)
+        _binding = FragmentLikesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = binding.groupRecyclerView
-        val recyclerViewAdapter = GroupsFragmentRecyclerAdapter(this)
-        recyclerViewAdapter.setList(DummyData.getListOfGroups())
+        recyclerView = binding.likesRecyclerView
+        val recyclerViewAdapter = LikesFragmentRecyclerAdapter(this)
+        recyclerViewAdapter.setList(DummyData.getListOfLikes())
         recyclerView.adapter = recyclerViewAdapter
     }
 
-    override fun onItemClick(group: Group) {
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
+    override fun onItemClick(like: Like) {
+
+    }
 }

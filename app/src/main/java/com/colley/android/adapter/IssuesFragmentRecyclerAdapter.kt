@@ -8,7 +8,8 @@ import com.colley.android.R
 import com.colley.android.databinding.ItemIssueBinding
 import com.colley.android.model.Issue
 
-class IssuesFragmentRecyclerAdapter (private val clickListener: ItemClickedListener) : RecyclerView.Adapter<IssuesFragmentRecyclerAdapter.IssueViewHolder>() {
+class IssuesFragmentRecyclerAdapter (private val clickListener: ItemClickedListener)
+    : RecyclerView.Adapter<IssuesFragmentRecyclerAdapter.IssueViewHolder>() {
 
     private var listOfIssues = arrayListOf<Issue>()
 

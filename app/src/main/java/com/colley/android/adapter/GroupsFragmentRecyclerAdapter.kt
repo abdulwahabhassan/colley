@@ -6,11 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
-import com.colley.android.model.Group
 import com.colley.android.databinding.ItemGroupBinding
-import com.colley.android.databinding.ItemSchoolBinding
-import com.colley.android.model.School
-import com.google.android.material.internal.TextDrawableHelper
+import com.colley.android.model.Group
 
 class GroupsFragmentRecyclerAdapter (private val clickListener: ItemClickedListener) :
     RecyclerView.Adapter<GroupsFragmentRecyclerAdapter.GroupViewHolder>() {
@@ -33,9 +30,9 @@ class GroupsFragmentRecyclerAdapter (private val clickListener: ItemClickedListe
 
             when {
                 group.groupIcon !== null ->
-                    Glide.with(this.root.context).load(group.groupIcon).into(groupIconImageView)
+                    Glide.with(this.root.context).load(group.groupIcon).into(groupImageView)
                 else ->
-                    Glide.with(this.root.context).load(R.drawable.ic_group).into(groupIconImageView)
+                    Glide.with(this.root.context).load(R.drawable.ic_group).into(groupImageView)
             }
 
             this.root.setOnClickListener {

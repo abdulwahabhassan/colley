@@ -10,6 +10,7 @@ import com.colley.android.adapter.GroupsFragmentRecyclerAdapter
 import com.colley.android.adapter.IssuesFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentGroupsBinding
 import com.colley.android.databinding.FragmentIssuesBinding
+import com.colley.android.model.DummyData
 import com.colley.android.model.Group
 import com.colley.android.model.Issue
 
@@ -32,7 +33,7 @@ class IssuesFragment : Fragment(), IssuesFragmentRecyclerAdapter.ItemClickedList
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding.issueRecyclerView
         val recyclerViewAdapter = IssuesFragmentRecyclerAdapter(this)
-        recyclerViewAdapter.setList(Issue.getListOfIssues())
+        recyclerViewAdapter.setList(DummyData.getListOfIssues())
         recyclerView.adapter = recyclerViewAdapter
     }
 

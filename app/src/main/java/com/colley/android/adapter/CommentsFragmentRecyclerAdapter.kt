@@ -9,8 +9,8 @@ import com.colley.android.databinding.ItemCommentBinding
 import com.colley.android.model.Comment
 
 
-class CommentsBottomSheetRecyclerAdapter(private val clickListener: ItemClickedListener) :
-    RecyclerView.Adapter<CommentsBottomSheetRecyclerAdapter.CommentViewHolder>() {
+class CommentsFragmentRecyclerAdapter(private val clickListener: ItemClickedListener) :
+    RecyclerView.Adapter<CommentsFragmentRecyclerAdapter.CommentViewHolder>() {
 
     private var listOfComments = arrayListOf<Comment>()
 

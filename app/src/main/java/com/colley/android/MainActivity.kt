@@ -16,6 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.colley.android.adapter.PostsFragmentRecyclerAdapter
 import com.colley.android.databinding.ActivityMainBinding
+import com.colley.android.model.DummyData
 import com.colley.android.model.Post
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         //sets the profile photo in the header of the navigation view within the drawerLayout
         val header = binding.mainActivityNavigationView.getHeaderView(0)
         val imageView = header.findViewById<ShapeableImageView>(R.id.profileImageView)
-        Glide.with(this).load(Post.getListOfPosts()[2].userPhoto).into(imageView)
+        Glide.with(this).load(DummyData.getListOfPosts()[2].userPhoto).into(imageView)
 
         //connect the DrawerLayout to your navigation graph by passing it to AppBarConfiguration
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)

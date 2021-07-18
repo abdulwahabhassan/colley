@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.SchoolsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentSchoolsBinding
+import com.colley.android.model.DummyData
 import com.colley.android.model.School
 
 class SchoolsFragment : Fragment(), SchoolsFragmentRecyclerAdapter.ItemClickedListener {
@@ -28,7 +29,7 @@ class SchoolsFragment : Fragment(), SchoolsFragmentRecyclerAdapter.ItemClickedLi
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding.schoolRecyclerView
         val recyclerViewAdapter = SchoolsFragmentRecyclerAdapter()
-        recyclerViewAdapter.setList(School.getListOfSchools(), this)
+        recyclerViewAdapter.setList(DummyData.getListOfSchools(), this)
         recyclerView.adapter = recyclerViewAdapter
     }
 

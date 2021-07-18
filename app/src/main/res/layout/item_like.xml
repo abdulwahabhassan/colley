@@ -10,9 +10,9 @@
     android:layout_marginBottom="@dimen/margin_8dp">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/groupImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:id="@+id/userImageView"
+        android:layout_width="@dimen/width_40dp"
+        android:layout_height="@dimen/height_40dp"
         android:scaleType="center"
         android:background="@color/dark_grey"
         android:src="@drawable/ic_group"
@@ -25,36 +25,32 @@
 
 
     <TextView
-        android:id="@+id/groupNameTextView"
+        android:id="@+id/userNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:lines="1"
-        android:text="@string/group_title_placeholder"
+        android:text="@string/name_placeholder"
         android:textAlignment="viewStart"
-        android:textSize="@dimen/text_size_15sp"
         android:textStyle="bold"
         android:textColor="@color/pearl"
-        app:layout_constraintBottom_toBottomOf="@+id/groupImageView"
-        app:layout_constraintEnd_toStartOf="@+id/unreadConversationCountTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/userImageView"
+        app:layout_constraintEnd_toStartOf="@+id/likeLogoImageView"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/groupImageView"
-        app:layout_constraintTop_toTopOf="@+id/groupImageView" />
+        app:layout_constraintStart_toEndOf="@+id/userImageView"
+        app:layout_constraintTop_toTopOf="@+id/userImageView" />
 
-    <TextView
-        android:id="@+id/unreadConversationCountTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:lines="1"
-        android:textAlignment="viewEnd"
-        android:text="@string/unread_conversation_count_placeholder"
-        android:textColor="@color/light_pearl"
-        app:layout_constraintBottom_toBottomOf="@+id/groupNameTextView"
+    <ImageView
+        android:id="@+id/likeLogoImageView"
+        android:layout_width="@dimen/width_20dp"
+        android:layout_height="@dimen/height_20dp"
+        android:src="@drawable/ic_like_active"
+        app:layout_constraintBottom_toBottomOf="@+id/userNameTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/groupNameTextView"
-        app:layout_constraintTop_toTopOf="@+id/groupNameTextView" />
+        app:layout_constraintStart_toEndOf="@+id/userNameTextView"
+        app:layout_constraintTop_toTopOf="@+id/userNameTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

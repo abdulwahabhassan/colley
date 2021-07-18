@@ -6,41 +6,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.colley.android.adapter.PostsFragmentRecyclerAdapter
+import com.colley.android.databinding.FragmentLikesBinding
 import com.colley.android.databinding.FragmentPostsBinding
-import com.colley.android.model.DummyData
-import com.colley.android.model.Post
+import com.colley.android.databinding.FragmentPromotionsBinding
 
+class PromotionsFragment : Fragment() {
 
-class PostsFragment : Fragment(),
-    PostsFragmentRecyclerAdapter.ItemClickedListener {
-
-    private var _binding: FragmentPostsBinding? = null
+    private var _binding: FragmentPromotionsBinding? = null
     private val binding get() = _binding!!
     lateinit var recyclerView: RecyclerView
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPostsBinding.inflate(inflater, container, false)
+        _binding = FragmentPromotionsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = binding.postRecyclerView
-        val recyclerViewAdapter = PostsFragmentRecyclerAdapter(this)
-        recyclerViewAdapter.setList(DummyData.getListOfPosts())
-        recyclerView.adapter = recyclerViewAdapter
-    }
-
-
-    override fun onItemClick(post: Post) {
-        val bottomSheetDialog = PostBottomSheetDialogFragment()
-        bottomSheetDialog.show(childFragmentManager, null)
-
     }
 
     override fun onDestroy() {

@@ -67,8 +67,15 @@ class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListene
                 else -> promotionCountTextView.text = "${post.promotions} promotions"
             }
 
-            Glide.with(root.context).load(post.image).into(contentImageView)
-            Glide.with(root.context).load(post.userPhoto).into(userPhotoImageView)
+            if (post.image != null) {
+                Glide.with(root.context).load(post.image).into(contentImageView)
+            }
+
+            if (post.userPhoto != null) {
+                Glide.with(root.context).load(post.userPhoto).into(userPhotoImageView)
+            } else {
+                Glide.with(root.context).load(R.drawable.ic_profile).into(userPhotoImageView)
+            }
 
             root.setOnClickListener {
                 clickListener.onItemClick(post)
