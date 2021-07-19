@@ -20,6 +20,7 @@ class PostBottomSheetDialogFragment () :
     private lateinit var viewPagerAdapter: PostBottomSheetDialogFragmentViewPager
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,9 +41,10 @@ class PostBottomSheetDialogFragment () :
         tabLayout.addTab( tabLayout.newTab().setText(getString(R.string.likes_tab_name)))
         tabLayout.addTab( tabLayout.newTab().setText(getString(R.string.promotions_tab_name)))
 
+
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                binding.bottomSheetViewPager.currentItem = tab?.position ?: 0
+                    binding.bottomSheetViewPager.currentItem = tab?.position ?: 0
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -58,6 +60,7 @@ class PostBottomSheetDialogFragment () :
         })
 
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -168,7 +168,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_12dp"
                 android:drawablePadding="@dimen/padding_4dp"
-                android:textColor="@color/light_pearl"
+                android:textColor="@color/text_color_state_selector"
                 android:text="@string/comment_text"
                 app:drawableStartCompat="@drawable/ic_comment"
                 android:focusable="true" />
@@ -194,10 +194,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_12dp"
-                android:textColor="@color/light_pearl"
+                android:textColor="@color/text_color_state_selector"
                 android:drawablePadding="@dimen/padding_4dp"
                 android:text="@string/like_text"
-                app:drawableStartCompat="@drawable/drawable_state_selector" />
+                app:drawableStartCompat="@drawable/like_drawable_state_selector" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -224,8 +224,8 @@
                 android:layout_margin="@dimen/margin_12dp"
                 android:drawablePadding="@dimen/padding_4dp"
                 android:text="@string/promote_text"
-                android:textColor="@color/light_pearl"
-                app:drawableStartCompat="@drawable/ic_share" />
+                android:textColor="@color/text_color_state_selector"
+                app:drawableStartCompat="@drawable/ic_promote" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -350,4 +350,25 @@ object DummyData {
         )
     }
 
+    fun getListOfPromotions(): ArrayList<Promotion> {
+        return arrayListOf(
+            Promotion(
+                "Mirabell Sanchez Ozioma",
+                "https://rebrand.ly/00p0y9v",
+            ),
+            Promotion(
+                "Akpos Godfrey",
+                userImage = null,
+            ),
+            Promotion(
+                "Emmanuel Campbell",
+                "https://rebrand.ly/bfdcfd",
+            ),
+            Promotion(
+                "Patricia Benedict",
+                "https://rebrand.ly/cc685c",
+            )
+        )
+    }
+
 }

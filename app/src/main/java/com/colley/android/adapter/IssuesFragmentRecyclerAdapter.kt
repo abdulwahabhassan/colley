@@ -2,6 +2,7 @@ package com.colley.android.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
@@ -31,6 +32,15 @@ class IssuesFragmentRecyclerAdapter (private val clickListener: ItemClickedListe
                 Glide.with(this.root.context).load(issue.userPhoto).into(userImageView)
             } else {
                 Glide.with(this.root.context).load(R.drawable.ic_profile).into(userImageView)
+            }
+            pinImageView.setOnClickListener {
+                it.isActivated = when (it.isActivated) {
+                    true -> false
+                    false -> true
+                }
+                if (it.isActivated) {
+                    Toast.makeText(root.context, "pinned", Toast.LENGTH_SHORT).show()
+                }
             }
 
 

@@ -17,7 +17,7 @@
         android:text="@string/issue_title_placeholder"
         android:textSize="@dimen/text_size_15sp"
         android:textColor="@color/pearl"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/pinImageView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,7 +31,7 @@
         android:textColor="@color/light_pearl"
         android:text="@string/issue_body_placeholder"
         android:textSize="@dimen/text_size_15sp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="@+id/pinImageView"
         app:layout_constraintStart_toStartOf="@+id/issueTitleTextView"
         app:layout_constraintTop_toBottomOf="@+id/issueTitleTextView" />
 
@@ -41,9 +41,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/raised_by_placeholder"
-        android:textColor="@color/pearl"
         android:textSize="@dimen/text_size_14sp"
         android:textStyle="bold"
+        android:textColor="@color/pearl"
         app:layout_constraintBottom_toBottomOf="@+id/userImageView"
         app:layout_constraintEnd_toStartOf="@+id/userImageView"
         app:layout_constraintTop_toTopOf="@+id/userImageView" />
@@ -102,10 +102,10 @@
         app:drawableStartCompat="@drawable/ic_endorsements" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/pinImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_pin"
+        android:src="@drawable/pin_drawable_state_selector"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

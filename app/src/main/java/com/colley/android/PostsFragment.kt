@@ -40,7 +40,6 @@ class PostsFragment : Fragment(),
     override fun onItemClick(post: Post) {
         val bottomSheetDialog = PostBottomSheetDialogFragment()
         bottomSheetDialog.show(childFragmentManager, null)
-
     }
 
     override fun onDestroy() {

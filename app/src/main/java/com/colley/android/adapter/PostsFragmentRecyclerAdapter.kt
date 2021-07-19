@@ -67,9 +67,7 @@ class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListene
                 else -> promotionCountTextView.text = "${post.promotions} promotions"
             }
 
-            if (post.image != null) {
                 Glide.with(root.context).load(post.image).into(contentImageView)
-            }
 
             if (post.userPhoto != null) {
                 Glide.with(root.context).load(post.userPhoto).into(userPhotoImageView)
@@ -97,6 +95,7 @@ class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListene
             promoteLinearLayout.setOnClickListener {
                 Toast.makeText(root.context, "promote", Toast.LENGTH_SHORT).show()
             }
+
         }
     }
 

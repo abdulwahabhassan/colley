@@ -6,11 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.colley.android.adapter.LikesFragmentRecyclerAdapter
+import com.colley.android.adapter.PromotionsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentLikesBinding
 import com.colley.android.databinding.FragmentPostsBinding
 import com.colley.android.databinding.FragmentPromotionsBinding
+import com.colley.android.model.DummyData
+import com.colley.android.model.Promotion
 
-class PromotionsFragment : Fragment() {
+class PromotionsFragment : Fragment(), PromotionsFragmentRecyclerAdapter.ItemClickedListener {
 
     private var _binding: FragmentPromotionsBinding? = null
     private val binding get() = _binding!!
@@ -26,11 +30,19 @@ class PromotionsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView = binding.promotionsRecyclerView
+        val recyclerViewAdapter = PromotionsFragmentRecyclerAdapter(this)
+        recyclerViewAdapter.setList(DummyData.getListOfPromotions())
+        recyclerView.adapter = recyclerViewAdapter
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onItemClick(promotion: Promotion) {
+
     }
 
 }
