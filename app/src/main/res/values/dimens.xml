@@ -45,4 +45,7 @@
     <dimen name="height_40dp">40dp</dimen>
     <dimen name="width_40dp">40dp</dimen>
     <dimen name="margin_05dp">0.5dp</dimen>
+    <dimen name="height_1dp">1dp</dimen>
+    <dimen name="image_height_100dp">100dp</dimen>
+    <dimen name="image_weight_100dp">100dp</dimen>
 </resources>

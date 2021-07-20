@@ -14,28 +14,36 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
+            app:elevation="@dimen/height_0dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
-                app:titleTextColor="@color/pearl"
+                app:titleTextColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay_Toolbar"
                 app:layout_scrollFlags="scroll|enterAlways"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
-
-        <fragment
-            android:id="@+id/mainNavGraphFragmentContainerView"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/main_nav_graph"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <fragment
+                android:id="@+id/mainNavGraphFragmentContainerView"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/main_nav_graph" />
+
+        </androidx.core.widget.NestedScrollView>
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -47,7 +55,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:itemIconTint="@color/pearl"
-        app:itemTextColor="@color/pearl"
+        app:itemTextColor="@color/text_color_state_selector"
+        app:itemShapeAppearanceOverlay="@style/RoundShapeAppearance"
         android:theme="@style/NavigationViewTheme"
         app:headerLayout="@layout/drawer_header"
         app:itemShapeAppearance="@style/RoundShapeAppearance"

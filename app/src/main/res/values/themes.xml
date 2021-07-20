@@ -23,14 +23,25 @@
         <item name="cornerSize">50%</item>
     </style>
 
-<!--    style to remove list divider for menu groups in navigation view of drawerLayout-->
+    <style name="CornerRadius8dp" parent="">
+        <item name="cornerSize">10%</item>
+    </style>
+
+<!--    style to remove list divider for menu groups in navigation view of drawerLayout and to set
+        colorControlHighlight to white-->
     <style name="NavigationViewTheme" >
         <item name="android:listDivider">@color/white</item>
+        <item name="colorControlHighlight">@android:color/transparent</item>
     </style>
 
 <!--    style for bottomSheetDialog -->
     <style name="ThemeOverlay.Colley.BottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
+    </style>
+
+    <style name="ThemeOverlay_Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <!-- color used by navigation icon and overflow icon -->
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 
 </resources>
