@@ -12,7 +12,8 @@ import com.colley.android.model.Like
 import com.colley.android.model.Notification
 import com.colley.android.model.Post
 
-class LikesFragmentRecyclerAdapter(private val clickListener: ItemClickedListener) : RecyclerView.Adapter<LikesFragmentRecyclerAdapter.LikeViewHolder>() {
+class LikesFragmentRecyclerAdapter(private val clickListener: ItemClickedListener)
+    : RecyclerView.Adapter<LikesFragmentRecyclerAdapter.LikeViewHolder>() {
 
 
     var listOfLikes = arrayListOf<Like>()

@@ -233,8 +233,8 @@ object DummyData {
                 comments = 4,
                 promotions = 1 ),
             Post(
-                userPhoto = "https://rebrand.ly/cc685c",
-                "Hussena Abdulwahab",
+                userPhoto = "https://rebrand.ly/amrrend",
+                "Fatima Abdulwahab",
                 "Kaduna Polytechnic",
                 "2 hours ago",
                 "Admin building",
@@ -367,6 +367,47 @@ object DummyData {
             Promotion(
                 "Patricia Benedict",
                 "https://rebrand.ly/cc685c",
+            )
+        )
+    }
+
+    fun getListOfNotifications(): ArrayList<Notification> {
+        return arrayListOf(
+            Notification(
+                "https://rebrand.ly/00p0y9v",
+                "Ella Andrews from UNIUYO commented on your post",
+                "Just now"
+            ),
+            Notification(
+                image = null,
+                "Alice Angel from FUTO promoted your post",
+                "3min ago"
+            ),
+            Notification(
+                "https://rebrand.ly/bfdcfd",
+                "Bernard Matthew from UNICAL contributed to this issue - Let’s talk about the malpractice",
+                "1hr ago"
+            ),
+            Notification(
+                "https://rebrand.ly/cc685c",
+                "Zane Tega from BABCOCK commented on your contribution to this issue - " +
+                        "Bank road is not safe to walk on at the moment",
+                "4hr ago"
+            ),
+            Notification(
+                "https://rebrand.ly/cc685c",
+                "Zane Tega from BABCOCK liked your contribution on this issue - Bank road is not safe to walk on at the moment",
+                "4hr ago"
+            ),
+            Notification(
+                "https://rebrand.ly/zlhfnjj",
+                "Timidayo Bawo from UNN responded to your comment on Alfred Chigbo’s post",
+                "yd"
+            ),
+            Notification(
+                image = null,
+                "Alfred Chigbo from UNIMAID liked your comment on his post",
+                "3dy ago"
             )
         )
     }

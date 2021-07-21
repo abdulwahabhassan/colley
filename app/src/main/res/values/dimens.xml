@@ -48,4 +48,6 @@
     <dimen name="height_1dp">1dp</dimen>
     <dimen name="image_height_100dp">100dp</dimen>
     <dimen name="image_weight_100dp">100dp</dimen>
+    <dimen name="image_weight_50dp">50dp</dimen>
+    <dimen name="image_height_50dp">50dp</dimen>
 </resources>

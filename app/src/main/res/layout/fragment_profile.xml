@@ -8,15 +8,15 @@
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey"
-        tools:context=".ProfileFragment">
+        android:background="@color/grey">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout2"
+            android:id="@+id/profilePhotoConstraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:layout_height="350dp"
             android:background="@color/pearl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -25,48 +25,31 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/profilePhotoImageView"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:padding="@dimen/margin_4dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:scaleType="center"
-                android:src="@drawable/ic_profile"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.16000003"
-                app:shapeAppearance="@style/RoundShapeAppearance"
-                app:strokeColor="@color/white"
-                app:strokeWidth="@dimen/margin_2dp" />
+                app:layout_constraintVertical_bias="0.16000003" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_16dp"
-                android:text="@string/name_placeholder"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_16sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profilePhotoImageView" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView2"
+            android:id="@+id/infoCardView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginTop="205dp"
+            android:layout_marginTop="330dp"
             android:layout_marginEnd="@dimen/margin_16dp"
-            app:cardElevation="@dimen/height_1dp"
             app:cardCornerRadius="@dimen/corner_radius_8dp"
+            app:cardElevation="@dimen/height_1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/constraintLayout2">
+            app:layout_constraintTop_toTopOf="@+id/profilePhotoConstraintLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -74,26 +57,57 @@
                 android:padding="@dimen/padding_8dp">
 
                 <TextView
+                    android:id="@+id/userProfileNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:drawablePadding="@dimen/padding_4dp"
+                    android:text="@string/name_text"
+                    android:textColor="@color/light_pearl"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/nameTextView"
+                    android:layout_width="@dimen/width_0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_16dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:layout_marginStart="@dimen/margin_16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
+                    android:text="@string/name_placeholder"
+                    android:textAlignment="viewEnd"
+                    android:textColor="@color/light_pearl"
+                    app:layout_constraintBottom_toBottomOf="@+id/userProfileNameTextView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/userProfileNameTextView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
                     android:id="@+id/schoolTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_marginTop="@dimen/margin_16dp"
-                    android:text="@string/school_text"
-                    app:drawableStartCompat="@drawable/ic_school"
                     android:drawablePadding="@dimen/padding_4dp"
+                    android:text="@string/school_text"
                     android:textColor="@color/light_pearl"
                     android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                     />
+                    app:drawableStartCompat="@drawable/ic_school"
+                    app:layout_constraintStart_toStartOf="@+id/userProfileNameTextView"
+                    app:layout_constraintTop_toBottomOf="@id/userProfileNameTextView" />
 
                 <TextView
                     android:id="@+id/schoolNameTextView"
                     android:layout_width="@dimen/width_0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/margin_16dp"
                     android:layout_marginEnd="@dimen/margin_16dp"
                     android:ellipsize="end"
                     android:lines="1"
@@ -104,8 +118,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/schoolTextView"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
 
                 <TextView
                     android:id="@+id/courseOfStudyTextView"
@@ -145,11 +158,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="@dimen/margin_16dp"
-                    android:text="@string/email_placeholder"
-                    android:textColor="@color/light_pearl"
                     android:ellipsize="end"
                     android:lines="1"
+                    android:text="@string/email_placeholder"
                     android:textAlignment="viewEnd"
+                    android:textColor="@color/light_pearl"
                     app:layout_constraintBottom_toBottomOf="@+id/emailTextView"
                     app:layout_constraintEnd_toEndOf="@+id/courseOfStudyTextView"
                     app:layout_constraintStart_toEndOf="@+id/emailTextView"
@@ -160,13 +173,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_16dp"
-                    android:layout_marginBottom="@dimen/margin_16dp"
+                    android:drawablePadding="@dimen/padding_4dp"
                     android:text="@string/email_text"
                     android:textColor="@color/light_pearl"
                     android:textStyle="bold"
                     app:drawableStartCompat="@drawable/ic_email"
-                    android:drawablePadding="@dimen/padding_4dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/positionTextView"
                     app:layout_constraintTop_toBottomOf="@+id/positionTextView" />
 
@@ -175,11 +186,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_16dp"
+                    android:drawablePadding="@dimen/padding_4dp"
                     android:text="@string/position_text"
                     android:textColor="@color/light_pearl"
                     android:textStyle="bold"
                     app:drawableStartCompat="@drawable/ic_position"
-                    android:drawablePadding="@dimen/padding_4dp"
                     app:layout_constraintStart_toStartOf="@+id/courseTextView"
                     app:layout_constraintTop_toBottomOf="@+id/courseTextView" />
 
@@ -188,11 +199,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_16dp"
+                    android:drawablePadding="@dimen/padding_4dp"
                     android:text="@string/course_text"
                     android:textColor="@color/light_pearl"
                     android:textStyle="bold"
                     app:drawableStartCompat="@drawable/ic_course"
-                    android:drawablePadding="@dimen/padding_4dp"
                     app:layout_constraintStart_toStartOf="@+id/schoolTextView"
                     app:layout_constraintTop_toBottomOf="@+id/schoolTextView" />
 
@@ -213,15 +224,15 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView3"
+            android:id="@+id/bioCardView"
             android:layout_width="@dimen/width_0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_16dp"
             app:cardCornerRadius="@dimen/corner_radius_8dp"
             app:cardElevation="@dimen/height_1dp"
-            app:layout_constraintEnd_toEndOf="@+id/cardView2"
-            app:layout_constraintStart_toStartOf="@+id/cardView2"
-            app:layout_constraintTop_toBottomOf="@+id/cardView2">
+            app:layout_constraintEnd_toEndOf="@+id/infoCardView"
+            app:layout_constraintStart_toStartOf="@+id/infoCardView"
+            app:layout_constraintTop_toBottomOf="@+id/infoCardView">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -253,24 +264,25 @@
                     android:id="@+id/editBioTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/padding_4dp"
-                    android:text="@string/edit_text"
                     android:layout_gravity="end"
                     android:layout_margin="@dimen/margin_8dp"
+                    android:drawablePadding="@dimen/padding_4dp"
+                    android:text="@string/edit_text"
                     app:drawableStartCompat="@drawable/ic_edit_bio" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/albumCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_16dp"
             app:cardCornerRadius="@dimen/corner_radius_8dp"
             app:cardElevation="@dimen/height_1dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/cardView3"
-            app:layout_constraintStart_toStartOf="@+id/cardView3"
-            app:layout_constraintTop_toBottomOf="@+id/cardView3"
+            app:layout_constraintEnd_toEndOf="@+id/bioCardView"
+            app:layout_constraintStart_toStartOf="@+id/bioCardView"
+            app:layout_constraintTop_toBottomOf="@+id/bioCardView"
             app:layout_constraintVertical_bias="0.0">
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -329,10 +341,10 @@
                     android:id="@+id/editAlbumTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/padding_4dp"
-                    android:layout_margin="@dimen/margin_8dp"
-                    android:text="@string/edit_text"
                     android:layout_gravity="end"
+                    android:layout_margin="@dimen/margin_8dp"
+                    android:drawablePadding="@dimen/padding_4dp"
+                    android:text="@string/edit_text"
                     app:drawableStartCompat="@drawable/ic_edit_album" />
 
 
