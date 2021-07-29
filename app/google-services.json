@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "732904586687",
+    "project_id": "colley-c37ea",
+    "storage_bucket": "colley-c37ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:732904586687:android:3ed2696eb5e5eafbc8350a",
+        "android_client_info": {
+          "package_name": "com.colley.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "732904586687-ppjd1cf8bbo6dum274t2iefa2pqljo3c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.colley.android",
+            "certificate_hash": "1139ac2f00f2b2c7fd9c98af0a21834d84845551"
+          }
+        },
+        {
+          "client_id": "732904586687-danj7n52dudec0rhsmbv6ia3mh7ed4h6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfMA1EvvSKCoVz3MnHJr8A5fK4Nl1cQvU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "732904586687-danj7n52dudec0rhsmbv6ia3mh7ed4h6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
