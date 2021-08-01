@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="pearl">#2F394B</color>
-    <color name="teal_200">#FF03DAC5</color>
+    <color name="light_pearl">#414855</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
@@ -12,7 +12,6 @@
     <color name="green">#3BAA4A</color>
     <color name="orange">#ee8033</color>
     <color name="light_orange">#FD9449</color>
-    <color name="light_pearl">#414855</color>
     <color name="apricot">#FBCEB1</color>
     <color name="light_apricot">#FFF2E6</color>
 </resources>

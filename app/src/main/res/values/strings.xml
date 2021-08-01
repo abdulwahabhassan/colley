@@ -73,6 +73,13 @@
     <string name="album_text">Album</string>
     <string name="edit_text">Edit</string>
     <string name="notification_placeholder_text">Sam Michael from UNIBEN commented on your post</string>
+    <string name="sign_out">sign out</string>
+    <string name="logout_text">Logout</string>
+    <string name="search_text">Search</string>
+    <string name="toggle_theme_text">Toggle theme</string>
+    <string name="policy_support_text"><![CDATA[Policy & Support]]></string>
+    <string name="menu_item_logout_title">Logout</string>
+    <string name="group_chat_label">Group chat</string>
 
 
 </resources>

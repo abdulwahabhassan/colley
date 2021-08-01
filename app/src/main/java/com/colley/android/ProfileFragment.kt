@@ -10,6 +10,8 @@ import com.bumptech.glide.Glide
 import com.colley.android.databinding.FragmentPostsBinding
 import com.colley.android.databinding.FragmentProfileBinding
 import com.colley.android.model.DummyData
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class ProfileFragment : Fragment() {
 

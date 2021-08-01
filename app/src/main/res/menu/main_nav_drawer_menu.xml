@@ -23,32 +23,27 @@
                                 android:id="@+id/settingsFragment"
                                 android:title="@string/menu_item_settings_title"
                                 android:icon="@drawable/ic_settings" />
+
+                            <item
+                                android:id="@+id/logOutTextView"
+                                android:onClick="logOut"
+                                android:title="@string/menu_item_logout_title"
+                                android:icon="@drawable/ic_logout" />
                      </group>
               </menu>
        </item>
 
-       <item android:title="@string/menu_item_support_text">
-              <menu>
-                     <group android:checkableBehavior="single">
-                            <item
-                                android:id="@+id/FAQSFragment"
-                                android:title="@string/menu_item_faqs_title"
-                                android:icon="@drawable/ic_faqs"/>
-                            <item
-                                android:id="@+id/contactUsFragment"
-                                android:title="@string/menu_item_contact_us_title"
-                                android:icon="@drawable/ic_contact_us" />
-                     </group>
-              </menu>
-       </item>
-
-       <item android:title="@string/menu_item_policy_text">
+       <item android:title="@string/policy_support_text">
               <menu>
                      <group android:checkableBehavior="single">
                             <item
                                 android:id="@+id/policyFragment"
                                 android:title="@string/menu_item_policy_text"
                                 android:icon="@drawable/ic_policy" />
+                            <item
+                                android:id="@+id/contactUsFragment"
+                                android:title="@string/menu_item_contact_us_title"
+                                android:icon="@drawable/ic_contact_us" />
                      </group>
               </menu>
        </item>

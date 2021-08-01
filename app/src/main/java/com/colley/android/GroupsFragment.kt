@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.GroupsFragmentRecyclerAdapter
 import com.colley.android.adapter.PostsFragmentRecyclerAdapter
@@ -38,6 +41,10 @@ class GroupsFragment : Fragment(), GroupsFragmentRecyclerAdapter.ItemClickedList
     }
 
     override fun onItemClick(group: Group) {
+        val groupName = group.name
+        val action = HomeFragmentDirections.actionHomeFragmentToGroupChatFragment(groupName)
+        parentFragment?.findNavController()?.navigate(action)
+        //Toast.makeText(requireContext(), "Moving", Toast.LENGTH_LONG).show()
     }
 
 }

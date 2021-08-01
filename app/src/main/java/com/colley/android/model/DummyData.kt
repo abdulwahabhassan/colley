@@ -16,7 +16,7 @@ object DummyData {
                 name = "UNIBEN Aspirants group"),
             Group(
                 "https://rebrand.ly/5cmpwwe",
-                "NUESA National secretariat",
+                "NUESA National secretariat association",
                 3)
         )
     }
