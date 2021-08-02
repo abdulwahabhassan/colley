@@ -1,4 +1,4 @@
-package com.colley.android
+package com.colley.android.view.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,15 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.LikesFragmentRecyclerAdapter
-import com.colley.android.adapter.PostsFragmentRecyclerAdapter
+import com.colley.android.adapter.NotificationsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentLikesBinding
-import com.colley.android.databinding.FragmentPostsBinding
+import com.colley.android.databinding.FragmentNotificationsBinding
 import com.colley.android.model.DummyData
-import com.colley.android.model.Like
+import com.colley.android.model.Notification
 
-class LikesFragment : Fragment(), LikesFragmentRecyclerAdapter.ItemClickedListener{
 
-    private var _binding: FragmentLikesBinding? = null
+class NotificationsFragment : Fragment(), NotificationsFragmentRecyclerAdapter.ItemClickedListener {
+
+    private var _binding: FragmentNotificationsBinding? = null
     private val binding get() = _binding!!
     lateinit var recyclerView: RecyclerView
 
@@ -23,15 +24,15 @@ class LikesFragment : Fragment(), LikesFragmentRecyclerAdapter.ItemClickedListen
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLikesBinding.inflate(inflater, container, false)
+        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = binding.likesRecyclerView
-        val recyclerViewAdapter = LikesFragmentRecyclerAdapter(this)
-        recyclerViewAdapter.setList(DummyData.getListOfLikes())
+        recyclerView = binding.notificationsRecyclerView
+        val recyclerViewAdapter = NotificationsFragmentRecyclerAdapter(this)
+        recyclerViewAdapter.setList(DummyData.getListOfNotifications())
         recyclerView.adapter = recyclerViewAdapter
     }
 
@@ -40,7 +41,8 @@ class LikesFragment : Fragment(), LikesFragmentRecyclerAdapter.ItemClickedListen
         _binding = null
     }
 
-    override fun onItemClick(like: Like) {
+    override fun onItemClick(notification: Notification) {
 
     }
+
 }

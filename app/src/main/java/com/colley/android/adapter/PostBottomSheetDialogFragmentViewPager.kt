@@ -4,7 +4,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.colley.android.*
+import com.colley.android.view.fragment.CommentsFragment
+import com.colley.android.view.fragment.LikesFragment
+import com.colley.android.view.fragment.PromotionsFragment
 
 class PostBottomSheetDialogFragmentViewPager(fragmentManager: FragmentManager, lifecycle : Lifecycle)
     : FragmentStateAdapter(fragmentManager, lifecycle){

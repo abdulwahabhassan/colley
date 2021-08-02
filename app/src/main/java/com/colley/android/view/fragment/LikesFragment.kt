@@ -1,4 +1,4 @@
-package com.colley.android
+package com.colley.android.view.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,16 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.LikesFragmentRecyclerAdapter
-import com.colley.android.adapter.PromotionsFragmentRecyclerAdapter
+import com.colley.android.adapter.PostsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentLikesBinding
 import com.colley.android.databinding.FragmentPostsBinding
-import com.colley.android.databinding.FragmentPromotionsBinding
 import com.colley.android.model.DummyData
-import com.colley.android.model.Promotion
+import com.colley.android.model.Like
 
-class PromotionsFragment : Fragment(), PromotionsFragmentRecyclerAdapter.ItemClickedListener {
+class LikesFragment : Fragment(), LikesFragmentRecyclerAdapter.ItemClickedListener{
 
-    private var _binding: FragmentPromotionsBinding? = null
+    private var _binding: FragmentLikesBinding? = null
     private val binding get() = _binding!!
     lateinit var recyclerView: RecyclerView
 
@@ -24,15 +23,15 @@ class PromotionsFragment : Fragment(), PromotionsFragmentRecyclerAdapter.ItemCli
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPromotionsBinding.inflate(inflater, container, false)
+        _binding = FragmentLikesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = binding.promotionsRecyclerView
-        val recyclerViewAdapter = PromotionsFragmentRecyclerAdapter(this)
-        recyclerViewAdapter.setList(DummyData.getListOfPromotions())
+        recyclerView = binding.likesRecyclerView
+        val recyclerViewAdapter = LikesFragmentRecyclerAdapter(this)
+        recyclerViewAdapter.setList(DummyData.getListOfLikes())
         recyclerView.adapter = recyclerViewAdapter
     }
 
@@ -41,8 +40,7 @@ class PromotionsFragment : Fragment(), PromotionsFragmentRecyclerAdapter.ItemCli
         _binding = null
     }
 
-    override fun onItemClick(promotion: Promotion) {
+    override fun onItemClick(like: Like) {
 
     }
-
 }

@@ -1,4 +1,4 @@
-package com.colley.android
+package com.colley.android.view.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,11 +6,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import com.colley.android.R
 import com.colley.android.databinding.ActivitySignInBinding
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 

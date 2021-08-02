@@ -11,8 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Colley">
-        <activity android:name=".SignInActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".view.activity.SignInActivity" />
+        <activity android:name=".view.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

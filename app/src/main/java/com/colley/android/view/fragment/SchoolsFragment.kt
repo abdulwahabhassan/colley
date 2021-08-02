@@ -1,4 +1,4 @@
-package com.colley.android
+package com.colley.android.view.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

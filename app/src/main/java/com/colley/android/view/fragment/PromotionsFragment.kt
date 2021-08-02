@@ -1,4 +1,4 @@
-package com.colley.android
+package com.colley.android.view.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,16 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.LikesFragmentRecyclerAdapter
-import com.colley.android.adapter.NotificationsFragmentRecyclerAdapter
+import com.colley.android.adapter.PromotionsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentLikesBinding
-import com.colley.android.databinding.FragmentNotificationsBinding
+import com.colley.android.databinding.FragmentPostsBinding
+import com.colley.android.databinding.FragmentPromotionsBinding
 import com.colley.android.model.DummyData
-import com.colley.android.model.Notification
+import com.colley.android.model.Promotion
 
+class PromotionsFragment : Fragment(), PromotionsFragmentRecyclerAdapter.ItemClickedListener {
 
-class NotificationsFragment : Fragment(), NotificationsFragmentRecyclerAdapter.ItemClickedListener {
-
-    private var _binding: FragmentNotificationsBinding? = null
+    private var _binding: FragmentPromotionsBinding? = null
     private val binding get() = _binding!!
     lateinit var recyclerView: RecyclerView
 
@@ -24,15 +24,15 @@ class NotificationsFragment : Fragment(), NotificationsFragmentRecyclerAdapter.I
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
+        _binding = FragmentPromotionsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = binding.notificationsRecyclerView
-        val recyclerViewAdapter = NotificationsFragmentRecyclerAdapter(this)
-        recyclerViewAdapter.setList(DummyData.getListOfNotifications())
+        recyclerView = binding.promotionsRecyclerView
+        val recyclerViewAdapter = PromotionsFragmentRecyclerAdapter(this)
+        recyclerViewAdapter.setList(DummyData.getListOfPromotions())
         recyclerView.adapter = recyclerViewAdapter
     }
 
@@ -41,7 +41,7 @@ class NotificationsFragment : Fragment(), NotificationsFragmentRecyclerAdapter.I
         _binding = null
     }
 
-    override fun onItemClick(notification: Notification) {
+    override fun onItemClick(promotion: Promotion) {
 
     }
 

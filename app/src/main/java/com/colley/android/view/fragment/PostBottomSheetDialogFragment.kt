@@ -1,10 +1,11 @@
-package com.colley.android
+package com.colley.android.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
+import com.colley.android.R
 import com.colley.android.adapter.PostBottomSheetDialogFragmentViewPager
 import com.colley.android.databinding.BottomSheetDialogFragmentPostBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

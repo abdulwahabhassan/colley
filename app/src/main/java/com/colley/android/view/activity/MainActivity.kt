@@ -1,4 +1,4 @@
-package com.colley.android
+package com.colley.android.view.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,9 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -18,17 +16,15 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
+import com.colley.android.R
 import com.colley.android.databinding.ActivityMainBinding
-import com.colley.android.model.DummyData
 import com.firebase.ui.auth.AuthUI
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 
 class MainActivity : AppCompatActivity() {
 

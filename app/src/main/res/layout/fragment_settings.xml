@@ -6,6 +6,6 @@
     android:layout_height="match_parent"
     android:padding="@dimen/margin_8dp"
     android:gravity="center"
-    tools:context=".SettingsFragment">
+    tools:context=".view.fragment.SettingsFragment">
 
 </LinearLayout>
