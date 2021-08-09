@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemIssueBinding
-import com.colley.android.model.Issue
+import com.colley.android.templateModel.Issue
 
 class IssuesFragmentRecyclerAdapter (private val clickListener: ItemClickedListener)
     : RecyclerView.Adapter<IssuesFragmentRecyclerAdapter.IssueViewHolder>() {

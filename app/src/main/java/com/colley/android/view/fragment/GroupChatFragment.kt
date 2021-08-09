@@ -6,17 +6,19 @@ import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
 import com.colley.android.adapter.GroupChatFragmentRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupChatBinding
-import com.colley.android.model.GroupMessage
-import com.colley.android.model.ScrollToBottomObserver
-import com.colley.android.model.SendButtonObserver
+import com.colley.android.templateModel.GroupMessage
+import com.colley.android.templateModel.ScrollToBottomObserver
+import com.colley.android.templateModel.SendButtonObserver
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -36,8 +38,11 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
     private lateinit var db: FirebaseDatabase
     private lateinit var adapter: GroupChatFragmentRecyclerAdapter
     private lateinit var manager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
     private val openDocument = registerForActivityResult(OpenDocumentContract()) { uri ->
-        onImageSelected(uri)
+        if(uri != null) {
+            onImageSelected(uri)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,10 +55,19 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
     //modify the menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        //this clears the original main activity menu
         menu.clear()
         //this inflates a new menu
         inflater.inflate(R.menu.group_chat_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.info_menu_item -> {
+                Toast.makeText(context, "Info", Toast.LENGTH_LONG).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onCreateView(
@@ -61,6 +75,8 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentGroupChatBinding.inflate(inflater, container, false)
+        recyclerView = binding.messageRecyclerView
+        recyclerView.setHasFixedSize(true)
         return binding.root
     }
 
@@ -72,17 +88,21 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
 
         // Initialize Realtime Database
         db = Firebase.database
+        //get a query reference to messages
         val messagesRef = db.reference.child(MESSAGES_CHILD)
 
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
+        //build an options to configure adapter. setQuery takes firebase query to listen to and a
+        //model class to which snapShots should be parsed
         val options = FirebaseRecyclerOptions.Builder<GroupMessage>()
             .setQuery(messagesRef, GroupMessage::class.java)
             .build()
+
         adapter = GroupChatFragmentRecyclerAdapter(options, getCurrentUser(), this)
         manager = LinearLayoutManager(requireContext())
         manager.stackFromEnd = true
-        binding.messageRecyclerView.layoutManager = manager
-        binding.messageRecyclerView.adapter = adapter
+        recyclerView.layoutManager = manager
+        recyclerView.adapter = adapter
 
         //scroll down when a new message arrives
         adapter.registerAdapterDataObserver(

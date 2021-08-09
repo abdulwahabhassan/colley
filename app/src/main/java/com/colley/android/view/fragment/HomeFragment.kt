@@ -1,16 +1,17 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.View.*
+import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.colley.android.R
-import com.colley.android.adapter.HomeFragmentViewPagerAdapter
 import com.colley.android.databinding.FragmentHomeBinding
-import com.google.android.material.tabs.TabLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayoutMediator
 
 
@@ -20,6 +21,28 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewPager: ViewPager2
     private lateinit var viewPagerAdapter: FragmentStateAdapter
+    lateinit var homeFab: FloatingActionButton
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+            inflater.inflate(R.menu.main_activity_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       return when (item.itemId) {
+            R.id.search_menu_item -> {
+                Toast.makeText(context, "Searching", Toast.LENGTH_LONG).show()
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,8 +52,12 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //initiate fab
+        homeFab = binding.homeFab
 
         //set up viewpager
         viewPager = binding.homeFragmentViewPager
@@ -45,6 +72,18 @@ class HomeFragment : Fragment() {
 
             override fun getItemCount(): Int = fragments.size
         }
+
+        //programmatically assign fab button drawable depending on which fragment is in view
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                if(homeFab.visibility == GONE) homeFab.visibility = VISIBLE
+                when (position) {
+                    0 -> homeFab.setImageResource(R.drawable.ic_issues)
+                    1 -> homeFab.setImageResource(R.drawable.ic_post)
+                    else -> homeFab.setImageResource(R.drawable.ic_add_group)
+                }
+            }
+        })
 
         with(binding) {
             viewPager.adapter = viewPagerAdapter

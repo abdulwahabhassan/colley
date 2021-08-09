@@ -1,3 +1,3 @@
-package com.colley.android.model
+package com.colley.android.templateModel
 
 class School(val name: String, val logoUrl: String)

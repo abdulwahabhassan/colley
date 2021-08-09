@@ -5,9 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
-import com.colley.android.databinding.ItemPostBinding
 import com.colley.android.databinding.ItemPromotionBinding
-import com.colley.android.model.*
+import com.colley.android.templateModel.*
 
 class PromotionsFragmentRecyclerAdapter(private val clickListener: ItemClickedListener) : RecyclerView.Adapter<PromotionsFragmentRecyclerAdapter.PromotionViewHolder>(){
 

@@ -1,15 +1,15 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.colley.android.R
 import com.colley.android.adapter.PostsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentPostsBinding
-import com.colley.android.model.DummyData
-import com.colley.android.model.Post
+import com.colley.android.templateModel.DummyData
+import com.colley.android.templateModel.Post
 
 
 class PostsFragment : Fragment(),
@@ -19,6 +19,10 @@ class PostsFragment : Fragment(),
     private val binding get() = _binding!!
     lateinit var recyclerView: RecyclerView
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +38,16 @@ class PostsFragment : Fragment(),
         val recyclerViewAdapter = PostsFragmentRecyclerAdapter(this)
         recyclerViewAdapter.setList(DummyData.getListOfPosts())
         recyclerView.adapter = recyclerViewAdapter
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search_menu_item -> {
+                Toast.makeText(context, "Search in posts", Toast.LENGTH_LONG).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 

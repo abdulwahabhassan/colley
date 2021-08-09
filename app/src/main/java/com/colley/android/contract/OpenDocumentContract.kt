@@ -26,4 +26,5 @@ class OpenDocumentContract : ActivityResultContracts.OpenDocument() {
         intent.addCategory(Intent.CATEGORY_OPENABLE)
         return intent;
     }
+
 }

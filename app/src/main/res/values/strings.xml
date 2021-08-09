@@ -61,7 +61,7 @@
     <string name="name_text">Name</string>
     <string name="school_text">School</string>
     <string name="email_text">Email</string>
-    <string name="position_text">Position in school</string>
+    <string name="status_text">Status</string>
     <string name="course_text">Course of study</string>
     <string name="bio_text">Bio</string>
     <string name="bio_placeholder">I am energetic and lively. I take pride in excellence and strive for perfection always</string>
@@ -80,6 +80,13 @@
     <string name="policy_support_text"><![CDATA[Policy & Support]]></string>
     <string name="menu_item_logout_title">Logout</string>
     <string name="group_chat_label">Group chat</string>
+    <string name="floating_action_buttton_desc">floating action buttton</string>
+    <string name="add_group_text">Add group</string>
+    <string name="retry_text">Retry</string>
+    <string name="continue_to_home_text">Continue to home</string>
+    <string name="signed_in_text">Signed in</string>
+    <string name="welcome_back_text">Welcome back</string>
+    <string name="welcome_text">Welcome to Colley</string>
 
 
 </resources>

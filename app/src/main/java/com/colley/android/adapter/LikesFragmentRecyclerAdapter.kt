@@ -6,11 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemLikeBinding
-import com.colley.android.databinding.ItemPostBinding
-import com.colley.android.model.Group
-import com.colley.android.model.Like
-import com.colley.android.model.Notification
-import com.colley.android.model.Post
+import com.colley.android.templateModel.Like
 
 class LikesFragmentRecyclerAdapter(private val clickListener: ItemClickedListener)
     : RecyclerView.Adapter<LikesFragmentRecyclerAdapter.LikeViewHolder>() {

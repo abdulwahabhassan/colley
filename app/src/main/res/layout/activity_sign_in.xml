@@ -1,10 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sign_in_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.SignInActivity">
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".view.SignInActivity">
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/welcomeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_15sp"
+        android:visibility="invisible"
+        android:textColor="@color/pearl"/>
+
+    <Button
+        android:id="@+id/continueButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/pearl"
+        android:textColor="@color/apricot"
+        android:visibility="invisible"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:drawableEnd="@drawable/ic_home"
+        android:text="@string/continue_to_home_text" />
+
+</LinearLayout>

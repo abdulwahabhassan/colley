@@ -6,12 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.colley.android.adapter.LikesFragmentRecyclerAdapter
 import com.colley.android.adapter.NotificationsFragmentRecyclerAdapter
-import com.colley.android.databinding.FragmentLikesBinding
 import com.colley.android.databinding.FragmentNotificationsBinding
-import com.colley.android.model.DummyData
-import com.colley.android.model.Notification
+import com.colley.android.templateModel.DummyData
+import com.colley.android.templateModel.Notification
 
 
 class NotificationsFragment : Fragment(), NotificationsFragmentRecyclerAdapter.ItemClickedListener {

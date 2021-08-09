@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemGroupBinding
-import com.colley.android.model.Group
+import com.colley.android.templateModel.Group
 
 class GroupsFragmentRecyclerAdapter (private val clickListener: ItemClickedListener) :
     RecyclerView.Adapter<GroupsFragmentRecyclerAdapter.GroupViewHolder>() {

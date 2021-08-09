@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragment.EditProfileBottomSheetDialogFragment">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editNameTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:boxCornerRadiusBottomEnd="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusBottomStart="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusTopEnd="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusTopStart="@dimen/corner_radius_8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        app:boxBackgroundColor="@color/white">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/light_pearl"
+            android:lines="1"
+            android:hint="Name"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editSchoolTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:boxCornerRadiusBottomEnd="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusBottomStart="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusTopEnd="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusTopStart="@dimen/corner_radius_8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        app:boxBackgroundColor="@color/white">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editSchoolEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/light_pearl"
+            android:lines="1"
+            android:hint="School"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editCourseTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:boxCornerRadiusBottomEnd="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusBottomStart="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusTopEnd="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusTopStart="@dimen/corner_radius_8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        app:boxBackgroundColor="@color/white"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editCourseEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:hint="Course"
+            android:textColor="@color/light_pearl" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editStatusTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:boxCornerRadiusBottomEnd="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusBottomStart="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusTopEnd="@dimen/corner_radius_8dp"
+        app:boxCornerRadiusTopStart="@dimen/corner_radius_8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginHorizontal="@dimen/margin_16dp"
+        app:boxBackgroundColor="@color/white"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editStatusEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:hint="Status"
+            android:textColor="@color/light_pearl" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/saveProfileButton"
+        android:backgroundTint="@color/pearl"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginBottom="@dimen/margin_16dp"
+        android:layout_gravity="center"
+        android:text="Save"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

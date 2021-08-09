@@ -7,11 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.LikesFragmentRecyclerAdapter
-import com.colley.android.adapter.PostsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentLikesBinding
-import com.colley.android.databinding.FragmentPostsBinding
-import com.colley.android.model.DummyData
-import com.colley.android.model.Like
+import com.colley.android.templateModel.DummyData
+import com.colley.android.templateModel.Like
 
 class LikesFragment : Fragment(), LikesFragmentRecyclerAdapter.ItemClickedListener{
 

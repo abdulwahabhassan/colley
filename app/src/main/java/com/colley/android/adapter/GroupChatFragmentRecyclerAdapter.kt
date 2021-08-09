@@ -1,22 +1,19 @@
 package com.colley.android.adapter
 
-import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemGroupMessageBinding
 import com.colley.android.databinding.ItemGroupMessageCurrentUserBinding
-import com.colley.android.model.GroupMessage
+import com.colley.android.templateModel.GroupMessage
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
@@ -48,6 +45,7 @@ class GroupChatFragmentRecyclerAdapter(
         position: Int,
         model: GroupMessage
     ) {
+
         if (options.snapshots[position].name != currentUser?.displayName) {
             (holder as GroupMessageViewHolder).bind(model)
         } else {
@@ -56,8 +54,6 @@ class GroupChatFragmentRecyclerAdapter(
         onBindViewHolderListener.onBind()
 
     }
-
-
 
     override fun getItemViewType(position: Int): Int {
         return if (options.snapshots[position].name != currentUser?.displayName) VIEW_TYPE_GROUP_MEMBER

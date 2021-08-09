@@ -3,11 +3,8 @@ package com.colley.android.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.colley.android.databinding.ItemGroupBinding
 import com.colley.android.databinding.ItemNotificationBinding
-import com.colley.android.databinding.ItemSchoolBinding
-import com.colley.android.model.Group
-import com.colley.android.model.Notification
+import com.colley.android.templateModel.Notification
 
 class NotificationsRecyclerAdapter : RecyclerView.Adapter<NotificationsRecyclerAdapter.NotificationViewHolder>() {
 

@@ -7,13 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.CommentsFragmentRecyclerAdapter
-import com.colley.android.adapter.PostsFragmentRecyclerAdapter
-import com.colley.android.databinding.BottomSheetDialogFragmentPostBinding
 import com.colley.android.databinding.FragmentCommentsBinding
-import com.colley.android.databinding.FragmentPostsBinding
-import com.colley.android.model.Comment
-import com.colley.android.model.DummyData
-import com.colley.android.model.Post
+import com.colley.android.templateModel.Comment
+import com.colley.android.templateModel.DummyData
 
 class CommentsFragment : Fragment(), CommentsFragmentRecyclerAdapter.ItemClickedListener {
 

@@ -3,11 +3,8 @@ package com.colley.android.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.colley.android.databinding.ItemGroupBinding
 import com.colley.android.databinding.ItemMessageBinding
-import com.colley.android.databinding.ItemSchoolBinding
-import com.colley.android.model.Group
-import com.colley.android.model.Message
+import com.colley.android.templateModel.Message
 
 class MessagesRecyclerAdapter : RecyclerView.Adapter<MessagesRecyclerAdapter.MessageViewHolder>() {
 

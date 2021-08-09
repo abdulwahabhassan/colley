@@ -1,16 +1,16 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.colley.android.R
 import com.colley.android.adapter.GroupsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentGroupsBinding
-import com.colley.android.model.DummyData
-import com.colley.android.model.Group
+import com.colley.android.templateModel.DummyData
+import com.colley.android.templateModel.Group
 
 
 class GroupsFragment : Fragment(), GroupsFragmentRecyclerAdapter.ItemClickedListener {
@@ -18,6 +18,12 @@ class GroupsFragment : Fragment(), GroupsFragmentRecyclerAdapter.ItemClickedList
     private var _binding: FragmentGroupsBinding? = null
     private val binding get() = _binding!!
     lateinit var recyclerView: RecyclerView
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +39,16 @@ class GroupsFragment : Fragment(), GroupsFragmentRecyclerAdapter.ItemClickedList
         val recyclerViewAdapter = GroupsFragmentRecyclerAdapter(this)
         recyclerViewAdapter.setList(DummyData.getListOfGroups())
         recyclerView.adapter = recyclerViewAdapter
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search_menu_item -> {
+                Toast.makeText(context, "Search in groups", Toast.LENGTH_LONG).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onItemClick(group: Group) {

@@ -1,27 +1,15 @@
 package com.colley.android.adapter
 
 import android.annotation.SuppressLint
-import android.app.Application
-import android.content.Context
-import android.content.res.Resources
-import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.content.ContextCompat.getDrawable
-import androidx.core.content.res.ResourcesCompat.getColor
-import androidx.core.content.res.ResourcesCompat.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
-import com.colley.android.R.*
-import com.colley.android.databinding.ItemGroupBinding
 import com.colley.android.databinding.ItemPostBinding
-import com.colley.android.databinding.ItemSchoolBinding
-import com.colley.android.model.Group
-import com.colley.android.model.Post
+import com.colley.android.templateModel.Post
 
 class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListener) :
     RecyclerView.Adapter<PostsFragmentRecyclerAdapter.PostViewHolder>() {

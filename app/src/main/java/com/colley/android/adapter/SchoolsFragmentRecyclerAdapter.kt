@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.colley.android.model.School
+import com.colley.android.templateModel.School
 import com.colley.android.databinding.ItemSchoolBinding
 
 class SchoolsFragmentRecyclerAdapter() :

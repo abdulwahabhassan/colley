@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemCommentBinding
-import com.colley.android.model.Comment
+import com.colley.android.templateModel.Comment
 
 
 class CommentsFragmentRecyclerAdapter(private val clickListener: ItemClickedListener) :

@@ -1,4 +1,4 @@
-package com.colley.android.model
+package com.colley.android.templateModel
 
 data class Promotion(
     val userName: String,

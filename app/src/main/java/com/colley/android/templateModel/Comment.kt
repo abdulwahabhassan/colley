@@ -1,4 +1,4 @@
-package com.colley.android.model
+package com.colley.android.templateModel
 
 class Comment(val commentText: String,
               val commenterName: String,

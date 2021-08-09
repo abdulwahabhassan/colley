@@ -9,8 +9,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.SchoolsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentSchoolsBinding
-import com.colley.android.model.DummyData
-import com.colley.android.model.School
+import com.colley.android.templateModel.DummyData
+import com.colley.android.templateModel.School
 
 class SchoolsFragment : Fragment(), SchoolsFragmentRecyclerAdapter.ItemClickedListener {
     private var _binding: FragmentSchoolsBinding? = null

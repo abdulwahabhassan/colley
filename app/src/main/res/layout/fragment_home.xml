@@ -32,5 +32,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_fragment_tabLayout" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/homeFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_16dp"
+            app:rippleColor="@color/apricot"
+            android:src="@drawable/ic_issues"
+            android:theme="@style/ColorOnSecondaryFab"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/floating_action_buttton_desc" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.core.widget.NestedScrollView>

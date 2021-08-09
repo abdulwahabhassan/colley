@@ -20,6 +20,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addPhotoFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="mini"
+                android:src="@drawable/ic_add_photo"
+                android:theme="@style/ColorOnSecondaryFab"
+                android:layout_marginBottom="@dimen/margin_32dp"
+                android:layout_marginEnd="@dimen/margin_16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/profilePhotoImageView"
@@ -31,6 +43,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.16000003" />
+
+            <ProgressBar
+                android:id="@+id/photoProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/apricot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/profilePhotoImageView"
+                app:layout_constraintTop_toTopOf="@+id/profilePhotoImageView" />
 
 
 
@@ -77,7 +99,7 @@
                     android:lines="1"
                     android:layout_marginStart="@dimen/margin_16dp"
                     android:layout_marginTop="@dimen/margin_16dp"
-                    android:text="@string/name_placeholder"
+                    android:text=""
                     android:textAlignment="viewEnd"
                     android:textColor="@color/light_pearl"
                     app:layout_constraintBottom_toBottomOf="@+id/userProfileNameTextView"
@@ -109,7 +131,7 @@
                     android:layout_marginEnd="@dimen/margin_16dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="@string/university_of_abuja_text"
+                    android:text=""
                     android:textAlignment="viewEnd"
                     android:textColor="@color/light_pearl"
                     app:layout_constraintBottom_toBottomOf="@+id/schoolTextView"
@@ -126,7 +148,7 @@
                     android:layout_marginTop="@dimen/margin_16dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="@string/business_admin_text"
+                    android:text=""
                     android:textAlignment="viewEnd"
                     android:textColor="@color/light_pearl"
                     app:layout_constraintBottom_toBottomOf="@+id/courseTextView"
@@ -135,57 +157,29 @@
                     app:layout_constraintTop_toBottomOf="@+id/schoolNameTextView" />
 
                 <TextView
-                    android:id="@+id/positionInSchoolTextView"
+                    android:id="@+id/statusTitleTextView"
                     android:layout_width="@dimen/width_0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="@dimen/margin_16dp"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:text="@string/nil_text"
+                    android:text=""
                     android:textAlignment="viewEnd"
                     android:textColor="@color/light_pearl"
-                    app:layout_constraintBottom_toBottomOf="@+id/positionTextView"
+                    app:layout_constraintBottom_toBottomOf="@+id/statusTextView"
                     app:layout_constraintEnd_toEndOf="@+id/courseOfStudyTextView"
-                    app:layout_constraintStart_toEndOf="@+id/positionTextView"
+                    app:layout_constraintStart_toEndOf="@+id/statusTextView"
                     app:layout_constraintTop_toBottomOf="@+id/courseOfStudyTextView" />
 
-                <TextView
-                    android:id="@+id/emailAddressTextView"
-                    android:layout_width="@dimen/width_0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="@dimen/margin_16dp"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    android:text="@string/email_placeholder"
-                    android:textAlignment="viewEnd"
-                    android:textColor="@color/light_pearl"
-                    app:layout_constraintBottom_toBottomOf="@+id/emailTextView"
-                    app:layout_constraintEnd_toEndOf="@+id/courseOfStudyTextView"
-                    app:layout_constraintStart_toEndOf="@+id/emailTextView"
-                    app:layout_constraintTop_toBottomOf="@+id/positionInSchoolTextView" />
 
                 <TextView
-                    android:id="@+id/emailTextView"
+                    android:id="@+id/statusTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_16dp"
                     android:drawablePadding="@dimen/padding_4dp"
-                    android:text="@string/email_text"
-                    android:textColor="@color/light_pearl"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_email"
-                    app:layout_constraintStart_toStartOf="@+id/positionTextView"
-                    app:layout_constraintTop_toBottomOf="@+id/positionTextView" />
-
-                <TextView
-                    android:id="@+id/positionTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_16dp"
-                    android:drawablePadding="@dimen/padding_4dp"
-                    android:text="@string/position_text"
+                    android:text="@string/status_text"
                     android:textColor="@color/light_pearl"
                     android:textStyle="bold"
                     app:drawableStartCompat="@drawable/ic_position"
@@ -209,13 +203,14 @@
                     android:id="@+id/editInfoTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_8dp"
+                    android:layout_margin="@dimen/margin_16dp"
                     android:drawablePadding="@dimen/padding_4dp"
                     android:text="@string/edit_text"
                     app:drawableStartCompat="@drawable/ic_edit_info"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/emailAddressTextView" />
+                    app:layout_constraintTop_toBottomOf="@+id/statusTitleTextView"
+                    app:layout_constraintVertical_bias="0.36" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -226,11 +221,14 @@
             android:layout_width="@dimen/width_0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_16dp"
+            android:layout_marginBottom="16dp"
             app:cardCornerRadius="@dimen/corner_radius_8dp"
             app:cardElevation="@dimen/height_1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/infoCardView"
             app:layout_constraintStart_toStartOf="@+id/infoCardView"
-            app:layout_constraintTop_toBottomOf="@+id/infoCardView">
+            app:layout_constraintTop_toBottomOf="@+id/infoCardView"
+            app:layout_constraintVertical_bias="0.0">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -254,8 +252,6 @@
                     android:layout_marginStart="@dimen/margin_16dp"
                     android:layout_marginTop="@dimen/margin_8dp"
                     android:layout_marginEnd="@dimen/margin_16dp"
-
-                    android:text="@string/bio_placeholder"
                     android:textColor="@color/light_pearl" />
 
                 <TextView
@@ -263,91 +259,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_margin="@dimen/margin_8dp"
+                    android:layout_margin="@dimen/margin_16dp"
                     android:drawablePadding="@dimen/padding_4dp"
                     android:text="@string/edit_text"
                     app:drawableStartCompat="@drawable/ic_edit_bio" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/albumCardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_16dp"
-            app:cardCornerRadius="@dimen/corner_radius_8dp"
-            app:cardElevation="@dimen/height_1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/bioCardView"
-            app:layout_constraintStart_toStartOf="@+id/bioCardView"
-            app:layout_constraintTop_toBottomOf="@+id/bioCardView"
-            app:layout_constraintVertical_bias="0.0">
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/padding_8dp">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/margin_16dp"
-                    android:text="@string/album_text"
-                    android:textColor="@color/light_pearl"
-                    android:textStyle="bold" />
-
-                <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_16dp"
-                    android:layout_marginBottom="@dimen/margin_8dp"
-                    android:layout_weight="1"
-                    android:columnCount="3"
-                    android:useDefaultMargins="true">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/photoOne"
-                        android:layout_width="@dimen/image_weight_100dp"
-                        android:layout_height="@dimen/image_height_100dp"
-                        android:layout_rowWeight="1"
-                        android:layout_columnWeight="1"
-                        android:scaleType="center" />
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/photoTwo"
-                        android:layout_width="@dimen/image_weight_100dp"
-                        android:layout_height="@dimen/image_height_100dp"
-                        android:layout_rowWeight="1"
-                        android:layout_columnWeight="1"
-                        android:scaleType="center" />
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/photoThree"
-                        android:layout_width="@dimen/image_weight_100dp"
-                        android:layout_height="@dimen/image_height_100dp"
-                        android:layout_rowWeight="1"
-                        android:layout_columnWeight="1"
-                        android:scaleType="center" />
-
-
-                </GridLayout>
-
-                <TextView
-                    android:id="@+id/editAlbumTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_margin="@dimen/margin_8dp"
-                    android:drawablePadding="@dimen/padding_4dp"
-                    android:text="@string/edit_text"
-                    app:drawableStartCompat="@drawable/ic_edit_album" />
-
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

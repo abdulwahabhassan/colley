@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.colley.android.model
+package com.colley.android.templateModel
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.Button
 import android.widget.ImageView
 import com.colley.android.R
 

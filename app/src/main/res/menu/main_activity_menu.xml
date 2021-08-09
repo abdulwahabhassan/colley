@@ -8,10 +8,4 @@
         android:icon="@drawable/ic_search"
         app:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/toggle_theme_menu_item"
-        android:icon="@drawable/ic_toggle_on"
-        app:showAsAction="ifRoom"
-        android:title="@string/toggle_theme_text" />
-
 </menu>

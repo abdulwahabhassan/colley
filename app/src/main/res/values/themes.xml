@@ -18,6 +18,10 @@
 
     </style>
 
+    <style name="ColorOnSecondaryFab">
+        <item name="colorOnSecondary">@color/apricot</item>
+    </style>
+
 <!--    style to make shapeAbleImageView display round images-->
     <style name="RoundShapeAppearance" parent="">
         <item name="cornerSize">50%</item>

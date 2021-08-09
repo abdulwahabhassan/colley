@@ -1,11 +1,13 @@
-package com.colley.android.view.activity
+package com.colley.android.view
 
-import android.content.Intent
+import android.content.DialogInterface
 import android.os.Bundle
-import android.view.Menu
+import android.renderscript.Sampler
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -20,10 +22,12 @@ import com.colley.android.R
 import com.colley.android.databinding.ActivityMainBinding
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
@@ -33,8 +37,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseDatabase
+    private lateinit var dbRef: DatabaseReference
     private lateinit var header: View
+    private lateinit var photoEventListener: ValueEventListener
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         binding.mainActivityNavigationView.setupWithNavController(navController)
 
         //init Realtime Database
-        db = Firebase.database
+        dbRef = Firebase.database.reference
 
         //init Firebase Auth
         auth = Firebase.auth
@@ -68,58 +74,39 @@ class MainActivity : AppCompatActivity() {
         //initialize a reference to navigation view header
         header = binding.mainActivityNavigationView.getHeaderView(0)
 
-        //check if user is authenticated, if not re-direct to signIn screen
-        authenticateUser()
-
-        //test-write to firebase
-//        val textRef = db.reference.child("text")
-//        textRef.push().setValue("fuvk me")
+        setUpUserHome()
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        //authenticate user everytime this activity is started
-        authenticateUser()
-    }
+    private fun setUpUserHome() {
 
-    private fun authenticateUser() {
-        if (auth.currentUser ==  null) {
-            startActivity(Intent(this, SignInActivity::class.java))
-            finish()
-            return
-        } else {
-            //sets the profile photo, name and email in the header of the navigation view within the drawerLayout
-            header.findViewById<TextView>(R.id.profileNameTextView).text = auth.currentUser?.displayName
-            header.findViewById<TextView>(R.id.profileEmailTextView).text = auth.currentUser?.email
-            val imageView = header.findViewById<ShapeableImageView>(R.id.profileImageView)
-            Glide.with(this).load(auth.currentUser?.photoUrl).into(imageView)
+        //sets the profile photo, name and email in the header of the navigation view within the drawerLayout
+        header.findViewById<TextView>(R.id.profileNameTextView).text = auth.currentUser?.displayName
+        header.findViewById<TextView>(R.id.profileEmailTextView).text = auth.currentUser?.email
+        val imageView = header.findViewById<ShapeableImageView>(R.id.profileImageView)
+
+        photoEventListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val photo = snapshot.getValue<String>()
+                if (photo != null) {
+                    Glide.with(this@MainActivity).load(photo).into(imageView)
+                } else {
+                    Log.w(TAG, "photo is null")
+                    Snackbar.make(binding.root, "No profile photo set yet", Snackbar.LENGTH_LONG).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG,"getPhoto:onCancelled", error.toException())
+            }
         }
+        dbRef.child("photos").child(auth.currentUser?.uid!!).addListenerForSingleValueEvent(photoEventListener)
+
     }
+
     //method called when user tries to navigate up within an activity's hierarchy to a previous screen
     //we override this method so that we pass the navigation task to the navController to take care of appropriately
     override fun onSupportNavigateUp() = navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.toggle_theme_menu_item -> {
-                //action
-                true
-            }
-
-            R.id.search_menu_item -> {
-                //action
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
 
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -130,10 +117,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun logOut(item: MenuItem) {
-        AuthUI.getInstance().signOut(this)
-        startActivity(Intent(this, SignInActivity::class.java))
-        finish()
+        AlertDialog.Builder(this)
+            .setMessage("Confirm logout?")
+            .setPositiveButton("Yes") {
+                    dialog, which -> AuthUI.getInstance().signOut(this)
+            finish()
+            }.setNegativeButton("No") {
+                    dialog, which -> dialog.dismiss()
+            }.show()
     }
 
+    override fun onStop() {
+        super.onStop()
+        dbRef.child("photos").child(auth.currentUser?.uid!!).removeEventListener(photoEventListener)
+    }
+
+    companion object{
+        const val TAG = "MainActivity"
+    }
 
 }
