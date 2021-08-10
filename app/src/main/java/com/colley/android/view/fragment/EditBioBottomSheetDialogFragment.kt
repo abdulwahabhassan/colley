@@ -53,9 +53,8 @@ class EditBioBottomSheetDialogFragment(
         binding.editBioEditText.setText(bundledBio)
 
         binding.saveBioButton.setOnClickListener {
-            val bio = binding.editBioEditText.text.toString()
+            val bio = binding.editBioEditText.text.toString().trim()
             savBio(bio)
-            saveButtonListener.onSave()
         }
     }
 

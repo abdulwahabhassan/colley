@@ -1,8 +1,6 @@
 package com.colley.android.view
 
-import android.content.DialogInterface
 import android.os.Bundle
-import android.renderscript.Sampler
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +18,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ActivityMainBinding
+import com.colley.android.model.Profile
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
@@ -40,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dbRef: DatabaseReference
     private lateinit var header: View
     private lateinit var photoEventListener: ValueEventListener
+    private lateinit var profileEventListener: ValueEventListener
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +54,26 @@ class MainActivity : AppCompatActivity() {
         //find the nav controller associated with the navHost contained within this activity
         navController = findNavController(R.id.mainNavGraphFragmentContainerView)
         drawerLayout = binding.mainActivityDrawerLayout
+
+        //drawerLayout listener
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            override fun onDrawerClosed(drawerView: View) {}
+            override fun onDrawerStateChanged(newState: Int) {}
+
+            //In case where a user updates their profile photo,
+            //This allows the change to be instantly reflected on the drawerLayout's navigationView
+            //header when the drawerLayout is opened
+            override fun onDrawerOpened(drawerView: View) {
+                //listens for change in profile photo and updates accordingly
+                dbRef.child("photos").child(auth.currentUser?.uid!!)
+                    .addListenerForSingleValueEvent(photoEventListener)
+                //listens for change in profile name and updates accordingly
+                dbRef.child("profiles").child(auth.currentUser?.uid!!)
+                    .addListenerForSingleValueEvent(profileEventListener)
+            }
+
+        })
 
         //connect the DrawerLayout to your navigation graph by passing it to AppBarConfiguration
         appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
@@ -80,11 +100,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpUserHome() {
 
-        //sets the profile photo, name and email in the header of the navigation view within the drawerLayout
-        header.findViewById<TextView>(R.id.profileNameTextView).text = auth.currentUser?.displayName
-        header.findViewById<TextView>(R.id.profileEmailTextView).text = auth.currentUser?.email
         val imageView = header.findViewById<ShapeableImageView>(R.id.profileImageView)
 
+        //event listener for profile photo on drawer header
         photoEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val photo = snapshot.getValue<String>()
@@ -92,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                     Glide.with(this@MainActivity).load(photo).into(imageView)
                 } else {
                     Log.w(TAG, "photo is null")
-                    Snackbar.make(binding.root, "No profile photo set yet", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, "No profile picture", Snackbar.LENGTH_LONG).show()
                 }
             }
 
@@ -100,7 +118,23 @@ class MainActivity : AppCompatActivity() {
                 Log.w(TAG,"getPhoto:onCancelled", error.toException())
             }
         }
-        dbRef.child("photos").child(auth.currentUser?.uid!!).addListenerForSingleValueEvent(photoEventListener)
+
+        //set email
+        header.findViewById<TextView>(R.id.profileEmailTextView).text = auth.currentUser?.email
+
+        //event listener for profile name on drawer header
+        profileEventListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val profile = snapshot.getValue<Profile>()
+                if (profile != null) {
+                    header.findViewById<TextView>(R.id.profileNameTextView).text = profile.name
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG,"getProfileName:onCancelled", error.toException())
+            }
+        }
 
     }
 

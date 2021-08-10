@@ -1,23 +1,21 @@
 package com.colley.android.view.fragment
 
-import android.app.SyncNotedAppOp
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.colley.android.R
 import com.colley.android.SaveButtonListener
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentProfileBinding
 import com.colley.android.model.Profile
-import com.colley.android.templateModel.GroupMessage
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -72,9 +70,9 @@ class ProfileFragment : Fragment(), SaveButtonListener{
                 val profile = snapshot.getValue<Profile>()
                 if (profile == null) {
                     Log.e(TAG, "profile for user $uid is unexpectedly null")
-                    Snackbar.make(requireView(),
-                        "Profile doesn't seem to exist yet",
-                        Snackbar.LENGTH_LONG).show()
+//                    Snackbar.make(requireView(),
+//                        "Profile doesn't seem to exist yet",
+//                        Snackbar.LENGTH_LONG).show()
                 } else {
                     with(binding) {
                         nameTextView.text = profile.name
@@ -99,11 +97,13 @@ class ProfileFragment : Fragment(), SaveButtonListener{
         bioValueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val bio = snapshot.getValue<String>()
-                if (bio == null) {
+                if (bio == null || bio == "") {
                     Log.e(TAG, "bio for user $uid is unexpectedly null")
-                    Snackbar.make(requireView(),
-                        "Bio doesn't exist yet, consider creating one",
-                        Snackbar.LENGTH_LONG).show()
+//                    Snackbar.make(requireView(),
+//                        "Bio doesn't exist yet, consider creating one",
+//                        Snackbar.LENGTH_LONG).show()
+                    binding.bioTextView.hint = "Talk about yourself"
+                    binding.bioTextView.text = bio
                 } else {
                     binding.bioTextView.text = bio
                 }
@@ -121,17 +121,21 @@ class ProfileFragment : Fragment(), SaveButtonListener{
         dbRef.child("bios").child(uid).addValueEventListener(bioValueEventListener)
 
         photoValueEventListener = object : ValueEventListener {
+
             override fun onDataChange(snapshot: DataSnapshot) {
                 val photo = snapshot.getValue<String>()
                 if (photo == null) {
                     Log.e(TAG, "photo for user $uid is unexpectedly null")
                     Snackbar.make(requireView(),
-                        "No profile picture to show, consider setting one",
+                        "No profile picture",
                         Snackbar.LENGTH_LONG).show()
+                    binding.photoProgressBar.visibility = GONE
                 } else {
-                    Glide.with(requireContext()).load(photo).into(binding.profilePhotoImageView)
+                    Glide.with(requireContext()).load(photo).placeholder(R.drawable.ic_downloading)
+                        .into(binding.profilePhotoImageView)
                     binding.photoProgressBar.visibility = GONE
                 }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -139,6 +143,7 @@ class ProfileFragment : Fragment(), SaveButtonListener{
                 Snackbar.make(requireView(),
                     "Error in fetching photo",
                     Snackbar.LENGTH_LONG).show()
+                binding.photoProgressBar.visibility = GONE
             }
         }
 
