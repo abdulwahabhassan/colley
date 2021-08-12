@@ -1,4 +1,4 @@
-package com.colley.android.adapter
+package com.colley.android.adapter.group
 
 import android.view.LayoutInflater
 import android.view.View.GONE
@@ -9,8 +9,8 @@ import com.colley.android.R
 import com.colley.android.databinding.ItemGroupBinding
 import com.colley.android.templateModel.Group
 
-class GroupsFragmentRecyclerAdapter (private val clickListener: ItemClickedListener) :
-    RecyclerView.Adapter<GroupsFragmentRecyclerAdapter.GroupViewHolder>() {
+class GroupsRecyclerAdapter (private val clickListener: ItemClickedListener) :
+    RecyclerView.Adapter<GroupsRecyclerAdapter.GroupViewHolder>() {
 
     private var listOfGroups = arrayListOf<Group>()
 

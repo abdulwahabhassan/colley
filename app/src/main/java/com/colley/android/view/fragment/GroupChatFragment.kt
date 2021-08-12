@@ -13,30 +13,34 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
-import com.colley.android.adapter.GroupChatFragmentRecyclerAdapter
+import com.colley.android.adapter.group.GroupMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupChatBinding
+import com.colley.android.model.Profile
 import com.colley.android.templateModel.GroupMessage
 import com.colley.android.templateModel.ScrollToBottomObserver
 import com.colley.android.templateModel.SendButtonObserver
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 
-class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewHolderListener {
+class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolderListener {
 
     val args: GroupChatFragmentArgs by navArgs()
     private var _binding: FragmentGroupChatBinding? = null
     private val binding get() = _binding!!
     private lateinit var db: FirebaseDatabase
-    private lateinit var adapter: GroupChatFragmentRecyclerAdapter
+    private lateinit var auth: FirebaseAuth
+    private lateinit var currentUser: FirebaseUser
+    private lateinit var adapter: GroupMessageRecyclerAdapter
     private lateinit var manager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
     private val openDocument = registerForActivityResult(OpenDocumentContract()) { uri ->
@@ -86,8 +90,15 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
         //set action bar title
         (activity as AppCompatActivity?)!!.supportActionBar!!.title = args.groupName
 
-        // Initialize Realtime Database
+        //initialize Realtime Database
         db = Firebase.database
+
+        //initialize authentication
+        auth = Firebase.auth
+
+        //initialize currentUser
+        currentUser = auth.currentUser!!
+
         //get a query reference to messages
         val messagesRef = db.reference.child(MESSAGES_CHILD)
 
@@ -98,7 +109,7 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
             .setQuery(messagesRef, GroupMessage::class.java)
             .build()
 
-        adapter = GroupChatFragmentRecyclerAdapter(options, getCurrentUser(), this)
+        adapter = GroupMessageRecyclerAdapter(options, currentUser, this, requireContext())
         manager = LinearLayoutManager(requireContext())
         manager.stackFromEnd = true
         recyclerView.layoutManager = manager
@@ -114,10 +125,8 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
         //when the send button is clicked, send a text message
         binding.sendButton.setOnClickListener {
             val groupMessage = GroupMessage(
-                binding.messageEditText.text.toString(),
-                getCurrentUserName(),
-                null,
-                getCurrentUserPhotoUrl()
+                userId = currentUser.uid,
+                text = binding.messageEditText.text.toString()
             )
             db.reference.child("messages").push().setValue(groupMessage)
             binding.messageEditText.setText("")
@@ -131,8 +140,11 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
     }
 
     private fun onImageSelected(uri: Uri) {
-        val user = getCurrentUser()
-        val tempMessage = GroupMessage(null, getCurrentUserName(), LOADING_IMAGE_URL, getCurrentUserPhotoUrl())
+
+        val tempMessage = GroupMessage(
+            userId = currentUser.uid,
+            image = LOADING_IMAGE_URL
+        )
         db.reference
             .child(MESSAGES_CHILD)
             .push()
@@ -149,7 +161,7 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
                     // Build a StorageReference and then upload the file
                     val key = databaseReference.key
                     val storageReference = Firebase.storage
-                        .getReference(user!!.uid)
+                        .getReference(currentUser.uid)
                         .child(key!!)
                         .child(uri.lastPathSegment!!)
                     putImageInStorage(storageReference, uri, key)
@@ -166,7 +178,10 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { uri ->
                         val groupMessage =
-                            GroupMessage(null, getCurrentUserName(), uri.toString(), getCurrentUserPhotoUrl())
+                            GroupMessage(
+                                userId = currentUser.uid,
+                                image = uri.toString()
+                            )
                         db.reference
                             .child(MESSAGES_CHILD)
                             .child(key!!)
@@ -174,29 +189,10 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
                     }
             }
             .addOnFailureListener(requireActivity()) { e ->
-                Log.w(
-                    TAG,
-                    "Image upload task was unsuccessful.",
-                    e
-                )
+                Log.w(TAG, "Image upload task was unsuccessful.", e)
             }
     }
 
-    private fun getCurrentUser(): FirebaseUser? {
-        return Firebase.auth.currentUser
-    }
-
-    private fun getCurrentUserName(): String? {
-        val user = Firebase.auth.currentUser
-        return if (user != null) {
-            user.displayName
-        } else "Anonymous"
-    }
-
-    private fun getCurrentUserPhotoUrl(): String? {
-        val user = Firebase.auth.currentUser
-        return user?.photoUrl?.toString()
-    }
 
     override fun onResume() {
         super.onResume()
@@ -225,8 +221,7 @@ class GroupChatFragment : Fragment(), GroupChatFragmentRecyclerAdapter.BindViewH
     companion object {
         private const val TAG = "MainActivity"
         const val MESSAGES_CHILD = "messages"
-        const val ANONYMOUS = "anonymous"
-        private const val LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif"
+        private const val LOADING_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/colley-c37ea.appspot.com/o/loading_gif%20copy.gif?alt=media&token=022770e5-9db3-426c-9ee2-582b9d66fbac"
     }
 
 }

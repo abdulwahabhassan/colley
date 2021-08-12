@@ -7,13 +7,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
-import com.colley.android.adapter.GroupsFragmentRecyclerAdapter
+import com.colley.android.adapter.group.GroupsRecyclerAdapter
 import com.colley.android.databinding.FragmentGroupsBinding
 import com.colley.android.templateModel.DummyData
 import com.colley.android.templateModel.Group
 
 
-class GroupsFragment : Fragment(), GroupsFragmentRecyclerAdapter.ItemClickedListener {
+class GroupsFragment : Fragment(), GroupsRecyclerAdapter.ItemClickedListener {
 
     private var _binding: FragmentGroupsBinding? = null
     private val binding get() = _binding!!
@@ -36,7 +36,7 @@ class GroupsFragment : Fragment(), GroupsFragmentRecyclerAdapter.ItemClickedList
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding.groupRecyclerView
-        val recyclerViewAdapter = GroupsFragmentRecyclerAdapter(this)
+        val recyclerViewAdapter = GroupsRecyclerAdapter(this)
         recyclerViewAdapter.setList(DummyData.getListOfGroups())
         recyclerView.adapter = recyclerViewAdapter
     }

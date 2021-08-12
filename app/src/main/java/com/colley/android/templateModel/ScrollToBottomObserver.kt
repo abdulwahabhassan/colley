@@ -18,11 +18,11 @@ package com.colley.android.templateModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
-import com.colley.android.adapter.GroupChatFragmentRecyclerAdapter
+import com.colley.android.adapter.group.GroupMessageRecyclerAdapter
 
 class ScrollToBottomObserver(
     private val recycler: RecyclerView,
-    private val adapter: GroupChatFragmentRecyclerAdapter,
+    private val adapter: GroupMessageRecyclerAdapter,
     private val manager: LinearLayoutManager
 ) : AdapterDataObserver() {
     override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
@@ -35,7 +35,7 @@ class ScrollToBottomObserver(
         val loading = lastVisiblePosition == -1
         val atBottom = positionStart >= count - 1 && lastVisiblePosition == positionStart - 1
         if (loading || atBottom) {
-            recycler.scrollToPosition(positionStart)
+            manager.scrollToPosition(positionStart)
         }
     }
 }
