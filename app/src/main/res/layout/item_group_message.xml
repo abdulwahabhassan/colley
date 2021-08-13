@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/margin_4dp"
     android:layout_marginStart="@dimen/margin_8dp"
     android:layout_marginEnd="@dimen/margin_8dp">
 
@@ -13,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginBottom="@dimen/margin_8dp"
+        android:layout_marginBottom="@dimen/margin_4dp"
         android:backgroundTint="@color/apricot"
         app:cardCornerRadius="@dimen/corner_radius_8dp"
         app:cardElevation="@dimen/height_0dp"
@@ -23,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/messengerNameTextView">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -35,18 +34,22 @@
                 android:layout_height="wrap_content"
                 android:maxWidth="250dp"
                 android:textColor="@color/light_pearl"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="This is a message" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/messagePhotoImageView"
                 android:layout_width="250dp"
                 android:layout_height="250dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_4dp"
                 android:scaleType="center"
                 android:src="@drawable/ic_photo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/messageTextView"
                 app:shapeAppearance="@style/messageImageCornerRadius" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 
@@ -55,10 +58,11 @@
         android:id="@+id/messengerNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_8dp"
         android:textColor="@color/pearl"
         android:textStyle="bold"
+        android:layout_marginTop="@dimen/margin_8dp"
         android:visibility="invisible"
-        android:layout_marginStart="@dimen/margin_8dp"
         app:layout_constraintStart_toEndOf="@+id/messengerImageView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="FirstName LastName" />

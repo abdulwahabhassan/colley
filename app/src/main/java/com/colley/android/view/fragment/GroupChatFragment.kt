@@ -80,7 +80,6 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
     ): View? {
         _binding = FragmentGroupChatBinding.inflate(inflater, container, false)
         recyclerView = binding.messageRecyclerView
-        recyclerView.setHasFixedSize(true)
         return binding.root
     }
 

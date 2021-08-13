@@ -7,6 +7,7 @@ import android.view.View.*
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
@@ -53,6 +54,7 @@ class GroupMessageRecyclerAdapter(
         }
     }
 
+
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
@@ -72,6 +74,7 @@ class GroupMessageRecyclerAdapter(
 
     }
 
+
     override fun getItemViewType(position: Int): Int {
         val uid = currentUser?.uid
         return if (options.snapshots[position].userId != uid) VIEW_TYPE_GROUP_MEMBER
@@ -87,12 +90,13 @@ class GroupMessageRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String?>()
+                        //if the next message is from the same user, remove userName from the next message
                         if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
                             binding.currentUserImageView.visibility = GONE
                         } else {
                             if (photo != null) {
-                                binding.currentUserImageView.visibility = VISIBLE
                                 loadImageIntoView(binding.currentUserImageView, photo)
+                                binding.currentUserImageView.visibility = VISIBLE
                             }
                         }
                     }
@@ -106,6 +110,7 @@ class GroupMessageRecyclerAdapter(
             //set message body
             if (item.text != null) {
                 binding.currentUserMessageTextView.text = item.text
+                binding.currentUserMessageTextView.visibility = VISIBLE
             } else {
                 binding.currentUserMessageTextView.visibility = GONE
             }
@@ -115,11 +120,12 @@ class GroupMessageRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val profile = snapshot.getValue<Profile>()
+                        //if the next message is from the same user as in the previous message, remove userPhoto from the next message
                         if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
                             binding.currentUserNameTextView.visibility = GONE
                         } else {
-                            binding.currentUserNameTextView.visibility = VISIBLE
                             binding.currentUserNameTextView.text = profile?.name
+                            binding.currentUserNameTextView.visibility = VISIBLE
                         }
                     }
 
@@ -132,6 +138,7 @@ class GroupMessageRecyclerAdapter(
             //load message photo if any
             if (item.image != null) {
                 loadImageIntoView(binding.currentUserMessagePhotoImageView, item.image!!)
+                binding.currentUserMessagePhotoImageView.visibility = VISIBLE
             } else {
                 binding.currentUserMessagePhotoImageView.visibility = GONE
             }
@@ -153,8 +160,8 @@ class GroupMessageRecyclerAdapter(
                             binding.messengerImageView.visibility = GONE
                         } else {
                             if (photo != null) {
-                                binding.messengerImageView.visibility = VISIBLE
                                 loadImageIntoView(binding.messengerImageView, photo)
+                                binding.messengerImageView.visibility = VISIBLE
                             }
                         }
 
@@ -170,6 +177,7 @@ class GroupMessageRecyclerAdapter(
             //set message body
             if (item.text != null) {
                 binding.messageTextView.text = item.text
+                binding.messageTextView.visibility = VISIBLE
             } else {
                 binding.messageTextView.visibility = GONE
             }
@@ -182,8 +190,8 @@ class GroupMessageRecyclerAdapter(
                         if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
                             binding.messengerNameTextView.visibility = GONE
                         } else {
-                            binding.messengerNameTextView.visibility = VISIBLE
                             binding.messengerNameTextView.text = profile?.name
+                            binding.messengerNameTextView.visibility = VISIBLE
                         }
 
                     }
@@ -197,6 +205,7 @@ class GroupMessageRecyclerAdapter(
             //load message photo if any
             if (item.image != null) {
                 loadImageIntoView(binding.messagePhotoImageView, item.image!!)
+                binding.messagePhotoImageView.visibility = VISIBLE
             } else {
                 binding.messagePhotoImageView.visibility = GONE
             }
@@ -214,6 +223,7 @@ class GroupMessageRecyclerAdapter(
                     Glide.with(imageView.context)
                         .load(downloadUrl)
                         .into(imageView)
+                    imageView.visibility = VISIBLE
                 }
                 .addOnFailureListener { e ->
                     Log.w(
@@ -224,6 +234,7 @@ class GroupMessageRecyclerAdapter(
                 }
         } else {
             Glide.with(imageView.context).load(photoUrl).into(imageView)
+            imageView.visibility = VISIBLE
         }
     }
 
