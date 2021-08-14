@@ -1,27 +1,34 @@
 package com.colley.android.view.fragment
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.view.View.*
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.colley.android.R
+import com.colley.android.SaveButtonListener
 import com.colley.android.databinding.FragmentHomeBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), AddGroupBottomSheetDialogFragment.SaveButtonListener {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewPager: ViewPager2
     private lateinit var viewPagerAdapter: FragmentStateAdapter
     lateinit var homeFab: FloatingActionButton
+    lateinit var addGroupBottomSheetDialog: AddGroupBottomSheetDialogFragment
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,11 +104,31 @@ class HomeFragment : Fragment() {
                 }
             }.attach()
         }
+
+        binding.homeFab.setOnClickListener {
+            when (viewPager.currentItem) {
+                0 -> {
+                    Snackbar.make(requireView(), "Write an issue", Snackbar.LENGTH_LONG).show()
+                }
+                1 -> {
+                    Snackbar.make(requireView(), "Make a post", Snackbar.LENGTH_LONG).show()
+                }
+                2 -> {
+                    addGroupBottomSheetDialog = AddGroupBottomSheetDialogFragment(this, requireContext(), requireView())
+                    addGroupBottomSheetDialog.show(parentFragmentManager, null)
+
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onSave() {
+        addGroupBottomSheetDialog.dismiss()
     }
 
 }

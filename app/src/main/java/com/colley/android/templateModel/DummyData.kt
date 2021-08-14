@@ -1,20 +1,58 @@
 package com.colley.android.templateModel
 
+import com.colley.android.model.ChatGroup
+
 object DummyData {
 
-    fun getListOfGroups(): ArrayList<Group> {
+    fun getListOfFriends(): ArrayList<GroupMember> {
         return arrayListOf(
-            Group(
+            GroupMember(
+                "Mirabell Sanchez Ozioma",
+                "https://rebrand.ly/00p0y9v",
+                false
+            ),
+            GroupMember(
+                "Akpos Godfrey",
+                "https://rebrand.ly/zlhfnjj",
+                false
+            ),
+            GroupMember(
+                "Mirabell Sanchez Ozioma",
+                "https://rebrand.ly/00p0y9v",
+                false
+            ),
+            GroupMember(
+                "Patricia Benedict",
+                "https://rebrand.ly/cc685c",
+                false
+            ),
+            GroupMember(
+                "Akpos Godfrey",
+                null,
+                false
+            ),
+            GroupMember(
+                "Mirabell Sanchez Ozioma",
+                "https://rebrand.ly/00p0y9v",
+                false
+            )
+        )
+    }
+
+    fun getListOfGroups(): ArrayList<ChatGroup> {
+        return arrayListOf(
+            ChatGroup(
                 "https://rebrand.ly/lre8sby",
                 "Basket ball team",
+
                 115),
-            Group(
+            ChatGroup(
                 name = "Med.biochem 200L",
                 unreadMessages = 20),
-            Group(
+            ChatGroup(
                 groupIcon = "https://rebrand.ly/uebxhcu",
                 name = "UNIBEN Aspirants group"),
-            Group(
+            ChatGroup(
                 "https://rebrand.ly/5cmpwwe",
                 "NUESA National secretariat association",
                 3)

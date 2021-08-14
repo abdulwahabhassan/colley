@@ -44,7 +44,6 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
-
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/mainActivityNavigationView"
         android:layout_width="wrap_content"

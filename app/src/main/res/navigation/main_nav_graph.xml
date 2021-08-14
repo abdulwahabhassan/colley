@@ -80,11 +80,9 @@
     <fragment
         android:id="@+id/groupChatFragment"
         android:name="com.colley.android.view.fragment.GroupChatFragment"
-        android:label="@string/group_chat_label"
         tools:layout="@layout/fragment_group_chat" >
         <argument
-            android:name="groupName"
-            app:argType="string"
-            android:defaultValue="Group chat" />
+            android:name="groupId"
+            app:argType="string" />
     </fragment>
 </navigation>

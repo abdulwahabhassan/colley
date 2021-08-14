@@ -34,10 +34,10 @@ import com.google.firebase.storage.ktx.storage
 
 class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolderListener {
 
-    val args: GroupChatFragmentArgs by navArgs()
+    private val args: GroupChatFragmentArgs by navArgs()
     private var _binding: FragmentGroupChatBinding? = null
     private val binding get() = _binding!!
-    private lateinit var db: FirebaseDatabase
+    private lateinit var dbRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
     private lateinit var adapter: GroupMessageRecyclerAdapter
@@ -86,11 +86,8 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //set action bar title
-        (activity as AppCompatActivity?)!!.supportActionBar!!.title = args.groupName
-
         //initialize Realtime Database
-        db = Firebase.database
+        dbRef = Firebase.database.reference
 
         //initialize authentication
         auth = Firebase.auth
@@ -98,8 +95,25 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
         //initialize currentUser
         currentUser = auth.currentUser!!
 
-        //get a query reference to messages
-        val messagesRef = db.reference.child(MESSAGES_CHILD)
+        //set group name
+        dbRef.child("groups").child(args.groupId).child("name").addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val groupName = snapshot.getValue<String>()
+                    //set action bar title
+                    (activity as AppCompatActivity?)!!.supportActionBar!!.title = groupName
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(TAG, "getGroupName:OnCancelled", error.toException())
+                }
+            }
+        )
+
+
+        //get a query reference to group messages
+//        val messagesRef = dbRef.child(MESSAGES_CHILD)
+        val messagesRef = dbRef.child("group-messages").child(args.groupId)
 
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         //build an options to configure adapter. setQuery takes firebase query to listen to and a
@@ -123,12 +137,14 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
 
         //when the send button is clicked, send a text message
         binding.sendButton.setOnClickListener {
-            val groupMessage = GroupMessage(
-                userId = currentUser.uid,
-                text = binding.messageEditText.text.toString()
-            )
-            db.reference.child("messages").push().setValue(groupMessage)
-            binding.messageEditText.setText("")
+            if (binding.messageEditText.text?.trim()?.toString() != "") {
+                val groupMessage = GroupMessage(
+                    userId = currentUser.uid,
+                    text = binding.messageEditText.text.toString()
+                )
+                dbRef.child("group-messages").child(args.groupId).push().setValue(groupMessage)
+                binding.messageEditText.setText("")
+            }
         }
 
         // When the image button is clicked, launch the image picker
@@ -144,8 +160,9 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
             userId = currentUser.uid,
             image = LOADING_IMAGE_URL
         )
-        db.reference
-            .child(MESSAGES_CHILD)
+        dbRef
+            .child("group-messages")
+            .child(args.groupId)
             .push()
             .setValue(
                 tempMessage,
@@ -181,8 +198,9 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
                                 userId = currentUser.uid,
                                 image = uri.toString()
                             )
-                        db.reference
-                            .child(MESSAGES_CHILD)
+                        dbRef
+                            .child("group-messages")
+                            .child(args.groupId)
                             .child(key!!)
                             .setValue(groupMessage)
                     }
@@ -195,15 +213,11 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
 
     override fun onResume() {
         super.onResume()
-        //hide support action bar
-//        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
         adapter.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        //undo hiding of support action bar
-//        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
         adapter.stopListening()
     }
 

@@ -54,4 +54,5 @@
     <dimen name="corner_radius_4dp">4dp</dimen>
     <dimen name="width_32dp">32dp</dimen>
     <dimen name="height_32dp">32dp</dimen>
+    <dimen name="padding_12dp">12dp</dimen>
 </resources>

@@ -38,7 +38,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/messageEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -46,19 +46,20 @@
             android:layout_margin="@dimen/margin_8dp"
             android:layout_weight="1"
             android:textSize="@dimen/text_size_14sp"
+            android:maxLines="3"
             android:textColor="@color/light_pearl"
             android:background="@drawable/edit_text_background"
-            android:hint="Say something..."
+            android:hint="@string/say_something_text"
             android:inputType="text"
-            android:padding="@dimen/padding_8dp" />
+            android:padding="@dimen/padding_10dp" />
 
         <ImageView
             android:id="@+id/addMessageImageView"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_4dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/ic_add_photo" />
+            app:srcCompat="@drawable/ic_add_group_photo" />
 
         <ImageView
             android:id="@+id/sendButton"

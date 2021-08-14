@@ -81,12 +81,21 @@
     <string name="menu_item_logout_title">Logout</string>
     <string name="group_chat_label">Group chat</string>
     <string name="floating_action_buttton_desc">floating action buttton</string>
-    <string name="add_group_text">Add group</string>
+    <string name="add_group_text">Add TempGroup</string>
     <string name="retry_text">Retry</string>
     <string name="continue_to_home_text">Continue to home</string>
     <string name="signed_in_text">Signed in</string>
     <string name="welcome_back_text">Welcome back</string>
     <string name="welcome_text">Welcome to Colley</string>
+    <string name="group_name_text">Group Name</string>
+    <string name="add_members_text">Add Members</string>
+    <string name="group_description_text">Group Description (optional)</string>
+    <string name="select_group_members_text">Select Group Members</string>
+    <string name="create_group_text">Create Group</string>
+    <string name="create_text">create</string>
+    <string name="save_text">Save</string>
+    <string name="select_group_icon_text">Select Group photo</string>
+    <string name="say_something_text">Say something...</string>
 
 
 </resources>

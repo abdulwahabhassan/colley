@@ -13,8 +13,9 @@
         <item name="android:statusBarColor" tools:targetApi="l">@color/pearl</item>
         <!-- Customize your theme here. -->
 
-<!--        bottomSheetDialogTheme-->
+<!--    custom bottomSheetDialogTheme-->
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Colley.BottomSheetDialog</item>
+
 
     </style>
 
@@ -31,7 +32,7 @@
         <item name="cornerSize">3%</item>
     </style>
 
-    <style name="CornerRadius8dp" parent="">
+    <style name="CornerRadius10" parent="">
         <item name="cornerSize">10%</item>
     </style>
 
@@ -45,11 +46,20 @@
 <!--    style for bottomSheetDialog -->
     <style name="ThemeOverlay.Colley.BottomSheetDialog" parent="@style/ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/bottomSheetDialogBackground</item>
+
+    </style>
+
+    <!--    style bottomSheetDialog background with the specified custom background-->
+    <style name="bottomSheetDialogBackground"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet_dialog_background</item>
     </style>
 
     <style name="ThemeOverlay_Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
         <!-- color used by navigation icon and overflow icon -->
         <item name="colorOnPrimary">@color/white</item>
     </style>
+
 
 </resources>

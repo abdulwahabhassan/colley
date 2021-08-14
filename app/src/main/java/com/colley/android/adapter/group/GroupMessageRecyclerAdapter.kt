@@ -11,6 +11,7 @@ import androidx.core.view.marginTop
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
+import com.colley.android.databinding.ItemGroupBinding
 import com.colley.android.databinding.ItemGroupMessageBinding
 import com.colley.android.databinding.ItemGroupMessageCurrentUserBinding
 import com.colley.android.model.Profile
@@ -96,7 +97,6 @@ class GroupMessageRecyclerAdapter(
                         } else {
                             if (photo != null) {
                                 loadImageIntoView(binding.currentUserImageView, photo)
-                                binding.currentUserImageView.visibility = VISIBLE
                             }
                         }
                     }
@@ -161,7 +161,6 @@ class GroupMessageRecyclerAdapter(
                         } else {
                             if (photo != null) {
                                 loadImageIntoView(binding.messengerImageView, photo)
-                                binding.messengerImageView.visibility = VISIBLE
                             }
                         }
 
@@ -237,6 +236,7 @@ class GroupMessageRecyclerAdapter(
             imageView.visibility = VISIBLE
         }
     }
+
 
     companion object {
         const val TAG = "MessageAdapter"

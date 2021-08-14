@@ -27,6 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Bio"
+            android:padding="12dp"
+            android:textSize="@dimen/text_size_14sp"
             android:maxLines="5"
             android:textColor="@color/light_pearl" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -38,6 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16dp"
+        android:textSize="@dimen/text_size_12sp"
         android:layout_marginBottom="@dimen/margin_16dp"
         android:layout_gravity="center"
         android:text="Save"/>
