@@ -31,9 +31,11 @@
         android:layout_marginTop="@dimen/margin_8dp"
         android:textColor="@color/light_pearl"
         android:textStyle="bold"
+        android:textSize="@dimen/text_size_15sp"
         android:drawablePadding="@dimen/padding_4dp"
         android:text="@string/select_group_icon_text"
         app:drawableEndCompat="@drawable/ic_add_group_photo" />
+
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -107,15 +109,32 @@
         android:textSize="@dimen/text_size_12sp"
         android:text="@string/create_text"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/select_group_members_text"
-        android:textColor="@color/light_pearl"
-        android:drawablePadding="@dimen/margin_4dp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/text_size_15sp" />
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_group_members_text"
+            android:textColor="@color/light_pearl"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/text_size_15sp" />
+
+        <TextView
+            android:id="@+id/selectedMemberCountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/padding_8dp"
+            android:textColor="@color/light_pearl"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_15sp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/addGroupMembersRecyclerView"
@@ -124,7 +143,7 @@
             android:layout_marginTop="@dimen/margin_16dp"
             android:background="@drawable/add_group_members_card_view_background"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_group_member"
+            tools:listitem="@layout/item_new_group_member"
             android:layout_height="match_parent"/>
 
 

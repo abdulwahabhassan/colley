@@ -94,8 +94,10 @@
     <string name="create_group_text">Create Group</string>
     <string name="create_text">create</string>
     <string name="save_text">Save</string>
-    <string name="select_group_icon_text">Select Group photo</string>
+    <string name="select_group_icon_text">Select Group Photo</string>
     <string name="say_something_text">Say something...</string>
+    <string name="group_desc_text">Group Description</string>
+    <string name="group_description_placeholder">All about putting smiles on your face x</string>
 
 
 </resources>

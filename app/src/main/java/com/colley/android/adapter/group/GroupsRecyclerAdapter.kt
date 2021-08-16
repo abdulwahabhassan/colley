@@ -1,4 +1,4 @@
-package com.colley.android.adapter
+package com.colley.android.adapter.group
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -12,8 +12,6 @@ import com.colley.android.model.ChatGroup
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 
 class GroupsRecyclerAdapter (
     private val options: FirebaseRecyclerOptions<ChatGroup>,
@@ -21,23 +19,19 @@ class GroupsRecyclerAdapter (
     private val currentUser: FirebaseUser?,
     private val clickListener: ItemClickedListener
         )
-    : FirebaseRecyclerAdapter<ChatGroup, RecyclerView.ViewHolder>(options) {
+    : FirebaseRecyclerAdapter<ChatGroup, GroupsRecyclerAdapter.GroupViewHolder>(options) {
 
     interface ItemClickedListener {
         fun onItemClick(chatGroup: ChatGroup)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
         val viewBinding = ItemGroupBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return GroupViewHolder(viewBinding)
     }
 
-    override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
-        position: Int,
-        model: ChatGroup
-    ) {
-        (holder as GroupViewHolder).bind(model, clickListener)
+    override fun onBindViewHolder(holder: GroupViewHolder, position: Int, model: ChatGroup) {
+        holder.bind(model, clickListener)
     }
 
     class GroupViewHolder (private val itemBinding : ItemGroupBinding) : RecyclerView.ViewHolder(itemBinding.root) {
@@ -57,7 +51,7 @@ class GroupsRecyclerAdapter (
                     Glide.with(this.root.context).load(R.drawable.ic_group).into(groupImageView)
             }
 
-            this.root.setOnClickListener {
+            root.setOnClickListener {
                 clickListener.onItemClick(chatGroup)
             }
         }

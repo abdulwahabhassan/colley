@@ -9,6 +9,7 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -67,7 +68,8 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.info_menu_item -> {
-                Toast.makeText(context, "Info", Toast.LENGTH_LONG).show()
+                val action = GroupChatFragmentDirections.actionGroupChatFragmentToGroupInfoFragment(args.groupId)
+                findNavController().navigate(action)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -112,7 +114,6 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
 
 
         //get a query reference to group messages
-//        val messagesRef = dbRef.child(MESSAGES_CHILD)
         val messagesRef = dbRef.child("group-messages").child(args.groupId)
 
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
@@ -233,7 +234,6 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
 
     companion object {
         private const val TAG = "MainActivity"
-        const val MESSAGES_CHILD = "messages"
         private const val LOADING_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/colley-c37ea.appspot.com/o/loading_gif%20copy.gif?alt=media&token=022770e5-9db3-426c-9ee2-582b9d66fbac"
     }
 
