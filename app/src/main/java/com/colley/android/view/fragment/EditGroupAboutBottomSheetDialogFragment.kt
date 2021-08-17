@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.colley.android.R
 import com.colley.android.SaveButtonListener
+import com.colley.android.databinding.FragmentEditAboutBottomSheetDialogBinding
 import com.colley.android.databinding.FragmentEditBioBottomSheetDialogBinding
 import com.colley.android.databinding.FragmentEditProfileBottomSheetDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -18,16 +19,16 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class EditBioBottomSheetDialogFragment(
+class EditGroupAboutBottomSheetDialogFragment(
     buttonListener: SaveButtonListener
     ) : BottomSheetDialogFragment() {
 
-    private var _binding: FragmentEditBioBottomSheetDialogBinding? = null
+    private var _binding: FragmentEditAboutBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
     var saveButtonListener: SaveButtonListener = buttonListener
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
-    private val uid: String
+    private val groupId: String
         get() = currentUser.uid
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +40,7 @@ class EditBioBottomSheetDialogFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentEditBioBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = FragmentEditAboutBottomSheetDialogBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -49,36 +50,37 @@ class EditBioBottomSheetDialogFragment(
         dbRef = Firebase.database.reference
         currentUser = Firebase.auth.currentUser!!
 
-        val bundledBio = arguments?.getString("bioKey")
-        binding.editBioEditText.setText(bundledBio)
+        val bundledDescription = arguments?.getString("aboutKey")
+        binding.editAboutEditText.setText(bundledDescription)
 
-        binding.saveBioButton.setOnClickListener {
-            val bio = binding.editBioEditText.text.toString().trim()
-            saveBio(bio)
+        binding.saveAboutButton.setOnClickListener {
+            val description = binding.editAboutEditText.text.toString().trim()
+            saveAbout(description)
         }
     }
 
-    private fun saveBio(bio: String) {
+    private fun saveAbout(description: String) {
         setEditingEnabled(false)
 
-        dbRef.child("bios").child(uid).setValue(bio).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                parentFragment?.requireView()?.let {
-                        view -> Snackbar.make(view, "Bio updated successfully", Snackbar.LENGTH_LONG)
-                    .show() }
-                saveButtonListener.onSave()
-            } else {
-                parentFragment?.requireView()?.let {
-                        view -> Snackbar.make(view, "Failed to update Bio!", Snackbar.LENGTH_LONG)
-                    .show() }
-                setEditingEnabled(true)
-                binding.saveBioButton.text = getString(R.string.retry_text)
+        //retrieve group id from bundle arguments and update group description on database
+        arguments?.getString("groupIdKey")?.let {
+            dbRef.child("groups").child(it).child("description").setValue(description).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    parentFragment?.requireView()?.let { view -> Snackbar.make(view, "Update successful", Snackbar.LENGTH_LONG)
+                        .show() }
+                    saveButtonListener.onSave()
+                } else {
+                    parentFragment?.requireView()?.let { view -> Snackbar.make(view, "Failed to update!", Snackbar.LENGTH_LONG)
+                        .show() }
+                    setEditingEnabled(true)
+                    binding.saveAboutButton.text = getString(R.string.retry_text)
+                }
             }
         }
     }
 
     private fun setEditingEnabled(enabled: Boolean) {
-        binding.editBioEditText.isEnabled = enabled
+        binding.editAboutEditText.isEnabled = enabled
     }
 
     override fun onDestroy() {

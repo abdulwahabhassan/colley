@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fabSize="mini"
-                android:src="@drawable/ic_add_photo"
+                android:src="@drawable/ic_add_group_photo"
                 android:theme="@style/ColorOnSecondaryFab"
                 android:layout_marginBottom="@dimen/margin_32dp"
                 android:layout_marginEnd="@dimen/margin_16dp"

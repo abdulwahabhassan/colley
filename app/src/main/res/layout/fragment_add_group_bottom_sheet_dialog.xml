@@ -143,6 +143,8 @@
             android:layout_width="match_parent"
             android:overScrollMode="never"
             android:layout_marginTop="@dimen/margin_16dp"
+            android:layout_marginStart="@dimen/margin_8dp"
+            android:layout_marginEnd="@dimen/margin_8dp"
             android:background="@drawable/add_group_members_card_view_background"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_new_group_member"

@@ -98,6 +98,9 @@
     <string name="say_something_text">Say something...</string>
     <string name="group_desc_text">Group Description</string>
     <string name="group_description_placeholder">All about putting smiles on your face x</string>
+    <string name="group_members_text">Group Members</string>
+    <string name="about">About</string>
+    <string name="members_text">Members</string>
 
 
 </resources>

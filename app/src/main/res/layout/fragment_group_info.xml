@@ -26,12 +26,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:fabSize="mini"
-                android:src="@drawable/ic_add_photo"
+                android:src="@drawable/ic_add_group_photo"
                 android:theme="@style/ColorOnSecondaryFab"
                 android:layout_marginBottom="@dimen/margin_32dp"
                 android:layout_marginEnd="@dimen/margin_16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/groupNameTextView"
+                android:layout_width="@dimen/width_0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_16dp"
+                android:layout_marginEnd="@dimen/margin_16dp"
+                android:elevation="@dimen/height_1dp"
+                android:lines="1"
+                android:ellipsize="end"
+                android:textAllCaps="true"
+                android:textColor="@color/light_apricot"
+                android:textSize="@dimen/text_size_16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/addPhotoFab"
+                app:layout_constraintEnd_toStartOf="@+id/addPhotoFab"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
 
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -82,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/group_desc_text"
+                    android:text="@string/about"
                     android:textColor="@color/light_pearl"
                     android:textStyle="bold"
                     android:textSize="@dimen/text_size_15sp"
@@ -94,15 +112,25 @@
                     android:id="@+id/groupDescriptionTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_4dp"
                     android:textAlignment="center"
                     android:textSize="@dimen/text_size_15sp"
-                    android:layout_marginBottom="@dimen/margin_8dp"
-                    android:layout_marginTop="@dimen/margin_4dp"
-                    android:text="@string/group_description_placeholder"
                     app:layout_constraintEnd_toEndOf="@+id/groupDescriptionTitleTextView"
                     app:layout_constraintStart_toStartOf="@+id/groupDescriptionTitleTextView"
-                    app:layout_constraintTop_toBottomOf="@+id/groupDescriptionTitleTextView"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/groupDescriptionTitleTextView" />
+
+                <TextView
+                    android:id="@+id/editAboutTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:drawablePadding="@dimen/padding_4dp"
+                    android:text="@string/edit_text"
+                    app:drawableStartCompat="@drawable/ic_edit_info"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/groupDescriptionTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/groupDescriptionTextView"
+                    app:layout_constraintVertical_bias="0.0" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -111,8 +139,8 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/recyclerCardView"
-            android:layout_width="@dimen/width_0dp"
-            android:layout_height="595dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_16dp"
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="@dimen/corner_radius_8dp"
@@ -125,16 +153,34 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingTop="@dimen/padding_8dp">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/members_text"
+                    android:textColor="@color/light_pearl"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp"
+                    android:textSize="@dimen/text_size_15sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/groupMembersRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:background="@drawable/group_members_recycler_view_background"
+                    android:backgroundTint="@color/light_apricot"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    android:overScrollMode="never"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView"
                     tools:listitem="@layout/item_group_member" />
 
 

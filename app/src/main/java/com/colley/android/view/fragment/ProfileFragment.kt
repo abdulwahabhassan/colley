@@ -70,9 +70,7 @@ class ProfileFragment : Fragment(), SaveButtonListener{
                 val profile = snapshot.getValue<Profile>()
                 if (profile == null) {
                     Log.e(TAG, "profile for user $uid is unexpectedly null")
-//                    Snackbar.make(requireView(),
-//                        "Profile doesn't seem to exist yet",
-//                        Snackbar.LENGTH_LONG).show()
+
                 } else {
                     with(binding) {
                         nameTextView.text = profile.name
@@ -99,9 +97,6 @@ class ProfileFragment : Fragment(), SaveButtonListener{
                 val bio = snapshot.getValue<String>()
                 if (bio == null || bio == "") {
                     Log.e(TAG, "bio for user $uid is unexpectedly null")
-//                    Snackbar.make(requireView(),
-//                        "Bio doesn't exist yet, consider creating one",
-//                        Snackbar.LENGTH_LONG).show()
                     binding.bioTextView.hint = "Talk about yourself"
                     binding.bioTextView.text = bio
                 } else {
@@ -126,13 +121,10 @@ class ProfileFragment : Fragment(), SaveButtonListener{
                 val photo = snapshot.getValue<String>()
                 if (photo == null) {
                     Log.e(TAG, "photo for user $uid is unexpectedly null")
-                    Snackbar.make(requireView(),
-                        "No profile picture",
-                        Snackbar.LENGTH_LONG).show()
+                    Glide.with(requireContext()).load(R.drawable.ic_profile).into(binding.profilePhotoImageView)
                     binding.photoProgressBar.visibility = GONE
                 } else {
-                    Glide.with(requireContext()).load(photo).placeholder(R.drawable.ic_downloading)
-                        .into(binding.profilePhotoImageView)
+                    Glide.with(requireContext()).load(photo).into(binding.profilePhotoImageView)
                     binding.photoProgressBar.visibility = GONE
                 }
 
