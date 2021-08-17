@@ -37,6 +37,7 @@ class GroupMessageRecyclerAdapter(
     private val context: Context
 ) : FirebaseRecyclerAdapter<GroupMessage, RecyclerView.ViewHolder>(options) {
 
+    //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
     interface BindViewHolderListener {
         fun onBind()
     }

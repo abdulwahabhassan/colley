@@ -7,6 +7,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.fragment.EditBioBottomSheetDialogFragment">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/padding_8dp"
+        android:layout_marginEnd="@dimen/margin_8dp"
+        android:src="@drawable/ic_drag"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editBioTextInputLayout"
         android:layout_width="match_parent"

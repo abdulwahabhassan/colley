@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -22,7 +23,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class GroupsFragment : Fragment(), GroupsRecyclerAdapter.ItemClickedListener {
+class GroupsFragment : Fragment(), GroupsRecyclerAdapter.ItemClickedListener, GroupsRecyclerAdapter.BindViewHolderListener {
 
     private var _binding: FragmentGroupsBinding? = null
     private val binding get() = _binding!!
@@ -69,7 +70,7 @@ class GroupsFragment : Fragment(), GroupsRecyclerAdapter.ItemClickedListener {
             .setQuery(groupsRef, ChatGroup::class.java)
             .build()
 
-        adapter = GroupsRecyclerAdapter(options, requireContext(), currentUser, this)
+        adapter = GroupsRecyclerAdapter(options, requireContext(), currentUser, this, this)
         manager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
@@ -102,6 +103,11 @@ class GroupsFragment : Fragment(), GroupsRecyclerAdapter.ItemClickedListener {
             val action = HomeFragmentDirections.actionHomeFragmentToGroupChatFragment(groupId)
             parentFragment?.findNavController()?.navigate(action)
         }
+    }
+
+    //hide progress bar when groups are displayed
+    override fun onBind() {
+        binding.groupsProgressBar.visibility = GONE
     }
 
 }
