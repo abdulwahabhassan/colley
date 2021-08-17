@@ -39,26 +39,6 @@ object DummyData {
         )
     }
 
-    fun getListOfGroups(): ArrayList<ChatGroup> {
-        return arrayListOf(
-            ChatGroup(
-                "https://rebrand.ly/lre8sby",
-                "Basket ball team",
-
-                115),
-            ChatGroup(
-                name = "Med.biochem 200L",
-                unreadMessages = 20),
-            ChatGroup(
-                groupIcon = "https://rebrand.ly/uebxhcu",
-                name = "UNIBEN Aspirants group"),
-            ChatGroup(
-                "https://rebrand.ly/5cmpwwe",
-                "NUESA National secretariat association",
-                3)
-        )
-    }
-
     fun getListOfComments(): ArrayList<Comment> {
         return arrayListOf(
             Comment(

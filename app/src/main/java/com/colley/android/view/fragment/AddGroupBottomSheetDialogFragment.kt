@@ -14,10 +14,10 @@ import android.widget.CheckBox
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.colley.android.R
 import com.colley.android.adapter.group.AddGroupMembersRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentAddGroupBottomSheetDialogBinding
+import com.colley.android.model.ChatGroup
 import com.colley.android.model.NewGroup
 import com.colley.android.model.User
 import com.colley.android.templateModel.GroupMessage
@@ -59,8 +59,6 @@ class AddGroupBottomSheetDialogFragment (
         }
     }
 
-//    private lateinit var photoValueEventListener: ValueEventListener
-
     interface SaveButtonListener {
         fun onSave()
     }
@@ -99,34 +97,6 @@ class AddGroupBottomSheetDialogFragment (
             }
         )
 
-        //event listener for group photo
-//        photoValueEventListener = object : ValueEventListener {
-//
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val photo = snapshot.getValue<String>()
-//                if (photo == null) {
-//                    Log.e(TAG, "photo for user $uid is unexpectedly null")
-//                    Snackbar.make(requireView(),
-//                        "No profile picture",
-//                        Snackbar.LENGTH_LONG).show()
-//                } else {
-//                    Glide.with(requireContext()).load(photo).placeholder(R.drawable.ic_downloading)
-//                        .into(binding.addGroupImageView)
-//                }
-//
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                Log.w(TAG, "getPhoto:onCancelled", error.toException())
-//                Snackbar.make(requireView(),
-//                    "Error in fetching photo",
-//                    Snackbar.LENGTH_LONG).show()
-//            }
-//        }
-
-        //add event listener to user photo in case of update
-//        dbRef.child("photos").child(uid).addValueEventListener(photoValueEventListener)
-
 
         with(binding) {
             selectGroupPhotoTextView.setOnClickListener {
@@ -153,7 +123,6 @@ class AddGroupBottomSheetDialogFragment (
 
         //Disable editing during creation
         setEditingEnabled(false)
-
 
         //make instance of new group
        val newGroup = NewGroup(
@@ -186,9 +155,13 @@ class AddGroupBottomSheetDialogFragment (
                     .child(groupImageUri.lastPathSegment!!)
 
                 //upload the photo to storage
-                putImageInStorage(storageReference, groupImageUri, key)
+                putImageInStorage(storageReference, groupImageUri, key, groupName)
+            } else {
+                //simply update database without group photo
+                    val url = null
+                dbRef.child("groups-id-name-photo").child(key).setValue(ChatGroup(key, groupName, url))
             }
-                Snackbar.make(homeView, "Group created successfully", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(homeView, "Group created successfully! Uploading to database..", Snackbar.LENGTH_LONG).show()
                 saveButtonListener.onSave()
         })
     }
@@ -199,6 +172,7 @@ class AddGroupBottomSheetDialogFragment (
             addGroupNameEditText.isEnabled = enabled
             addGroupDescriptionEditText.isEnabled = enabled
             selectGroupPhotoTextView.isEnabled = enabled
+            createGroupButton.isEnabled = enabled
         }
     }
 
@@ -229,14 +203,12 @@ class AddGroupBottomSheetDialogFragment (
         }
     }
 
-//    private fun onImageSelected(uri: Uri) {
-//        val storageReference = Firebase.storage
-//            .getReference(uid)
-//            .child(uri.lastPathSegment!!)
-//        putImageInStorage(storageReference, uri)
-//    }
-
-    private fun putImageInStorage(storageReference: StorageReference, groupImageUri: Uri?, key: String) {
+    private fun putImageInStorage(
+        storageReference: StorageReference,
+        groupImageUri: Uri?,
+        key: String,
+        groupName: String
+    ) {
         // First upload the image to Cloud Storage
         storageReference.putFile(groupImageUri!!)
             .addOnSuccessListener(
@@ -245,10 +217,9 @@ class AddGroupBottomSheetDialogFragment (
                 // and add it to database
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { uri ->
-                        dbRef.child("group-photos").child(key).setValue(uri.toString()).addOnCompleteListener { task ->
+                        dbRef.child("groups-id-name-photo").child(key).setValue(ChatGroup(key, groupName, uri.toString())).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 Toast.makeText(homeContext, "Photo uploaded successfully", Toast.LENGTH_LONG).show()
-//                                dbRef.child("group-photos").child(key).addListenerForSingleValueEvent(photoValueEventListener)
                             } else {
                                 Toast.makeText(homeContext, "Photo uploaded failed", Toast.LENGTH_LONG).show()
                             }
@@ -268,7 +239,6 @@ class AddGroupBottomSheetDialogFragment (
 
     override fun onStop() {
         super.onStop()
-//        dbRef.child("photos").child(uid).removeEventListener(photoValueEventListener)
     }
 
 

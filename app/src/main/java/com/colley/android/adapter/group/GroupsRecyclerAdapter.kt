@@ -2,7 +2,7 @@ package com.colley.android.adapter.group
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -39,16 +39,14 @@ class GroupsRecyclerAdapter (
 
             groupNameTextView.text = chatGroup.name
 
-            when (chatGroup.unreadMessages) {
-                0 -> unreadConversationCountTextView.visibility = View.GONE
-                else -> unreadConversationCountTextView.text = chatGroup.unreadMessages.toString()
-            }
+            //hiding unread messages. Feature not implemented yet
+            unreadConversationCountTextView.visibility = GONE
 
-            when {
-                chatGroup.groupIcon !== null ->
-                    Glide.with(this.root.context).load(chatGroup.groupIcon).into(groupImageView)
-                else ->
+            when (chatGroup.groupPhoto) {
+                null ->
                     Glide.with(this.root.context).load(R.drawable.ic_group).into(groupImageView)
+                else ->
+                    Glide.with(this.root.context).load(chatGroup.groupPhoto).into(groupImageView)
             }
 
             root.setOnClickListener {

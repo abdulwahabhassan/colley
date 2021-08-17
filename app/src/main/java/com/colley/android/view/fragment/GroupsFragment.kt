@@ -60,7 +60,7 @@ class GroupsFragment : Fragment(), GroupsRecyclerAdapter.ItemClickedListener {
         currentUser = Firebase.auth.currentUser!!
 
         //get a query reference to groups
-        val groupsRef = dbRef.child("groups")
+        val groupsRef = dbRef.child("groups-id-name-photo")
 
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         //build an options to configure adapter. setQuery takes firebase query to listen to and a
