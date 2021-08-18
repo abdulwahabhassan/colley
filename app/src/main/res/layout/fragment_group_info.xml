@@ -143,6 +143,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_16dp"
             android:layout_marginBottom="16dp"
+            android:layout_marginEnd="@dimen/margin_8dp"
+            android:layout_marginStart="@dimen/margin_8dp"
             app:cardCornerRadius="@dimen/corner_radius_8dp"
             app:cardElevation="@dimen/height_1dp"
             app:layout_constraintBottom_toBottomOf="parent"

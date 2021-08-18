@@ -1,5 +1,6 @@
 package com.colley.android
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.adapter.group.GroupMembersRecyclerAdapter
+import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupInfoBinding
 import com.colley.android.model.ChatGroup
 import com.colley.android.view.fragment.EditBioBottomSheetDialogFragment
@@ -31,6 +33,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 
 
 class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedListener, SaveButtonListener {
@@ -46,7 +50,13 @@ class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedLis
     private lateinit var manager: LinearLayoutManager
     private lateinit var infoValueEventListener: ValueEventListener
     private lateinit var aboutValueEventListener: ValueEventListener
+    private lateinit var photoValueEventListener: ValueEventListener
     private var editGroupAboutBottomSheetDialog: EditGroupAboutBottomSheetDialogFragment? = null
+    private val openDocument = registerForActivityResult(OpenDocumentContract()) { groupImageUri ->
+        if(groupImageUri != null) {
+            onImageSelected(groupImageUri)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,6 +107,9 @@ class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedLis
             }
         }
 
+        //load group info
+        dbRef.child("groups-id-name-photo").child(args.groupId).addListenerForSingleValueEvent(infoValueEventListener)
+
         //event listener for group description
         aboutValueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -116,10 +129,34 @@ class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedLis
         }
 
         //load group description
-        dbRef.child("groups").child(args.groupId).child("description").addListenerForSingleValueEvent(aboutValueEventListener)
+        dbRef.child("groups").child(args.groupId).child("description").addValueEventListener(aboutValueEventListener)
 
-        //load group info
-        dbRef.child("groups-id-name-photo").child(args.groupId).addListenerForSingleValueEvent(infoValueEventListener)
+        //event listener for group photo when updated
+        photoValueEventListener = object : ValueEventListener {
+
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val photo = snapshot.getValue<String>()
+
+                //load group photo
+                if (photo == null) {
+                    Log.e(TAG, "group photo is unexpectedly null")
+                    Glide.with(requireContext()).load(R.drawable.ic_profile).into(binding.groupPhotoImageView)
+                    binding.photoProgressBar.visibility = GONE
+                } else {
+                    Glide.with(requireContext()).load(photo).into(binding.groupPhotoImageView)
+                    binding.photoProgressBar.visibility = GONE
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "getPhoto:onCancelled", error.toException())
+                Snackbar.make(requireView(),
+                    "Error in fetching photo",
+                    Snackbar.LENGTH_LONG).show()
+                binding.photoProgressBar.visibility = GONE
+            }
+        }
 
         //get a query reference to group members
         val messagesRef = dbRef.child("groups").child(args.groupId).child("members")
@@ -145,6 +182,45 @@ class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedLis
             )
             editGroupAboutBottomSheetDialog?.show(childFragmentManager, null)
         }
+
+        //update group photo
+        binding.addPhotoFab.setOnClickListener {
+            openDocument.launch(arrayOf("image/*"))
+        }
+    }
+
+    private fun onImageSelected(groupImageUri: Uri) {
+        binding.photoProgressBar.visibility = View.VISIBLE
+        val storageReference = Firebase.storage
+            .getReference(args.groupId)
+            .child(groupImageUri.lastPathSegment!!)
+        putImageInStorage(storageReference, groupImageUri)
+    }
+
+    private fun putImageInStorage(storageReference: StorageReference, groupImageUri: Uri) {
+        // First upload the image to Cloud Storage
+        storageReference.putFile(groupImageUri)
+            .addOnSuccessListener(
+                requireActivity()
+            ) { taskSnapshot -> // After the image loads, get a public downloadUrl for the image
+                // and add it to database
+                taskSnapshot.metadata!!.reference!!.downloadUrl
+                    .addOnSuccessListener { uri ->
+                        dbRef.child("groups-id-name-photo").child(args.groupId).child("groupPhoto").setValue(uri.toString())
+                            .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Snackbar.make(requireView(), "Photo uploaded successfully.. updating..", Snackbar.LENGTH_LONG).show()
+                                //load group photo
+                                dbRef.child("groups-id-name-photo").child(args.groupId).child("groupPhoto").addListenerForSingleValueEvent(photoValueEventListener)
+                            } else {
+                                Snackbar.make(requireView(), "Failed to update profile", Snackbar.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+            }
+            .addOnFailureListener(requireActivity()) { e ->
+                Log.w(TAG, "Image upload task was unsuccessful.", e)
+            }
     }
 
     override fun onResume() {
@@ -160,8 +236,9 @@ class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedLis
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        dbRef.child("groups-id-name-photo").child("groupPhoto").removeEventListener(infoValueEventListener)
+        dbRef.child("groups-id-name-photo").child(args.groupId).child("groupPhoto").removeEventListener(infoValueEventListener)
         dbRef.child("groups").child(args.groupId).child("description").removeEventListener(aboutValueEventListener)
+        dbRef.child("groups-id-name-photo").child(args.groupId).child("groupPhoto").removeEventListener(photoValueEventListener)
     }
 
 
