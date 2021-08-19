@@ -101,6 +101,7 @@
     <string name="group_members_text">Group Members</string>
     <string name="about">About</string>
     <string name="members_text">Members</string>
+    <string name="add_text">Add</string>
 
 
 </resources>

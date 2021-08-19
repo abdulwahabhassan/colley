@@ -32,7 +32,6 @@
         android:layout_marginEnd="@dimen/margin_8dp"
         android:ellipsize="end"
         android:lines="1"
-        android:text="@string/name_placeholder"
         android:textAlignment="viewStart"
         android:textColor="@color/pearl"
         android:textSize="@dimen/text_size_15sp"

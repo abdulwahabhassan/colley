@@ -3,10 +3,10 @@
     <item>
         <shape>
             <corners
-                android:topRightRadius="@dimen/corner_radius_8dp"
-                android:topLeftRadius="@dimen/corner_radius_8dp"
-                android:bottomRightRadius="@dimen/corner_radius_8dp"
-                android:bottomLeftRadius="@dimen/corner_radius_8dp"/>
+                android:topRightRadius="@dimen/corner_radius_16dp"
+                android:topLeftRadius="@dimen/corner_radius_16dp"
+                android:bottomRightRadius="@dimen/corner_radius_16dp"
+                android:bottomLeftRadius="@dimen/corner_radius_16dp"/>
             <solid android:color="@color/white" />
         </shape>
     </item>

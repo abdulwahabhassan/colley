@@ -220,6 +220,7 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
     override fun onStop() {
         super.onStop()
         adapter.stopListening()
+        binding.linearLayout.visibility = VISIBLE
     }
 
     override fun onDestroy() {

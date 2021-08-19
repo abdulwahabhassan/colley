@@ -92,7 +92,7 @@ class SignInActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             Snackbar.make(
                 binding.root,
-                "Signed in",
+                "Signed in as ${auth.currentUser?.email}",
                 Snackbar.LENGTH_LONG).show()
             addUserToDataBase()
         } else {

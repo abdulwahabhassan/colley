@@ -17,10 +17,7 @@ import com.colley.android.adapter.group.GroupMembersRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupInfoBinding
 import com.colley.android.model.ChatGroup
-import com.colley.android.view.fragment.EditBioBottomSheetDialogFragment
-import com.colley.android.view.fragment.EditGroupAboutBottomSheetDialogFragment
-import com.colley.android.view.fragment.EditProfileBottomSheetDialogFragment
-import com.colley.android.view.fragment.ProfileFragment
+import com.colley.android.view.fragment.*
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -37,7 +34,11 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 
-class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedListener, SaveButtonListener {
+class GroupInfoFragment :
+    Fragment(),
+    GroupMembersRecyclerAdapter.ItemClickedListener,
+    SaveButtonListener,
+    AddGroupMemberBottomSheetDialogFragment.SaveButtonListener {
 
     private val args: GroupInfoFragmentArgs by navArgs()
     private var _binding: FragmentGroupInfoBinding? = null
@@ -52,6 +53,7 @@ class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedLis
     private lateinit var aboutValueEventListener: ValueEventListener
     private lateinit var photoValueEventListener: ValueEventListener
     private var editGroupAboutBottomSheetDialog: EditGroupAboutBottomSheetDialogFragment? = null
+    private var addGroupMemberSheetDialog: AddGroupMemberBottomSheetDialogFragment? = null
     private val openDocument = registerForActivityResult(OpenDocumentContract()) { groupImageUri ->
         if(groupImageUri != null) {
             onImageSelected(groupImageUri)
@@ -187,13 +189,20 @@ class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedLis
         binding.addPhotoFab.setOnClickListener {
             openDocument.launch(arrayOf("image/*"))
         }
+
+        binding.addGroupMemberTextView.setOnClickListener {
+        //show dialog to add group member
+                addGroupMemberSheetDialog = AddGroupMemberBottomSheetDialogFragment(this, requireContext(), requireView())
+                addGroupMemberSheetDialog?.arguments = bundleOf("groupIdKey" to args.groupId)
+                addGroupMemberSheetDialog?.show(childFragmentManager, null)
+        }
     }
 
     private fun onImageSelected(groupImageUri: Uri) {
         binding.photoProgressBar.visibility = View.VISIBLE
         val storageReference = Firebase.storage
             .getReference(args.groupId)
-            .child(groupImageUri.lastPathSegment!!)
+            .child("${auth.currentUser?.uid!!}-group-photo")
         putImageInStorage(storageReference, groupImageUri)
     }
 
@@ -252,5 +261,6 @@ class GroupInfoFragment : Fragment(), GroupMembersRecyclerAdapter.ItemClickedLis
 
     override fun onSave() {
         editGroupAboutBottomSheetDialog?.dismiss()
+        addGroupMemberSheetDialog?.dismiss()
     }
 }

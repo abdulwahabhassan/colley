@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.colley.android.R
 import com.colley.android.databinding.ItemNewGroupMemberBinding
 import com.colley.android.model.Profile
 import com.colley.android.model.User
@@ -80,7 +81,11 @@ class AddGroupMembersRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String>()
-                        Glide.with(context).load(photo).into(groupMemberImageView)
+                        if (photo != null) {
+                            Glide.with(context).load(photo).into(groupMemberImageView)
+                        } else {
+                            Glide.with(context).load(R.drawable.ic_person).into(groupMemberImageView)
+                        }
                     }
 
                     override fun onCancelled(error: DatabaseError) {

@@ -174,16 +174,28 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/groupMembersRecyclerView"
                     android:layout_width="match_parent"
-                    android:background="@drawable/group_members_recycler_view_background"
-                    android:backgroundTint="@color/light_apricot"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:background="@drawable/group_members_recycler_view_background"
+                    android:backgroundTint="@color/light_apricot"
                     android:overScrollMode="never"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView"
                     tools:listitem="@layout/item_group_member" />
+
+                <TextView
+                    android:id="@+id/addGroupMemberTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:drawableStart="@drawable/ic_add_group_member"
+                    android:drawablePadding="@dimen/padding_4dp"
+                    android:text="Add Members"
+                    android:layout_marginBottom="@dimen/margin_8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/groupMembersRecyclerView"
+                    app:layout_constraintTop_toBottomOf="@+id/groupMembersRecyclerView" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

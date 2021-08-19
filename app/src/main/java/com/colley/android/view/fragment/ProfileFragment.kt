@@ -178,7 +178,7 @@ class ProfileFragment : Fragment(), SaveButtonListener{
         binding.photoProgressBar.visibility = VISIBLE
                     val storageReference = Firebase.storage
                         .getReference(uid)
-                        .child(uri.lastPathSegment!!)
+                        .child("$uid-profile-photo")
                     putImageInStorage(storageReference, uri)
     }
 

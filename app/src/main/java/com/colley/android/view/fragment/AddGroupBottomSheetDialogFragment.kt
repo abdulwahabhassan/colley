@@ -152,7 +152,7 @@ class AddGroupBottomSheetDialogFragment (
             if (groupImageUri != null) {
                 val storageReference = Firebase.storage
                     .getReference(key)
-                    .child(groupImageUri.lastPathSegment!!)
+                    .child("$uid-group-photo")
 
                 //upload the photo to storage
                 putImageInStorage(storageReference, groupImageUri, key, groupName)
