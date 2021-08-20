@@ -109,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                 if (photo != null) {
                     Glide.with(this@MainActivity).load(photo).into(imageView)
                 } else {
+                    Glide.with(this@MainActivity).load(R.drawable.ic_profile).into(imageView)
                     Log.w(TAG, "photo is null")
                     Snackbar.make(binding.root, "No profile picture", Snackbar.LENGTH_LONG).show()
                 }

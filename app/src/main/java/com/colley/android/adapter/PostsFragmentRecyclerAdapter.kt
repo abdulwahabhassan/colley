@@ -63,7 +63,7 @@ class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListene
                 Glide.with(root.context).load(R.drawable.ic_profile).into(userPhotoImageView)
             }
 
-            root.setOnClickListener {
+            contentTextView.setOnClickListener {
                 clickListener.onItemClick(post)
             }
 

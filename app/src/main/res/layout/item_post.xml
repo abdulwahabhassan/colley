@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_8dp">
+        android:paddingTop="@dimen/margin_8dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/userPhotoImageView"
@@ -87,21 +87,27 @@
             android:id="@+id/contentTextView"
             android:layout_width="@dimen/width_0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginEnd="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"
+            android:paddingStart="@dimen/margin_16dp"
+            android:layout_marginTop="@dimen/margin_8dp"
+            android:paddingEnd="@dimen/margin_16dp"
+            android:paddingTop="@dimen/margin_8dp"
+            android:paddingBottom="@dimen/margin_8dp"
             android:textSize="@dimen/text_size_15sp"
+            android:clickable="true"
+            android:background="@drawable/ripple_effect_curved"
             android:text="@string/context_text_placeholder"
             android:textColor="@color/light_pearl"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userPhotoImageView" />
+            app:layout_constraintTop_toBottomOf="@+id/userPhotoImageView"
+            android:focusable="true" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/contentImageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_8dp"
+            android:background="@drawable/ripple_effect_curved"
             android:src="@drawable/ic_launcher_foreground"
             app:layout_constraintTop_toBottomOf="@+id/contentTextView"
             tools:layout_editor_absoluteX="0dp" />
@@ -155,6 +161,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:clickable="true"
+            android:background="@drawable/ripple_effect_rectangular"
             app:layout_constraintBottom_toBottomOf="@+id/likeLinearLayout"
             app:layout_constraintEnd_toStartOf="@+id/likeLinearLayout"
             app:layout_constraintHorizontal_bias="0.5"
@@ -182,6 +189,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
+            android:background="@drawable/ripple_effect_rectangular"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/promoteLinearLayout"
@@ -210,6 +218,7 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
+            android:background="@drawable/ripple_effect_rectangular"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

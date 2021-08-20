@@ -60,6 +60,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_4dp"
             android:layout_gravity="center"
+            android:padding="@dimen/padding_4dp"
+            android:background="@drawable/ripple_effect_rectangular"
             app:srcCompat="@drawable/ic_add_group_photo" />
 
         <ImageView
@@ -69,6 +71,8 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/margin_8dp"
             android:enabled="false"
+            android:padding="@dimen/padding_4dp"
+            android:background="@drawable/ripple_effect_rectangular"
             android:src="@drawable/ic_send_button_inactive" />
 
 

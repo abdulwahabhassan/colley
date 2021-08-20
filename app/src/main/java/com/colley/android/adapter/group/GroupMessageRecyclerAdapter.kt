@@ -98,6 +98,9 @@ class GroupMessageRecyclerAdapter(
                         } else {
                             if (photo != null) {
                                 loadImageIntoView(binding.currentUserImageView, photo)
+                            } else {
+                                Glide.with(context).load(R.drawable.ic_person).into(binding.currentUserImageView)
+                                binding.currentUserImageView.visibility = VISIBLE
                             }
                         }
                     }
@@ -162,6 +165,9 @@ class GroupMessageRecyclerAdapter(
                         } else {
                             if (photo != null) {
                                 loadImageIntoView(binding.messengerImageView, photo)
+                            } else {
+                                Glide.with(context).load(R.drawable.ic_person).into(binding.messengerImageView)
+                                binding.messengerImageView.visibility = VISIBLE
                             }
                         }
 

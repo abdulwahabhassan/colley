@@ -158,7 +158,7 @@ class AddGroupMemberBottomSheetDialogFragment (
                                     }
                                 }
                             } else {
-                                Log.d(TAG, "postTransaction:onComplete:$error")
+                                Log.d(TAG, "addMemberTransaction:onComplete:$error")
                             }
                             saveButtonListener.onSave()
                         }

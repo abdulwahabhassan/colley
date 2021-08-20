@@ -102,6 +102,7 @@
     <string name="about">About</string>
     <string name="members_text">Members</string>
     <string name="add_text">Add</string>
+    <string name="admin_text">ADMIN</string>
 
 
 </resources>

@@ -79,6 +79,9 @@ class AddGroupBottomSheetDialogFragment (
         dbRef = Firebase.database.reference
         currentUser = Firebase.auth.currentUser!!
 
+        //automatically add user to the list of members by default
+        selectedMembersList.add(uid)
+
         //add listener to retrieve users and pass them to AddGroupMembersRecyclerAdapter as a list
         dbRef.child("users").addListenerForSingleValueEvent(
             object : ValueEventListener {
@@ -191,11 +194,15 @@ class AddGroupBottomSheetDialogFragment (
         if (view.isChecked) {
             selectedMembersCount++
             binding.selectedMemberCountTextView.text = selectedMembersCount.toString()
-            selectedMembersList.add(userId)
+            if (!selectedMembersList.contains(userId)) {
+                selectedMembersList.add(userId)
+            }
         } else {
             selectedMembersCount--
             binding.selectedMemberCountTextView.text = selectedMembersCount.toString()
-            selectedMembersList.remove(userId)
+            if (selectedMembersList.contains(userId)) {
+                selectedMembersList.remove(userId)
+            }
         }
         when (selectedMembersCount) {
             0 -> binding.selectedMemberCountTextView.visibility = GONE

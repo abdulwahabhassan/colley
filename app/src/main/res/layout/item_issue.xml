@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/ripple_effect_curved"
     android:layout_marginBottom="@dimen/margin_1dp"
-    android:padding="@dimen/padding_16dp">
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingTop="@dimen/padding_16dp"
+    android:paddingBottom="@dimen/margin_16dp">
 
     <TextView
         android:id="@+id/issueTitleTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:lines="1"
-        android:textStyle="bold"
         android:ellipsize="end"
+        android:lines="1"
+        android:layout_marginEnd="@dimen/margin_8dp"
+        android:paddingStart="@dimen/padding_16dp"
+        android:paddingEnd="@dimen/padding_8dp"
         android:text="@string/issue_title_placeholder"
-        android:textSize="@dimen/text_size_15sp"
         android:textColor="@color/pearl"
-        app:layout_constraintEnd_toStartOf="@+id/pinImageView"
+        android:textSize="@dimen/text_size_15sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/issueTimeStampTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,15 +32,21 @@
         android:id="@+id/issueBodyTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_8dp"
+        android:background="@drawable/ripple_effect_curved"
         android:ellipsize="end"
         android:maxLines="3"
-        android:textColor="@color/light_pearl"
+        android:clickable="true"
+        android:paddingStart="@dimen/padding_16dp"
+        android:paddingTop="@dimen/margin_8dp"
+        android:paddingEnd="@dimen/padding_16dp"
+        android:paddingBottom="@dimen/margin_8dp"
         android:text="@string/issue_body_placeholder"
+        android:textColor="@color/light_pearl"
         android:textSize="@dimen/text_size_15sp"
-        app:layout_constraintEnd_toEndOf="@+id/pinImageView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/issueTitleTextView"
-        app:layout_constraintTop_toBottomOf="@+id/issueTitleTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/issueTitleTextView"
+        android:focusable="true" />
 
     <TextView
         android:id="@+id/userNameTextView"
@@ -53,7 +65,8 @@
         android:id="@+id/contributionsTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:paddingStart="@dimen/margin_16dp"
+        android:paddingEnd="@dimen/padding_8dp"
         android:drawablePadding="@dimen/padding_4dp"
         android:text="@string/contributions_count_placeholder"
         android:textColor="@color/orange"
@@ -68,23 +81,24 @@
         android:id="@+id/userImageView"
         android:layout_width="@dimen/width_20dp"
         android:layout_height="@dimen/height_20dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_16dp"
         android:scaleType="center"
         android:src="@drawable/ic_profile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/issueTimeStampTextView"
+        app:layout_constraintTop_toBottomOf="@+id/issueBodyTextView"
         app:shapeAppearance="@style/RoundShapeAppearance" />
 
     <TextView
         android:id="@+id/issueTimeStampTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/margin_8dp"
         android:text="@string/time_stamp_placeholder"
-        android:textSize="@dimen/text_size_12sp"
         android:textColor="@color/light_pearl"
-        app:layout_constraintEnd_toEndOf="@+id/issueBodyTextView"
-        app:layout_constraintTop_toBottomOf="@+id/issueBodyTextView" />
+        android:textSize="@dimen/text_size_12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/issueTitleTextView"
+        app:layout_constraintEnd_toStartOf="@+id/pinImageView"
+        app:layout_constraintTop_toTopOf="@+id/issueTitleTextView" />
 
     <TextView
         android:id="@+id/endorsementTextView"
@@ -96,6 +110,8 @@
         android:text="@string/endorse_plural_placeholder"
         app:drawableTint="@color/green"
         android:drawablePadding="@dimen/padding_4dp"
+        android:paddingStart="@dimen/margin_16dp"
+        android:paddingEnd="@dimen/padding_8dp"
         app:layout_constraintEnd_toEndOf="@+id/contributionsTextView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/contributionsTextView"
@@ -106,6 +122,7 @@
         android:id="@+id/pinImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_16dp"
         android:src="@drawable/pin_drawable_state_selector"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -115,9 +132,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/user_school_placeholder"
-        android:textSize="@dimen/text_size_12sp"
         android:textColor="@color/pearl"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="@dimen/text_size_12sp"
         app:layout_constraintEnd_toEndOf="@+id/userNameTextView"
         app:layout_constraintTop_toBottomOf="@+id/userNameTextView" />
 

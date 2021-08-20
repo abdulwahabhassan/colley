@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/margin_8dp"
-    android:layout_marginStart="@dimen/margin_8dp"
-    android:layout_marginTop="@dimen/margin_8dp"
-    android:layout_marginBottom="@dimen/margin_8dp">
+    android:paddingEnd="@dimen/margin_8dp"
+    android:longClickable="true"
+    android:background="@drawable/ripple_effect_curved"
+    android:paddingStart="@dimen/margin_8dp"
+    android:paddingTop="@dimen/margin_8dp"
+    android:paddingBottom="@dimen/margin_8dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/groupMemberImageView"
@@ -28,17 +30,29 @@
         android:layout_width="@dimen/width_0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="@dimen/margin_8dp"
+        android:layout_marginEnd="@dimen/margin_16dp"
         android:ellipsize="end"
         android:lines="1"
         android:textAlignment="viewStart"
         android:textColor="@color/pearl"
         android:textSize="@dimen/text_size_15sp"
         app:layout_constraintBottom_toBottomOf="@+id/groupMemberImageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/adminTextView"
         app:layout_constraintStart_toEndOf="@+id/groupMemberImageView"
         app:layout_constraintTop_toTopOf="@+id/groupMemberImageView" />
+
+    <TextView
+        android:id="@+id/adminTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/admin_text"
+        android:textColor="@color/blue"
+        android:textSize="@dimen/text_size_11sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/groupMemberNameTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/groupMemberNameTextView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

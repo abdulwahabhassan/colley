@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,16 +19,15 @@ import com.colley.android.adapter.group.GroupMembersRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupInfoBinding
 import com.colley.android.model.ChatGroup
+import com.colley.android.model.Profile
 import com.colley.android.view.fragment.*
+import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
@@ -170,7 +171,7 @@ class GroupInfoFragment :
             .setQuery(messagesRef, String::class.java)
             .build()
 
-        adapter = GroupMembersRecyclerAdapter(options, currentUser, this, requireContext())
+        adapter = GroupMembersRecyclerAdapter(options, currentUser, this, requireContext(), args.groupId)
         manager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
@@ -251,7 +252,86 @@ class GroupInfoFragment :
     }
 
 
+    //retrieve user profile, open bottom sheet dialog fragment to display user profile
     override fun onItemClick(memberId: String) {
+
+    }
+
+    //retrieve user profile and open alert dialog to remove the member from the group
+    override fun onItemLongCLicked(memberId: String) {
+        dbRef.child("groups").child(args.groupId).child("groupAdmins").addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    //retrieve list of group admins
+                    val groupAdmins = snapshot.getValue<ArrayList<String>>()
+                    //check if current user is an admin. Only admins can remove group members
+                    if (groupAdmins?.contains(currentUser.uid) == true) {
+                        dbRef.child("profiles").child(memberId).addListenerForSingleValueEvent(
+                            object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    val profile = snapshot.getValue<Profile>()
+                                    if (profile != null) {
+                                        //open dialog
+                                        AlertDialog.Builder(requireContext())
+                                            .setMessage("Remove ${profile.name} from this group?")
+                                            .setPositiveButton("Yes") {
+                                                    dialog, _ ->
+                                                //run transaction on database list of group members
+                                                dbRef.child("groups").child(args.groupId).child("members").runTransaction(
+                                                    object : Transaction.Handler {
+                                                        override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                                            //retrieve the database list which is a mutable data and store in list else
+                                                            //return the same data back to database if null
+                                                            val list = currentData.getValue<ArrayList<String>>()
+                                                                ?: return Transaction.success(currentData)
+                                                            //remove the specified member from the list if they exist
+                                                            if (list.contains(memberId)) {
+                                                                list.remove(memberId)
+                                                            }
+                                                            //set value the value of the database members to the new list
+                                                            currentData.value = list
+                                                            //return updated list to database
+                                                            return Transaction.success(currentData)
+                                                        }
+
+                                                        override fun onComplete(
+                                                            error: DatabaseError?,
+                                                            committed: Boolean,
+                                                            currentData: DataSnapshot?
+                                                        ) {
+                                                            if (committed && error == null) {
+                                                                Snackbar.make(requireView(), "${profile.name} removed successfully", Snackbar.LENGTH_LONG).show()
+                                                            } else {
+                                                                Log.d(TAG, "removeMemberTransaction:onComplete:$error")
+                                                            }
+                                                        }
+
+                                                    }
+                                                )
+                                                dialog.dismiss()
+                                            }.setNegativeButton("No") {
+                                                    dialog, _ -> dialog.dismiss()
+                                            }.show()
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    Log.w(TAG, "getMemberList:OnCancelled", error.toException())
+                                }
+                            }
+                        )
+                    } else {
+                        Toast.makeText(requireContext(), "Only group admins can remove members", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(TAG, "getAdminsList:OnCancelled", error.toException())
+                }
+            }
+        )
+
+
 
     }
 
