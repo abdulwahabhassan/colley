@@ -55,6 +55,7 @@ class GroupInfoFragment :
     private lateinit var photoValueEventListener: ValueEventListener
     private var editGroupAboutBottomSheetDialog: EditGroupAboutBottomSheetDialogFragment? = null
     private var addGroupMemberSheetDialog: AddGroupMemberBottomSheetDialogFragment? = null
+    private var memberProfileSheetDialog: MemberProfileBottomSheetDialogFragment? = null
     private val openDocument = registerForActivityResult(OpenDocumentContract()) { groupImageUri ->
         if(groupImageUri != null) {
             onImageSelected(groupImageUri)
@@ -254,6 +255,8 @@ class GroupInfoFragment :
 
     //retrieve user profile, open bottom sheet dialog fragment to display user profile
     override fun onItemClick(memberId: String) {
+        memberProfileSheetDialog =  MemberProfileBottomSheetDialogFragment()
+        memberProfileSheetDialog?.show(childFragmentManager, null)
 
     }
 

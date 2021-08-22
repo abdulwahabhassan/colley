@@ -104,7 +104,7 @@ class GroupMembersRecyclerAdapter(
                        true
                    }
 
-                    //on short click
+                    //on click
                     root.setOnClickListener {
                         clickListener.onItemClick(memberId)
                     }

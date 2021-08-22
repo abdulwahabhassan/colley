@@ -58,7 +58,7 @@ class GroupsRecyclerAdapter (
         fun bind(chatGroupId: String, clickListener: ItemClickedListener) = with(itemBinding) {
             //add listener to chat group reference on database using chatGroupId to locate the specific group
             //By this logic, only groups that a user belong to will be displayed to them
-            Firebase.database.reference.child("groups-id-name-photo").child(chatGroupId).addListenerForSingleValueEvent(
+            Firebase.database.reference.child("groups-id-name-photo").child(chatGroupId).addValueEventListener(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val chatGroup = snapshot.getValue<ChatGroup>()
@@ -89,6 +89,7 @@ class GroupsRecyclerAdapter (
 
         }
     }
+    
 
     companion object {
         const val TAG = "GroupsRecyclerAdapter"

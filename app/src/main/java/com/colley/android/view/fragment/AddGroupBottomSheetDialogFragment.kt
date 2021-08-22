@@ -261,7 +261,7 @@ class AddGroupBottomSheetDialogFragment (
                     .addOnSuccessListener { uri ->
                         dbRef.child("groups-id-name-photo").child(key).setValue(ChatGroup(key, groupName, uri.toString())).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(homeContext, "Photo uploaded successfully", Toast.LENGTH_LONG).show()
+                                Toast.makeText(homeContext, "Group photo uploaded successfully", Toast.LENGTH_LONG).show()
                             } else {
                                 Toast.makeText(homeContext, "Photo uploaded failed", Toast.LENGTH_LONG).show()
                             }

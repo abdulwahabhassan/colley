@@ -16,13 +16,6 @@
         android:layout_marginEnd="@dimen/margin_8dp"
         android:src="@drawable/ic_drag"/>
 
-
-
-
-
-
-
-
     <Button
         android:id="@+id/addMemberButton"
         android:backgroundTint="@color/pearl"

@@ -103,6 +103,8 @@
     <string name="members_text">Members</string>
     <string name="add_text">Add</string>
     <string name="admin_text">ADMIN</string>
+    <string name="drag_handler_text">drag handler</string>
+    <string name="write_message_text">Write message..</string>
 
 
 </resources>

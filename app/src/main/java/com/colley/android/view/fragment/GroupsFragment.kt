@@ -107,6 +107,10 @@ class GroupsFragment : Fragment(), GroupsRecyclerAdapter.ItemClickedListener, Gr
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        adapter?.startListening()
+    }
 
     override fun onStop() {
         super.onStop()
