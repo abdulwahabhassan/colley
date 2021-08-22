@@ -50,6 +50,7 @@
         android:lines="1"
         android:textAlignment="viewEnd"
         android:text="@string/unread_conversation_count_placeholder"
+        android:visibility="invisible"
         android:textColor="@color/light_pearl"
         app:layout_constraintBottom_toBottomOf="@+id/groupNameTextView"
         app:layout_constraintEnd_toEndOf="parent"

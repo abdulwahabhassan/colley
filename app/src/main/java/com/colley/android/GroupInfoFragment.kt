@@ -300,6 +300,36 @@ class GroupInfoFragment :
                                                             currentData: DataSnapshot?
                                                         ) {
                                                             if (committed && error == null) {
+
+                                                                dbRef.child("user-groups").child(memberId).runTransaction(
+                                                                    object : Transaction.Handler {
+                                                                        override fun doTransaction(
+                                                                            currentData: MutableData
+                                                                        ): Transaction.Result {
+                                                                            //retrieve the database list, if null, return same null value to database
+                                                                            val listOfGroups = currentData.getValue<ArrayList<String>>()
+                                                                                ?: return Transaction.success(currentData)
+                                                                            //remove group's id in the list of group's this members belongs to
+                                                                            if (listOfGroups.contains(args.groupId)) {
+                                                                                listOfGroups.remove(args.groupId)
+                                                                            }
+                                                                            //set database list to this update list and return it
+                                                                            currentData.value = listOfGroups
+                                                                            return Transaction.success(currentData)
+                                                                        }
+
+                                                                        override fun onComplete(
+                                                                            error: DatabaseError?,
+                                                                            committed: Boolean,
+                                                                            currentData: DataSnapshot?
+                                                                        ) {
+                                                                            if (!committed && error != null) {
+                                                                                Log.w(TAG, "updateGroupsList:onComplete:$error")
+                                                                            }
+                                                                        }
+
+                                                                    }
+                                                                )
                                                                 Snackbar.make(requireView(), "${profile.name} removed successfully", Snackbar.LENGTH_LONG).show()
                                                             } else {
                                                                 Log.d(TAG, "removeMemberTransaction:onComplete:$error")

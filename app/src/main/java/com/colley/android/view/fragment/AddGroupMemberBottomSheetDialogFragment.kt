@@ -1,9 +1,7 @@
 package com.colley.android.view.fragment
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,15 +11,10 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import com.colley.android.GroupInfoFragment
 import com.colley.android.adapter.group.AddGroupMembersRecyclerAdapter
-import com.colley.android.contract.OpenDocumentContract
-import com.colley.android.databinding.FragmentAddGroupBottomSheetDialogBinding
 import com.colley.android.databinding.FragmentAddGroupMemberBottomSheetDialogBinding
-import com.colley.android.model.ChatGroup
-import com.colley.android.model.NewGroup
 import com.colley.android.model.User
-import com.colley.android.templateModel.GroupMessage
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -30,8 +23,6 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
 
 class AddGroupMemberBottomSheetDialogFragment (
     private val saveButtonListener: SaveButtonListener,
@@ -146,6 +137,43 @@ class AddGroupMemberBottomSheetDialogFragment (
 
                             //Notify user if transaction was successful else log error
                             if (committed && error == null) {
+
+                                //update each new member's groups list which tells which groups they each belong to
+                                selectedMembersList.forEach {
+                                    //run a transaction to update each user's list of groups they are a member of
+                                    dbRef.child("user-groups").child(it).runTransaction(
+                                        object : Transaction.Handler {
+                                            override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                                //retrieve the database list
+                                                val listOfGroups = currentData.getValue<ArrayList<String>>()
+                                                //if the database list returns null, set it to an array containing the group's id
+                                                if (listOfGroups == null) {
+                                                    currentData.value = arrayListOf(bundledGroupId)
+                                                    return Transaction.success(currentData)
+                                                } else {
+                                                    //add group's id to the list of group's this members belongs to
+                                                    listOfGroups.add(bundledGroupId!!)
+                                                    //set database list to this update list and return it
+                                                    currentData.value = listOfGroups
+                                                    return Transaction.success(currentData)
+                                                }
+
+                                            }
+
+                                            override fun onComplete(
+                                                error: DatabaseError?,
+                                                committed: Boolean,
+                                                currentData: DataSnapshot?
+                                            ) {
+                                                if (!committed && error != null) {
+                                                    Log.d(GroupInfoFragment.TAG, "listOfGroupsTransaction:onComplete:$error")
+                                                }
+                                            }
+
+                                        }
+                                    )
+                                }
+
                                 when (selectedMembersList.size) {
                                     0 -> {
                                         Snackbar.make(homeView, "No new member selected", Snackbar.LENGTH_LONG).show()

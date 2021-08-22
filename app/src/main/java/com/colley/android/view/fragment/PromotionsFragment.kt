@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.PromotionsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentPromotionsBinding
-import com.colley.android.templateModel.DummyData
-import com.colley.android.templateModel.Promotion
+import com.colley.android.model.DummyData
+import com.colley.android.model.Promotion
 
 class PromotionsFragment : Fragment(), PromotionsFragmentRecyclerAdapter.ItemClickedListener {
 

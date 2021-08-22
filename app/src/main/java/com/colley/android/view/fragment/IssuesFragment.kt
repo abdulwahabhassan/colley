@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
 import com.colley.android.adapter.IssuesFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentIssuesBinding
-import com.colley.android.templateModel.DummyData
-import com.colley.android.templateModel.Issue
+import com.colley.android.model.DummyData
+import com.colley.android.model.Issue
 
 
 class IssuesFragment : Fragment(), IssuesFragmentRecyclerAdapter.ItemClickedListener {

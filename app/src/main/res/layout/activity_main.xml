@@ -50,7 +50,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:itemIconTint="@color/pearl"
-        app:itemTextColor="@color/text_color_state_selector"
         app:itemShapeAppearanceOverlay="@style/RoundShapeAppearance"
         android:theme="@style/NavigationViewTheme"
         app:headerLayout="@layout/drawer_header"

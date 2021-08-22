@@ -1,4 +1,4 @@
-package com.colley.android.templateModel
+package com.colley.android.model
 
 class GroupMember (
     val name: String? = null,

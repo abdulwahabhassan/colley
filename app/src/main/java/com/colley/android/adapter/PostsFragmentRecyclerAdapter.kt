@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemPostBinding
-import com.colley.android.templateModel.Post
+import com.colley.android.model.Post
 
 class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListener) :
     RecyclerView.Adapter<PostsFragmentRecyclerAdapter.PostViewHolder>() {

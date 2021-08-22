@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.CommentsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentCommentsBinding
-import com.colley.android.templateModel.Comment
-import com.colley.android.templateModel.DummyData
+import com.colley.android.model.Comment
+import com.colley.android.model.DummyData
 
 class CommentsFragment : Fragment(), CommentsFragmentRecyclerAdapter.ItemClickedListener {
 

@@ -1,4 +1,4 @@
-package com.colley.android.templateModel
+package com.colley.android.model
 
 class Post (
     val userPhoto: String? = null,

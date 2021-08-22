@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
 import com.colley.android.adapter.PostsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentPostsBinding
-import com.colley.android.templateModel.DummyData
-import com.colley.android.templateModel.Post
+import com.colley.android.model.DummyData
+import com.colley.android.model.Post
 
 
 class PostsFragment : Fragment(),

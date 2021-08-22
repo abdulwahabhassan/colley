@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.databinding.ItemMessageBinding
-import com.colley.android.templateModel.Message
+import com.colley.android.model.Message
 
 class MessagesRecyclerAdapter : RecyclerView.Adapter<MessagesRecyclerAdapter.MessageViewHolder>() {
 

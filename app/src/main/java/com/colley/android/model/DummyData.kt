@@ -1,6 +1,4 @@
-package com.colley.android.templateModel
-
-import com.colley.android.model.ChatGroup
+package com.colley.android.model
 
 object DummyData {
 

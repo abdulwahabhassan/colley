@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -17,10 +16,9 @@ import com.colley.android.R
 import com.colley.android.adapter.group.GroupMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupChatBinding
-import com.colley.android.model.Profile
-import com.colley.android.templateModel.GroupMessage
-import com.colley.android.templateModel.ScrollToBottomObserver
-import com.colley.android.templateModel.SendButtonObserver
+import com.colley.android.model.GroupMessage
+import com.colley.android.model.ScrollToBottomObserver
+import com.colley.android.model.SendButtonObserver
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
