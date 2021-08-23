@@ -18,13 +18,17 @@
         android:visibility="invisible"
         android:textColor="@color/pearl"/>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/continueButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/pearl"
-        android:textColor="@color/apricot"
+        android:textColor="@color/light_pearl"
         android:visibility="invisible"
+        android:textAllCaps="false"
+        android:padding="@dimen/padding_8dp"
+        android:drawablePadding="@dimen/padding_4dp"
+        android:background="@drawable/ripple_effect_curved_edges"
         android:layout_marginTop="@dimen/margin_16dp"
         android:drawableEnd="@drawable/ic_home"
         android:text="@string/continue_to_home_text" />

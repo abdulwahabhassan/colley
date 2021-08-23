@@ -105,6 +105,7 @@
     <string name="admin_text">ADMIN</string>
     <string name="drag_handler_text">drag handler</string>
     <string name="write_message_text">Write message..</string>
+    <string name="send_text">Send</string>
 
 
 </resources>

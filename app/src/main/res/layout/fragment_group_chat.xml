@@ -61,8 +61,8 @@
             android:layout_margin="@dimen/margin_4dp"
             android:layout_gravity="center"
             android:padding="@dimen/padding_4dp"
-            android:background="@drawable/ripple_effect_rectangular"
-            app:srcCompat="@drawable/ic_add_group_photo" />
+            android:background="@drawable/ripple_effect_curved_edges"
+            app:srcCompat="@drawable/ic_add_new_photo" />
 
         <ImageView
             android:id="@+id/sendButton"
@@ -72,7 +72,7 @@
             android:layout_margin="@dimen/margin_8dp"
             android:enabled="false"
             android:padding="@dimen/padding_4dp"
-            android:background="@drawable/ripple_effect_rectangular"
+            android:background="@drawable/ripple_effect_curved_edges"
             android:src="@drawable/ic_send_button_inactive" />
 
 

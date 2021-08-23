@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.fragment.MemberProfileBottomSheetDialogFragment">
+    tools:context=".view.fragment.MemberInteractionBottomSheetDialogFragment">
 
     <ImageView
         android:id="@+id/imageView"
@@ -25,7 +25,7 @@
         android:layout_marginEnd="@dimen/margin_16dp"
         android:layout_marginTop="@dimen/margin_8dp"
         android:layout_marginBottom="@dimen/margin_8dp"
-        android:background="@drawable/ripple_effect_curved"
+        android:background="@drawable/ripple_effect_curved_edges"
         android:drawableStart="@drawable/ic_profile"
         android:drawablePadding="@dimen/padding_4dp"
         android:padding="@dimen/padding_8dp"
@@ -50,7 +50,7 @@
         android:clickable="true"
         android:focusable="true"
         android:padding="@dimen/padding_8dp"
-        android:background="@drawable/ripple_effect_curved"
+        android:background="@drawable/ripple_effect_curved_edges"
         android:drawableStart="@drawable/ic_messages"
         android:drawablePadding="@dimen/padding_4dp"
         android:text="Send Message"
@@ -67,19 +67,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+
         android:layout_marginHorizontal="@dimen/margin_16dp"
         android:layout_marginTop="@dimen/margin_8dp"
-        android:layout_marginBottom="@dimen/margin_16dp"
-        app:boxBackgroundColor="@color/white"
         app:boxCornerRadiusBottomEnd="@dimen/corner_radius_8dp"
         app:boxCornerRadiusBottomStart="@dimen/corner_radius_8dp"
         app:boxCornerRadiusTopEnd="@dimen/corner_radius_8dp"
         app:boxCornerRadiusTopStart="@dimen/corner_radius_8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendMessageTextView"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/sendMessageTextView">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editMMessageEditText"
@@ -90,7 +87,25 @@
             android:padding="12dp"
             android:textColor="@color/light_pearl"
             android:textSize="@dimen/text_size_14sp" />
+
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/margin_8dp"
+        android:layout_marginBottom="@dimen/margin_16dp"
+        android:background="@drawable/ripple_effect_curved_edges"
+        android:text="@string/send_text"
+        android:textColor="@color/light_pearl"
+        android:textSize="@dimen/text_size_12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/editMessageTextInputLayout"
+        app:layout_constraintStart_toStartOf="@+id/editMessageTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/editMessageTextInputLayout"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

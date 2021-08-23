@@ -21,7 +21,6 @@ import com.colley.android.databinding.FragmentGroupInfoBinding
 import com.colley.android.model.ChatGroup
 import com.colley.android.model.Profile
 import com.colley.android.view.fragment.*
-import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -55,7 +54,7 @@ class GroupInfoFragment :
     private lateinit var photoValueEventListener: ValueEventListener
     private var editGroupAboutBottomSheetDialog: EditGroupAboutBottomSheetDialogFragment? = null
     private var addGroupMemberSheetDialog: AddGroupMemberBottomSheetDialogFragment? = null
-    private var memberProfileSheetDialog: MemberProfileBottomSheetDialogFragment? = null
+    private var memberInteractionSheetDialog: MemberInteractionBottomSheetDialogFragment? = null
     private val openDocument = registerForActivityResult(OpenDocumentContract()) { groupImageUri ->
         if(groupImageUri != null) {
             onImageSelected(groupImageUri)
@@ -188,7 +187,7 @@ class GroupInfoFragment :
         }
 
         //update group photo
-        binding.addPhotoFab.setOnClickListener {
+        binding.addPhotoButton.setOnClickListener {
             openDocument.launch(arrayOf("image/*"))
         }
 
@@ -255,8 +254,8 @@ class GroupInfoFragment :
 
     //retrieve user profile, open bottom sheet dialog fragment to display user profile
     override fun onItemClick(memberId: String) {
-        memberProfileSheetDialog =  MemberProfileBottomSheetDialogFragment()
-        memberProfileSheetDialog?.show(childFragmentManager, null)
+        memberInteractionSheetDialog =  MemberInteractionBottomSheetDialogFragment()
+        memberInteractionSheetDialog?.show(childFragmentManager, null)
 
     }
 

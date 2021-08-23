@@ -16,15 +16,17 @@
         android:layout_marginEnd="@dimen/margin_8dp"
         android:src="@drawable/ic_drag"/>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/addMemberButton"
-        android:backgroundTint="@color/pearl"
-        android:textColor="@color/white"
+        android:textColor="@color/light_pearl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16dp"
         android:layout_marginBottom="@dimen/margin_16dp"
         android:layout_gravity="end"
+        android:drawableStart="@drawable/ic_save"
+        android:paddingStart="@dimen/padding_12dp"
+        android:background="@drawable/ripple_effect_curved_edges"
         android:layout_marginEnd="@dimen/margin_16dp"
         android:textSize="@dimen/text_size_12sp"
         android:text="@string/add_text"/>

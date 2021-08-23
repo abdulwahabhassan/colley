@@ -21,13 +21,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/addPhotoFab"
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/addPhotoButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:fabSize="mini"
+                android:elevation="4dp"
+                android:background="@drawable/ripple_effect_curved_edges"
+                android:padding="@dimen/padding_8dp"
                 android:src="@drawable/ic_add_group_photo"
-                android:theme="@style/ColorOnSecondaryFab"
                 android:layout_marginBottom="@dimen/margin_32dp"
                 android:layout_marginEnd="@dimen/margin_16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -46,9 +47,8 @@
                 android:textColor="@color/light_apricot"
                 android:textSize="@dimen/text_size_16sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/addPhotoFab"
-                app:layout_constraintEnd_toStartOf="@+id/addPhotoFab"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintBottom_toBottomOf="@+id/addPhotoButton"
+                app:layout_constraintEnd_toStartOf="@+id/addPhotoButton"
                 app:layout_constraintStart_toStartOf="parent"/>
 
 
@@ -126,7 +126,7 @@
                     android:layout_marginTop="@dimen/margin_8dp"
                     android:drawablePadding="@dimen/padding_4dp"
                     android:padding="@dimen/padding_8dp"
-                    android:background="@drawable/ripple_effect_curved"
+                    android:background="@drawable/ripple_effect_curved_edges"
                     android:text="@string/edit_text"
                     app:drawableStartCompat="@drawable/ic_edit_info"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -189,15 +189,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_8dp"
-                    android:drawableStart="@drawable/ic_add_group_member"
                     android:drawablePadding="@dimen/padding_4dp"
-                    android:text="Add Members"
+                    android:text="@string/add_members_text"
                     android:padding="@dimen/padding_8dp"
-                    android:background="@drawable/ripple_effect_curved"
+                    android:background="@drawable/ripple_effect_curved_edges"
                     android:layout_marginBottom="@dimen/margin_8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/groupMembersRecyclerView"
-                    app:layout_constraintTop_toBottomOf="@+id/groupMembersRecyclerView" />
+                    app:layout_constraintTop_toBottomOf="@+id/groupMembersRecyclerView"
+                    app:drawableStartCompat="@drawable/ic_add_group_member" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

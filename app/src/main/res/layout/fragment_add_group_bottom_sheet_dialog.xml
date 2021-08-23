@@ -26,17 +26,18 @@
         android:background="@color/dark_grey"
         app:shapeAppearance="@style/RoundShapeAppearance"/>
 
-    <TextView
-        android:id="@+id/selectGroupPhotoTextView"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/selectGroupPhotoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_8dp"
         android:textColor="@color/light_pearl"
-        android:textStyle="bold"
-        android:textSize="@dimen/text_size_15sp"
+        android:textSize="@dimen/text_size_12sp"
+        android:background="@drawable/ripple_effect_curved_edges"
+        android:padding="@dimen/padding_8dp"
         android:drawablePadding="@dimen/padding_4dp"
         android:text="@string/select_group_icon_text"
-        app:drawableEndCompat="@drawable/ic_add_group_photo" />
+        app:drawableEndCompat="@drawable/ic_add_new_photo" />
 
 
 
@@ -98,15 +99,17 @@
             android:textColor="@color/light_pearl" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/createGroupButton"
-        android:backgroundTint="@color/pearl"
-        android:textColor="@color/white"
+        android:textColor="@color/pearl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16dp"
         android:layout_marginBottom="@dimen/margin_16dp"
         android:layout_gravity="end"
+        android:padding="@dimen/padding_8dp"
+        android:drawableStart="@drawable/ic_save"
+        android:background="@drawable/ripple_effect_curved_edges"
         android:layout_marginEnd="@dimen/margin_16dp"
         android:textSize="@dimen/text_size_12sp"
         android:text="@string/create_text"/>

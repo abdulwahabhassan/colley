@@ -3,9 +3,11 @@ package com.colley.android.view.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.colley.android.databinding.FragmentAddGroupBottomSheetDialogBinding
-import com.colley.android.databinding.FragmentMemberProfileBottomSheetDialogBinding
+import com.colley.android.databinding.FragmentMemberInteractionBottomSheetDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -13,9 +15,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
-class MemberProfileBottomSheetDialogFragment : BottomSheetDialogFragment() {
+class MemberInteractionBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
-    private var _binding: FragmentMemberProfileBottomSheetDialogBinding? = null
+    private var _binding: FragmentMemberInteractionBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -28,7 +30,7 @@ class MemberProfileBottomSheetDialogFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentMemberProfileBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = FragmentMemberInteractionBottomSheetDialogBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -38,6 +40,10 @@ class MemberProfileBottomSheetDialogFragment : BottomSheetDialogFragment() {
         //initialize database and current user
         dbRef = Firebase.database.reference
         currentUser = Firebase.auth.currentUser!!
+
+        binding.sendMessageTextView.setOnClickListener {
+            binding.editMessageTextInputLayout.visibility = VISIBLE
+        }
     }
 
     override fun onDestroy() {

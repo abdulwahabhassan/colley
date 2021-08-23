@@ -100,7 +100,7 @@ class AddGroupBottomSheetDialogFragment (
 
 
         with(binding) {
-            selectGroupPhotoTextView.setOnClickListener {
+            selectGroupPhotoButton.setOnClickListener {
                 openDocument.launch(arrayOf("image/*"))
             }
 
@@ -209,7 +209,7 @@ class AddGroupBottomSheetDialogFragment (
         with(binding) {
             addGroupNameEditText.isEnabled = enabled
             addGroupDescriptionEditText.isEnabled = enabled
-            selectGroupPhotoTextView.isEnabled = enabled
+            selectGroupPhotoButton.isEnabled = enabled
             createGroupButton.isEnabled = enabled
         }
     }
