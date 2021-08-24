@@ -12,6 +12,7 @@ import android.widget.CheckBox
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.GroupInfoFragment
+import com.colley.android.SaveButtonListener
 import com.colley.android.adapter.group.AddGroupMembersRecyclerAdapter
 import com.colley.android.databinding.FragmentAddGroupMemberBottomSheetDialogBinding
 import com.colley.android.model.User
@@ -25,7 +26,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class AddGroupMemberBottomSheetDialogFragment (
-    private val saveButtonListener: SaveButtonListener,
+    private var saveButtonListener: SaveButtonListener,
     private val groupContext: Context,
     private val homeView: View
         ) : BottomSheetDialogFragment(), AddGroupMembersRecyclerAdapter.ItemClickedListener {
@@ -45,9 +46,6 @@ class AddGroupMemberBottomSheetDialogFragment (
         get() = currentUser.uid
 
 
-    interface SaveButtonListener {
-        fun onSave()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

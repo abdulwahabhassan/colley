@@ -26,6 +26,7 @@
         android:textColor="@color/light_pearl"
         android:visibility="invisible"
         android:textAllCaps="false"
+        android:textSize="@dimen/text_size_15sp"
         android:padding="@dimen/padding_8dp"
         android:drawablePadding="@dimen/padding_4dp"
         android:background="@drawable/ripple_effect_curved_edges"

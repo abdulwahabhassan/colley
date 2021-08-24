@@ -10,6 +10,7 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -37,8 +38,7 @@ import com.google.firebase.storage.ktx.storage
 class GroupInfoFragment :
     Fragment(),
     GroupMembersRecyclerAdapter.ItemClickedListener,
-    SaveButtonListener,
-    AddGroupMemberBottomSheetDialogFragment.SaveButtonListener {
+    SaveButtonListener {
 
     private val args: GroupInfoFragmentArgs by navArgs()
     private var _binding: FragmentGroupInfoBinding? = null
@@ -55,10 +55,15 @@ class GroupInfoFragment :
     private var editGroupAboutBottomSheetDialog: EditGroupAboutBottomSheetDialogFragment? = null
     private var addGroupMemberSheetDialog: AddGroupMemberBottomSheetDialogFragment? = null
     private var memberInteractionSheetDialog: MemberInteractionBottomSheetDialogFragment? = null
+    private var editGroupNameBottomSheetDialog: EditGroupNameBottomSheetDialogFragment? = null
     private val openDocument = registerForActivityResult(OpenDocumentContract()) { groupImageUri ->
         if(groupImageUri != null) {
             onImageSelected(groupImageUri)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -111,7 +116,7 @@ class GroupInfoFragment :
         }
 
         //load group info
-        dbRef.child("groups-id-name-photo").child(args.groupId).addListenerForSingleValueEvent(infoValueEventListener)
+        dbRef.child("groups-id-name-photo").child(args.groupId).addValueEventListener(infoValueEventListener)
 
         //event listener for group description
         aboutValueEventListener = object : ValueEventListener {
@@ -196,6 +201,16 @@ class GroupInfoFragment :
                 addGroupMemberSheetDialog = AddGroupMemberBottomSheetDialogFragment(this, requireContext(), requireView())
                 addGroupMemberSheetDialog?.arguments = bundleOf("groupIdKey" to args.groupId)
                 addGroupMemberSheetDialog?.show(childFragmentManager, null)
+        }
+
+        //edit group name
+        binding.editGroupNameButton.setOnClickListener {
+            editGroupNameBottomSheetDialog = EditGroupNameBottomSheetDialogFragment(this, requireContext())
+            editGroupNameBottomSheetDialog?.arguments = bundleOf(
+                "groupNameKey" to binding.groupNameTextView.text.toString(),
+                "groupIdKey" to args.groupId
+            )
+            editGroupNameBottomSheetDialog?.show(childFragmentManager, null)
         }
     }
 
@@ -374,5 +389,6 @@ class GroupInfoFragment :
     override fun onSave() {
         editGroupAboutBottomSheetDialog?.dismiss()
         addGroupMemberSheetDialog?.dismiss()
+        editGroupNameBottomSheetDialog?.dismiss()
     }
 }

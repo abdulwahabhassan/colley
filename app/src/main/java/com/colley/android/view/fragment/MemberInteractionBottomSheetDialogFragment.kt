@@ -43,6 +43,7 @@ class MemberInteractionBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
         binding.sendMessageTextView.setOnClickListener {
             binding.editMessageTextInputLayout.visibility = VISIBLE
+            binding.sendButton.visibility = VISIBLE
         }
     }
 

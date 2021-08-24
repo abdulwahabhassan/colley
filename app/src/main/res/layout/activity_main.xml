@@ -10,11 +10,13 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             app:elevation="@dimen/height_0dp"
+            android:background="@color/pearl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
@@ -23,7 +25,9 @@
                 android:id="@+id/toolbar"
                 app:titleTextColor="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/image_height_50dp"
+                app:titleTextAppearance="@style/Toolbar.TitleText"
+                app:titleCentered="true"
                 android:theme="@style/ThemeOverlay_Toolbar"
                 app:layout_scrollFlags=""/>
 

@@ -24,13 +24,12 @@ import com.google.firebase.ktx.Firebase
 
 
 class EditProfileBottomSheetDialogFragment(
-    buttonListener: SaveButtonListener
+    private var saveButtonListener: SaveButtonListener
     )
     : BottomSheetDialogFragment() {
 
     private var _binding: FragmentEditProfileBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
-    var saveButtonListener: SaveButtonListener = buttonListener
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
     private val uid: String

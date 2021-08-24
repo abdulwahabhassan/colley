@@ -2,6 +2,7 @@
 <resources>
     <color name="pearl">#2F394B</color>
     <color name="light_pearl">#414855</color>
+    <color name="very_light_pearl">#8999B6</color>
     <color name="lighter_pearl">#D6DEEC</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>

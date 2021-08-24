@@ -19,21 +19,16 @@ import com.google.firebase.ktx.Firebase
 
 
 class EditBioBottomSheetDialogFragment(
-    buttonListener: SaveButtonListener
+    private var saveButtonListener: SaveButtonListener
     ) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentEditBioBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
-    var saveButtonListener: SaveButtonListener = buttonListener
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
     private val uid: String
         get() = currentUser.uid
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

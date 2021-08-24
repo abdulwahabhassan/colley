@@ -20,21 +20,16 @@ import com.google.firebase.ktx.Firebase
 
 
 class EditGroupAboutBottomSheetDialogFragment(
-    buttonListener: SaveButtonListener
+    private var saveButtonListener: SaveButtonListener
     ) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentEditAboutBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
-    var saveButtonListener: SaveButtonListener = buttonListener
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
     private val groupId: String
         get() = currentUser.uid
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

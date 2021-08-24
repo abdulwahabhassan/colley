@@ -14,11 +14,14 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/home_fragment_tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="42dp"
             app:tabRippleColor="@color/white"
-            app:tabTextColor="@color/light_pearl"
-            app:tabSelectedTextColor="@color/pearl"
-            app:tabIndicatorColor="@color/pearl"
+            android:layout_marginEnd="@dimen/margin_16dp"
+            android:layout_marginStart="@dimen/margin_16dp"
+            app:tabTextColor="@color/very_light_pearl"
+            app:tabSelectedTextColor="@color/light_pearl"
+            app:tabIndicatorColor="@color/light_pearl"
+            app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

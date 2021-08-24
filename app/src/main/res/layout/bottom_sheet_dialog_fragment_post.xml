@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabRippleColor="@color/white"
+        app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
         app:tabTextColor="@color/light_pearl"
         app:tabSelectedTextColor="@color/pearl"
         app:tabIndicatorColor="@color/pearl"/>

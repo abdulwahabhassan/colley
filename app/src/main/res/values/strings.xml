@@ -82,7 +82,6 @@
     <string name="group_chat_label">Group chat</string>
     <string name="floating_action_buttton_desc">floating action buttton</string>
     <string name="add_group_text">Add TempGroup</string>
-    <string name="retry_text">Retry</string>
     <string name="continue_to_home_text">Continue to home</string>
     <string name="signed_in_text">Signed in</string>
     <string name="welcome_back_text">Welcome back</string>
@@ -106,6 +105,7 @@
     <string name="drag_handler_text">drag handler</string>
     <string name="write_message_text">Write message..</string>
     <string name="send_text">Send</string>
+    <string name="retry_text">Retry</string>
 
 
 </resources>

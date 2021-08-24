@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/ripple_effect_curved"
-    android:layout_marginBottom="@dimen/margin_1dp"
     android:clickable="true"
     android:focusable="true"
     android:paddingTop="@dimen/padding_16dp"
-    android:paddingBottom="@dimen/margin_16dp">
+    android:paddingBottom="@dimen/margin_8dp">
 
     <TextView
         android:id="@+id/issueTitleTextView"

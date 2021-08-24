@@ -61,5 +61,24 @@
         <item name="colorOnPrimary">@color/white</item>
     </style>
 
+<!--    override tool bar title text size-->
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+<!--    override tab layout tab text size-->
+    <style name="MyTabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+<!--    shape appearance for group photo-->
+    <style name="CurvedEdgesAppearance" parent="">
+        <item name="cornerSizeBottomLeft">8dp</item>
+        <item name="cornerSizeBottomRight">8dp</item>
+    </style>
 
 </resources>
