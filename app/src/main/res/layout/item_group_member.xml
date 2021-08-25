@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:paddingEnd="@dimen/margin_8dp"
     android:longClickable="true"
-    android:background="@drawable/ripple_effect_curved"
+    android:layout_marginTop="@dimen/margin_2dp"
+    android:layout_marginBottom="@dimen/margin_2dp"
+    android:background="@drawable/ripple_effect_curved_edges"
     android:paddingStart="@dimen/margin_8dp"
     android:paddingTop="@dimen/margin_8dp"
     android:paddingBottom="@dimen/margin_8dp">

@@ -106,6 +106,7 @@
     <string name="write_message_text">Write message..</string>
     <string name="send_text">Send</string>
     <string name="retry_text">Retry</string>
+    <string name="leave_group_text">Leave Group</string>
 
 
 </resources>

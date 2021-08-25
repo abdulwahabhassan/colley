@@ -1,220 +1,268 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true"
+    android:background="@color/white"
+    app:layoutDescription="@xml/fragment_group_info_scene"
     tools:context=".GroupInfoFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/groupPhotoConstraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/grey">
+        android:layout_height="270dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/groupPhotoConstraintLayout"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/addPhotoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_16dp"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            android:background="@drawable/ripple_effect_curved_edges"
+            android:elevation="1dp"
+            android:padding="@dimen/padding_8dp"
+            android:src="@drawable/ic_add_group_photo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/groupNameTextView"
+            android:layout_width="@dimen/width_0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_16dp"
+            android:elevation="@dimen/height_1dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/addPhotoButton"
+            app:layout_constraintEnd_toStartOf="@+id/editGroupNameButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/addPhotoButton" />
+
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/editGroupNameButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ripple_effect_curved_edges"
+            android:elevation="1dp"
+            android:padding="@dimen/padding_8dp"
+            android:src="@drawable/ic_edit_pencil_apricot"
+            app:layout_constraintBottom_toBottomOf="@+id/groupNameTextView"
+            app:layout_constraintEnd_toStartOf="@+id/addPhotoButton"
+            app:layout_constraintTop_toTopOf="@+id/groupNameTextView" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/groupPhotoImageView"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.16000003" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/addPhotoButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_16dp"
-                android:layout_marginBottom="@dimen/margin_24dp"
-                android:background="@drawable/ripple_effect_curved_edges"
-                android:elevation="1dp"
-                android:padding="@dimen/padding_8dp"
-                android:src="@drawable/ic_add_group_photo"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+        <ProgressBar
+            android:id="@+id/photoProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/apricot"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/groupPhotoImageView"
+            app:layout_constraintTop_toTopOf="@+id/groupPhotoImageView" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/infoCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_8dp"
+        android:layout_marginTop="270dp"
+        android:layout_marginEnd="@dimen/margin_8dp"
+        app:cardCornerRadius="@dimen/corner_radius_8dp"
+        app:cardElevation="@dimen/height_0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/groupPhotoConstraintLayout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding_8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="-51dp">
 
             <TextView
-                android:id="@+id/groupNameTextView"
-                android:layout_width="@dimen/width_0dp"
+                android:id="@+id/groupDescriptionTitleTextView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_16dp"
-                android:elevation="@dimen/height_1dp"
-                android:ellipsize="end"
-                android:lines="1"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_16sp"
+                android:layout_marginTop="8dp"
+                android:text="@string/about"
+                android:textColor="@color/light_pearl"
+                android:textSize="@dimen/text_size_13sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/addPhotoButton"
-                app:layout_constraintEnd_toStartOf="@+id/editGroupNameButton"
+                android:textAllCaps="true"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/addPhotoButton" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/editGroupNameButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ripple_effect_curved_edges"
-                android:elevation="1dp"
-                android:padding="@dimen/padding_8dp"
-                android:src="@drawable/ic_edit_pencil_apricot"
-                app:layout_constraintBottom_toBottomOf="@+id/groupNameTextView"
-                app:layout_constraintEnd_toStartOf="@+id/addPhotoButton"
-                app:layout_constraintTop_toTopOf="@+id/groupNameTextView" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/groupPhotoImageView"
+            <View
+                android:id="@+id/aboutHorizontalLine"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="center"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_height="@dimen/height_1dp"
+                android:layout_marginTop="@dimen/margin_8dp"
+                android:background="@color/lighter_pearl"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.16000003" />
+                app:layout_constraintTop_toBottomOf="@+id/groupDescriptionTitleTextView" />
 
-            <ProgressBar
-                android:id="@+id/photoProgressBar"
+            <TextView
+                android:id="@+id/groupDescriptionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_8dp"
+                android:layout_marginTop="@dimen/margin_16dp"
+                android:layout_marginEnd="@dimen/margin_8dp"
+                android:textAlignment="center"
+                android:textColor="@color/light_pearl"
+                android:textSize="@dimen/text_size_15sp"
+                app:layout_constraintEnd_toEndOf="@+id/groupDescriptionTitleTextView"
+                app:layout_constraintStart_toStartOf="@+id/groupDescriptionTitleTextView"
+                app:layout_constraintTop_toBottomOf="@+id/aboutHorizontalLine" />
+
+            <TextView
+                android:id="@+id/editAboutTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminateTint="@color/apricot"
+                android:layout_marginTop="@dimen/margin_8dp"
+                android:layout_marginBottom="@dimen/margin_8dp"
+                android:background="@drawable/ripple_effect_curved_edges"
+                android:drawablePadding="@dimen/padding_4dp"
+                android:padding="@dimen/padding_8dp"
+                android:text="@string/edit_text"
+                app:drawableStartCompat="@drawable/ic_edit_info"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/groupPhotoImageView"
-                app:layout_constraintTop_toTopOf="@+id/groupPhotoImageView" />
-
+                app:layout_constraintEnd_toEndOf="@+id/groupDescriptionTextView"
+                app:layout_constraintTop_toBottomOf="@+id/groupDescriptionTextView"
+                app:layout_constraintVertical_bias="0.0" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/infoCardView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_8dp"
-            android:layout_marginTop="330dp"
-            android:layout_marginEnd="@dimen/margin_8dp"
-            app:cardCornerRadius="@dimen/corner_radius_8dp"
-            app:cardElevation="@dimen/height_1dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/groupPhotoConstraintLayout">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/padding_8dp">
-
-                <TextView
-                    android:id="@+id/groupDescriptionTitleTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/about"
-                    android:textColor="@color/light_pearl"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/text_size_15sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/groupDescriptionTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_4dp"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/text_size_15sp"
-                    app:layout_constraintEnd_toEndOf="@+id/groupDescriptionTitleTextView"
-                    app:layout_constraintStart_toStartOf="@+id/groupDescriptionTitleTextView"
-                    app:layout_constraintTop_toBottomOf="@+id/groupDescriptionTitleTextView" />
-
-                <TextView
-                    android:id="@+id/editAboutTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8dp"
-                    android:drawablePadding="@dimen/padding_4dp"
-                    android:padding="@dimen/padding_8dp"
-                    android:background="@drawable/ripple_effect_curved_edges"
-                    android:text="@string/edit_text"
-                    app:drawableStartCompat="@drawable/ic_edit_info"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/groupDescriptionTextView"
-                    app:layout_constraintTop_toBottomOf="@+id/groupDescriptionTextView"
-                    app:layout_constraintVertical_bias="0.0" />
+    </androidx.cardview.widget.CardView>
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/recyclerCardView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_0dp"
+        android:layout_marginStart="@dimen/margin_8dp"
+        android:layout_marginEnd="@dimen/margin_8dp"
+        android:layout_marginBottom="@dimen/margin_8dp"
+        app:cardCornerRadius="@dimen/corner_radius_8dp"
+        app:cardElevation="@dimen/height_0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infoCardView">
 
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/recyclerCardView"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_8dp"
-            android:layout_marginBottom="@dimen/margin_8dp"
-            android:layout_marginEnd="@dimen/margin_8dp"
-            android:layout_marginStart="@dimen/margin_8dp"
-            app:cardCornerRadius="@dimen/corner_radius_8dp"
-            app:cardElevation="@dimen/height_1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/infoCardView"
-            app:layout_constraintStart_toStartOf="@+id/infoCardView"
-            app:layout_constraintTop_toBottomOf="@+id/infoCardView"
-            app:layout_constraintVertical_bias="0.0">
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/padding_8dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/members_text"
+                android:textColor="@color/light_pearl"
+                android:textSize="@dimen/text_size_13sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/membersHorizontalLine"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="@dimen/padding_8dp">
+                android:layout_height="@dimen/height_1dp"
+                android:layout_marginTop="@dimen/margin_8dp"
+                android:background="@color/lighter_pearl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/members_text"
-                    android:textColor="@color/light_pearl"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"
-                    android:textSize="@dimen/text_size_15sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/groupMembersRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_0dp"
+                android:layout_marginStart="@dimen/margin_8dp"
+                android:layout_marginEnd="@dimen/margin_8dp"
+                android:layout_marginBottom="@dimen/margin_8dp"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toTopOf="@+id/addGroupMemberTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/membersHorizontalLine"
+                tools:listitem="@layout/item_group_member" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/groupMembersRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_8dp"
-                    android:overScrollMode="never"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView"
-                    tools:listitem="@layout/item_group_member" />
+            <TextView
+                android:id="@+id/addGroupMemberTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/ripple_effect_curved_edges"
+                android:drawablePadding="@dimen/padding_4dp"
+                android:padding="@dimen/padding_8dp"
+                android:text="@string/add_members_text"
+                app:drawableStartCompat="@drawable/ic_add_group_member"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/groupMembersRecyclerView" />
 
-                <TextView
-                    android:id="@+id/addGroupMemberTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8dp"
-                    android:drawablePadding="@dimen/padding_4dp"
-                    android:text="@string/add_members_text"
-                    android:padding="@dimen/padding_8dp"
-                    android:background="@drawable/ripple_effect_curved_edges"
-                    android:layout_marginBottom="@dimen/margin_8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/groupMembersRecyclerView"
-                    app:layout_constraintTop_toBottomOf="@+id/groupMembersRecyclerView"
-                    app:drawableStartCompat="@drawable/ic_add_group_member" />
+            <TextView
+                android:id="@+id/leaveGroupTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/ripple_effect_curved_edges"
+                android:drawablePadding="@dimen/padding_4dp"
+                android:padding="@dimen/padding_8dp"
+                android:text="@string/leave_group_text"
+                app:drawableStartCompat="@drawable/ic_exit"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/groupMembersRecyclerView" />
+
+            <View
+                android:id="@+id/membersBottomHorizontalLine"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_1dp"
+                android:background="@color/lighter_pearl"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/groupMembersRecyclerView" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.motion.widget.MotionLayout>

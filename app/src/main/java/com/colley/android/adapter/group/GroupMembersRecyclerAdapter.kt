@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -50,6 +51,8 @@ class GroupMembersRecyclerAdapter(
                                 val admins = snapshot.getValue<ArrayList<String>>()
                                 if(admins?.contains(memberId) == true) {
                                     adminTextView.visibility = VISIBLE
+                                } else {
+                                    adminTextView.visibility = GONE
                                 }
                             }
 

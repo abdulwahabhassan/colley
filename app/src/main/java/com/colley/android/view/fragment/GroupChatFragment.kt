@@ -101,7 +101,9 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val groupName = snapshot.getValue<String>()
                     //set action bar title
-                    (activity as AppCompatActivity?)!!.supportActionBar!!.title = groupName
+                    if (groupName != null) {
+                        (activity as AppCompatActivity?)!!.supportActionBar!!.title = groupName
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
