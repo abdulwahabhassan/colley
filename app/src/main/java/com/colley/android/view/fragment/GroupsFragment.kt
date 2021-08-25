@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
-import com.colley.android.adapter.group.GroupsRecyclerAdapter
+import com.colley.android.adapter.GroupsRecyclerAdapter
 import com.colley.android.databinding.FragmentGroupsBinding
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseUser

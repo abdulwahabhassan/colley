@@ -1,4 +1,4 @@
-package com.colley.android.view.fragment
+package com.colley.android.view.dialog
 
 import android.content.Context
 import android.net.Uri
@@ -14,8 +14,8 @@ import android.widget.CheckBox
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.colley.android.GroupInfoFragment
-import com.colley.android.adapter.group.AddGroupMembersRecyclerAdapter
+import com.colley.android.view.fragment.GroupInfoFragment
+import com.colley.android.adapter.AddGroupMembersRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentAddGroupBottomSheetDialogBinding
 import com.colley.android.model.ChatGroup
@@ -108,7 +108,7 @@ class AddGroupBottomSheetDialogFragment (
                 val groupName = binding.addGroupNameEditText.text.toString()
                 val groupDescription = binding.addGroupDescriptionEditText.text.toString()
 
-                if( TextUtils.isEmpty(groupName.trim())) {
+                if(TextUtils.isEmpty(groupName.trim())) {
                     Toast.makeText(requireContext(), "Group name cannot be empty", Toast.LENGTH_LONG).show()
                     return@setOnClickListener
                 } else {
@@ -269,7 +269,8 @@ class AddGroupBottomSheetDialogFragment (
                     }
             }
             .addOnFailureListener(requireActivity()) { e ->
-                Log.w(TAG, "Image upload task was unsuccessful.", e
+                Log.w(
+                    TAG, "Image upload task was unsuccessful.", e
                 )
             }
     }

@@ -32,11 +32,7 @@
         <item name="cornerSize">3%</item>
     </style>
 
-    <style name="CornerRadius10" parent="">
-        <item name="cornerSize">10%</item>
-    </style>
-
-<!--    style to remove list divider for menu groups in navigation view of drawerLayout and to set
+    <!--    style to remove list divider for menu groups in navigation view of drawerLayout and to set
         colorControlHighlight to white-->
     <style name="NavigationViewTheme" >
         <item name="android:listDivider">@color/white</item>
@@ -76,9 +72,5 @@
     </style>
 
 <!--    shape appearance for group photo-->
-    <style name="CurvedEdgesAppearance" parent="">
-        <item name="cornerSizeBottomLeft">8dp</item>
-        <item name="cornerSizeBottomRight">8dp</item>
-    </style>
 
 </resources>

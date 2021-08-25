@@ -1,4 +1,4 @@
-package com.colley.android
+package com.colley.android.view.fragment
 
 import android.net.Uri
 import android.os.Bundle
@@ -10,18 +10,22 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.colley.android.adapter.group.GroupMembersRecyclerAdapter
+import com.colley.android.R
+import com.colley.android.listener.SaveButtonListener
+import com.colley.android.adapter.GroupMembersRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupInfoBinding
 import com.colley.android.model.ChatGroup
 import com.colley.android.model.Profile
-import com.colley.android.view.fragment.*
+import com.colley.android.view.dialog.AddGroupMemberBottomSheetDialogFragment
+import com.colley.android.view.dialog.EditGroupAboutBottomSheetDialogFragment
+import com.colley.android.view.dialog.EditGroupNameBottomSheetDialogFragment
+import com.colley.android.view.dialog.MemberInteractionBottomSheetDialogFragment
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth

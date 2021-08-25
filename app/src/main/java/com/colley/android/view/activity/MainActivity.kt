@@ -1,4 +1,4 @@
-package com.colley.android.view
+package com.colley.android.view.activity
 
 import android.os.Bundle
 import android.util.Log

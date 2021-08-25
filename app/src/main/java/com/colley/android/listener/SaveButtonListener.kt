@@ -1,4 +1,4 @@
-package com.colley.android
+package com.colley.android.listener
 
 interface SaveButtonListener {
     fun onSave()

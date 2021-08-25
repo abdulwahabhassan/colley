@@ -1,21 +1,15 @@
 package com.colley.android.view.fragment
 
-import android.content.res.Resources
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.view.View.*
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.colley.android.R
-import com.colley.android.SaveButtonListener
 import com.colley.android.databinding.FragmentHomeBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.colley.android.view.dialog.AddGroupBottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator

@@ -12,10 +12,12 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.colley.android.R
-import com.colley.android.SaveButtonListener
+import com.colley.android.listener.SaveButtonListener
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentProfileBinding
 import com.colley.android.model.Profile
+import com.colley.android.view.dialog.EditBioBottomSheetDialogFragment
+import com.colley.android.view.dialog.EditProfileBottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -26,7 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
-class ProfileFragment : Fragment(), SaveButtonListener{
+class ProfileFragment : Fragment(), SaveButtonListener {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!

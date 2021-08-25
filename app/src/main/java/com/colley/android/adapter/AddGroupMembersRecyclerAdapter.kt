@@ -1,4 +1,4 @@
-package com.colley.android.adapter.group
+package com.colley.android.adapter
 
 import android.content.Context
 import android.util.Log

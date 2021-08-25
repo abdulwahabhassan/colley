@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".view.fragment.EditGroupAboutBottomSheetDialogFragment">
+    tools:context=".view.dialog.EditGroupAboutBottomSheetDialogFragment">
 
     <ImageView
         android:layout_width="wrap_content"

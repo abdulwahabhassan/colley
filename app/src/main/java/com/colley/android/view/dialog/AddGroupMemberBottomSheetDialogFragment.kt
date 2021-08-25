@@ -1,4 +1,4 @@
-package com.colley.android.view.fragment
+package com.colley.android.view.dialog
 
 import android.content.Context
 import android.os.Bundle
@@ -11,9 +11,9 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.colley.android.GroupInfoFragment
-import com.colley.android.SaveButtonListener
-import com.colley.android.adapter.group.AddGroupMembersRecyclerAdapter
+import com.colley.android.view.fragment.GroupInfoFragment
+import com.colley.android.listener.SaveButtonListener
+import com.colley.android.adapter.AddGroupMembersRecyclerAdapter
 import com.colley.android.databinding.FragmentAddGroupMemberBottomSheetDialogBinding
 import com.colley.android.model.User
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

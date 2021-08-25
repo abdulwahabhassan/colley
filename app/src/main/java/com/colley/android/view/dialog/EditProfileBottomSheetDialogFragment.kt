@@ -1,25 +1,21 @@
-package com.colley.android.view.fragment
+package com.colley.android.view.dialog
 
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.colley.android.R
-import com.colley.android.SaveButtonListener
+import com.colley.android.listener.SaveButtonListener
 import com.colley.android.databinding.FragmentEditProfileBottomSheetDialogBinding
 import com.colley.android.model.Profile
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 

@@ -13,11 +13,11 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
-import com.colley.android.adapter.group.GroupMessageRecyclerAdapter
+import com.colley.android.adapter.GroupMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupChatBinding
 import com.colley.android.model.GroupMessage
-import com.colley.android.model.ScrollToBottomObserver
+import com.colley.android.observer.ScrollToBottomObserver
 import com.colley.android.model.SendButtonObserver
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth

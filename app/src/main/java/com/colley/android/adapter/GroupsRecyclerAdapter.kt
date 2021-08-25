@@ -1,20 +1,16 @@
-package com.colley.android.adapter.group
+package com.colley.android.adapter
 
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View.GONE
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemGroupBinding
 import com.colley.android.model.ChatGroup
-import com.colley.android.view.fragment.AddGroupBottomSheetDialogFragment
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -79,14 +75,12 @@ class GroupsRecyclerAdapter (
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Log.w(TAG, "getChatGroup:OnCancelled", error.toException()
+                        Log.w(
+                            TAG, "getChatGroup:OnCancelled", error.toException()
                         )
                     }
                 }
             )
-
-
-
         }
     }
     

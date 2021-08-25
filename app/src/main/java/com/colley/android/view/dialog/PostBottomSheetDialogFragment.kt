@@ -1,4 +1,4 @@
-package com.colley.android.view.fragment
+package com.colley.android.view.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -10,6 +10,7 @@ import com.colley.android.adapter.PostsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentPostsBinding
 import com.colley.android.model.DummyData
 import com.colley.android.model.Post
+import com.colley.android.view.dialog.PostBottomSheetDialogFragment
 
 
 class PostsFragment : Fragment(),

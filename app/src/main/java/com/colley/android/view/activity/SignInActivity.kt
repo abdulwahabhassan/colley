@@ -1,11 +1,8 @@
-package com.colley.android.view
+package com.colley.android.view.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
-import android.view.View
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -14,7 +11,6 @@ import com.colley.android.R
 import com.colley.android.databinding.ActivitySignInBinding
 import com.colley.android.model.Profile
 import com.colley.android.model.User
-import com.colley.android.view.fragment.ProfileFragment
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult

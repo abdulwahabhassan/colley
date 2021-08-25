@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.fragment.MemberInteractionBottomSheetDialogFragment">
+    tools:context=".view.dialog.MemberInteractionBottomSheetDialogFragment">
 
     <ImageView
         android:id="@+id/imageView"
