@@ -162,8 +162,8 @@ class MainActivity : AppCompatActivity() {
             }.show()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         dbRef.child("photos").child(auth.currentUser?.uid!!).removeEventListener(photoEventListener)
     }
 

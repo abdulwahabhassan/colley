@@ -379,9 +379,11 @@ class GroupInfoFragment :
 
     //retrieve user profile, open bottom sheet dialog fragment to display user profile
     override fun onItemClick(memberId: String) {
-        memberInteractionSheetDialog =  MemberInteractionBottomSheetDialogFragment()
-        memberInteractionSheetDialog?.show(childFragmentManager, null)
-
+        if (memberId != uid) {
+            memberInteractionSheetDialog =  MemberInteractionBottomSheetDialogFragment(requireContext())
+            memberInteractionSheetDialog?.arguments = bundleOf("memberIdKey" to memberId)
+            memberInteractionSheetDialog?.show(childFragmentManager, null)
+        }
     }
 
     //retrieve user profile and open alert dialog to remove the member from the group

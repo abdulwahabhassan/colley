@@ -225,6 +225,7 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
 
     override fun onDestroy() {
         super.onDestroy()
+        adapter.stopListening()
         _binding = null
     }
 
