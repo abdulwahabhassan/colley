@@ -24,7 +24,6 @@ import com.google.firebase.ktx.Firebase
 
 
 class EditGroupNameBottomSheetDialogFragment(
-    private var saveButtonListener: SaveButtonListener,
     private val requiredContext: Context
 ) : BottomSheetDialogFragment() {
 
@@ -105,7 +104,8 @@ class EditGroupNameBottomSheetDialogFragment(
                         if (task.isSuccessful) {
                             parentFragment?.requireView()?.let { view -> Snackbar.make(view, "Successfully updated group name", Snackbar.LENGTH_LONG)
                                 .show() }
-                            saveButtonListener.onSave()
+                            //dismiss dialog
+                            this.dismiss()
                         } else{
                             Toast.makeText(requiredContext, "Failed to complete updating group name", Toast.LENGTH_LONG).show()
                             //re-enable button for interaction

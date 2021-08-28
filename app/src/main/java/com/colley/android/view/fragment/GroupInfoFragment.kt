@@ -41,8 +41,7 @@ import com.google.firebase.storage.ktx.storage
 
 class GroupInfoFragment :
     Fragment(),
-    GroupMembersRecyclerAdapter.ItemClickedListener,
-    SaveButtonListener {
+    GroupMembersRecyclerAdapter.ItemClickedListener {
 
     private val args: GroupInfoFragmentArgs by navArgs()
     private var _binding: FragmentGroupInfoBinding? = null
@@ -200,7 +199,7 @@ class GroupInfoFragment :
 
         //open dialog with the current group description
         binding.editAboutTextView.setOnClickListener {
-            editGroupAboutBottomSheetDialog = EditGroupAboutBottomSheetDialogFragment(this)
+            editGroupAboutBottomSheetDialog = EditGroupAboutBottomSheetDialogFragment()
             editGroupAboutBottomSheetDialog?.arguments = bundleOf(
                 "aboutKey" to binding.groupDescriptionTextView.text.toString(),
                 "groupIdKey" to args.groupId
@@ -216,7 +215,6 @@ class GroupInfoFragment :
         binding.addGroupMemberTextView.setOnClickListener {
         //show dialog to add group member
                 addGroupMemberSheetDialog = AddGroupMemberBottomSheetDialogFragment(
-                    this,
                     requireContext(),
                     requireView())
 
@@ -315,7 +313,7 @@ class GroupInfoFragment :
 
         //edit group name
         binding.editGroupNameButton.setOnClickListener {
-            editGroupNameBottomSheetDialog = EditGroupNameBottomSheetDialogFragment(this, requireContext())
+            editGroupNameBottomSheetDialog = EditGroupNameBottomSheetDialogFragment( requireContext())
             editGroupNameBottomSheetDialog?.arguments = bundleOf(
                 "groupNameKey" to binding.groupNameTextView.text.toString(),
                 "groupIdKey" to args.groupId
@@ -528,9 +526,5 @@ class GroupInfoFragment :
         const val TAG = "groupInfoFragment"
     }
 
-    override fun onSave() {
-        editGroupAboutBottomSheetDialog?.dismiss()
-        addGroupMemberSheetDialog?.dismiss()
-        editGroupNameBottomSheetDialog?.dismiss()
-    }
+
 }

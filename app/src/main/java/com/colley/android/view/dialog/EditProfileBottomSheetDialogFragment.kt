@@ -19,9 +19,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class EditProfileBottomSheetDialogFragment(
-    private var saveButtonListener: SaveButtonListener
-    )
+class EditProfileBottomSheetDialogFragment
     : BottomSheetDialogFragment() {
 
     private var _binding: FragmentEditProfileBottomSheetDialogBinding? = null
@@ -91,7 +89,8 @@ class EditProfileBottomSheetDialogFragment(
                 parentFragment?.requireView()?.let {
                         view -> Snackbar.make(view, "Profile updated successfully", Snackbar.LENGTH_LONG)
                     .show() }
-                saveButtonListener.onSave()
+                //dismiss dialog
+                this.dismiss()
             } else {
                 parentFragment?.requireView()?.let {
                         view -> Snackbar.make(view, "Failed to update Profile!", Snackbar.LENGTH_LONG)

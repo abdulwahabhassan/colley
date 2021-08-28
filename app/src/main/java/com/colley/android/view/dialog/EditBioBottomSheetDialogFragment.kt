@@ -17,9 +17,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class EditBioBottomSheetDialogFragment(
-    private var saveButtonListener: SaveButtonListener
-    ) : BottomSheetDialogFragment() {
+class EditBioBottomSheetDialogFragment: BottomSheetDialogFragment() {
 
     private var _binding: FragmentEditBioBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
@@ -66,7 +64,8 @@ class EditBioBottomSheetDialogFragment(
                 parentFragment?.requireView()?.let {
                         view -> Snackbar.make(view, "Bio updated successfully", Snackbar.LENGTH_LONG)
                     .show() }
-                saveButtonListener.onSave()
+                //dismiss dialog
+                this.dismiss()
             } else {
                 parentFragment?.requireView()?.let {
                         view -> Snackbar.make(view, "Failed to update Bio!", Snackbar.LENGTH_LONG)

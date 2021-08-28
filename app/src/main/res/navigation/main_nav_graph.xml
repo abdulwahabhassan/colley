@@ -21,7 +21,7 @@
         tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_homeFragment_to_groupChatFragment"
-            app:destination="@id/groupChatFragment" />
+            app:destination="@id/groupMessageFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -73,9 +73,9 @@
         android:label="@string/rate_app_label"
         tools:layout="@layout/fragment_rate_app" />
     <fragment
-        android:id="@+id/groupChatFragment"
+        android:id="@+id/groupMessageFragment"
         android:name="com.colley.android.view.fragment.GroupMessageFragment"
-        tools:layout="@layout/fragment_group_chat" >
+        tools:layout="@layout/fragment_group_message" >
         <argument
             android:name="groupId"
             app:argType="string" />
@@ -93,18 +93,29 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/privateMessagesFragment"
+        android:id="@+id/privateChatsFragment"
         android:name="com.colley.android.view.fragment.ChatsFragment"
         android:label="Messages"
-        tools:layout="@layout/fragment_private_messages" >
+        tools:layout="@layout/fragment_private_chats" >
         <action
             android:id="@+id/action_privateMessagesFragment_to_privateChatFragment"
-            app:destination="@id/privateChatFragment" />
+            app:destination="@id/privateMessageFragment" />
     </fragment>
     <fragment
-        android:id="@+id/privateChatFragment"
+        android:id="@+id/privateMessageFragment"
         android:name="com.colley.android.view.fragment.PrivateMessageFragment"
-        tools:layout="@layout/fragment_private_chat">
+        tools:layout="@layout/fragment_private_message">
+        <argument
+            android:name="chateeId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_privateMessageFragment_to_chateeInfoFragment"
+            app:destination="@id/chateeInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chateeInfoFragment"
+        android:name="com.colley.android.view.fragment.ChateeInfoFragment"
+        tools:layout="@layout/fragment_chatee_info">
         <argument
             android:name="chateeId"
             app:argType="string" />

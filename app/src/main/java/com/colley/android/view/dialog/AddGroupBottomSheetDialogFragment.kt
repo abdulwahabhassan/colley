@@ -34,7 +34,6 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 class AddGroupBottomSheetDialogFragment (
-    private val saveButtonListener: SaveButtonListener,
     private val homeContext: Context,
     private val homeView: View
         ) : BottomSheetDialogFragment(), AddGroupMembersRecyclerAdapter.ItemClickedListener {
@@ -201,8 +200,8 @@ class AddGroupBottomSheetDialogFragment (
                     }
                 )
             }
-                //dismiss bottom sheet dialog
-                saveButtonListener.onSave()
+            //dismiss bottom sheet dialog
+            this.dismiss()
         })
     }
 

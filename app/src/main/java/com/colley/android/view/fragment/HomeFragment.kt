@@ -15,7 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 
 
-class HomeFragment : Fragment(), AddGroupBottomSheetDialogFragment.SaveButtonListener {
+class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -108,7 +108,7 @@ class HomeFragment : Fragment(), AddGroupBottomSheetDialogFragment.SaveButtonLis
                     Snackbar.make(requireView(), "Make a post", Snackbar.LENGTH_LONG).show()
                 }
                 2 -> {
-                    addGroupBottomSheetDialog = AddGroupBottomSheetDialogFragment(this, requireContext(), requireView())
+                    addGroupBottomSheetDialog = AddGroupBottomSheetDialogFragment(requireContext(), requireView())
                     addGroupBottomSheetDialog.show(parentFragmentManager, null)
 
                 }
@@ -119,10 +119,6 @@ class HomeFragment : Fragment(), AddGroupBottomSheetDialogFragment.SaveButtonLis
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    override fun onSave() {
-        addGroupBottomSheetDialog.dismiss()
     }
 
 }

@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
 import com.colley.android.adapter.GroupMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
-import com.colley.android.databinding.FragmentGroupChatBinding
+import com.colley.android.databinding.FragmentGroupMessageBinding
 import com.colley.android.model.GroupMessage
-import com.colley.android.observer.GroupMessageScrollToBottomObserver
 import com.colley.android.model.SendButtonObserver
+import com.colley.android.observer.GroupMessageScrollToBottomObserver
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -34,7 +34,7 @@ import com.google.firebase.storage.ktx.storage
 class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolderListener {
 
     private val args: GroupMessageFragmentArgs by navArgs()
-    private var _binding: FragmentGroupChatBinding? = null
+    private var _binding: FragmentGroupMessageBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -60,12 +60,12 @@ class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHol
         super.onCreateOptionsMenu(menu, inflater)
         menu.clear()
         //this inflates a new menu
-        inflater.inflate(R.menu.group_chat_menu, menu)
+        inflater.inflate(R.menu.group_message_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.info_menu_item -> {
+            R.id.group_info_menu_item -> {
                 val action = GroupMessageFragmentDirections.actionGroupChatFragmentToGroupInfoFragment(args.groupId)
                 findNavController().navigate(action)
                 true
@@ -78,7 +78,7 @@ class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHol
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentGroupChatBinding.inflate(inflater, container, false)
+        _binding = FragmentGroupMessageBinding.inflate(inflater, container, false)
         recyclerView = binding.messageRecyclerView
         return binding.root
     }

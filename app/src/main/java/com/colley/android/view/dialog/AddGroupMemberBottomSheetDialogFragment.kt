@@ -26,7 +26,6 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class AddGroupMemberBottomSheetDialogFragment (
-    private var saveButtonListener: SaveButtonListener,
     private val groupContext: Context,
     private val homeView: View
         ) : BottomSheetDialogFragment(), AddGroupMembersRecyclerAdapter.ItemClickedListener {
@@ -186,7 +185,8 @@ class AddGroupMemberBottomSheetDialogFragment (
                             } else {
                                 Log.d(TAG, "addMemberTransaction:onComplete:$error")
                             }
-                            saveButtonListener.onSave()
+                            //dismiss dialog
+                            this@AddGroupMemberBottomSheetDialogFragment.dismiss()
                         }
 
                     }

@@ -28,7 +28,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
-class ProfileFragment : Fragment(), SaveButtonListener {
+class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
@@ -155,7 +155,7 @@ class ProfileFragment : Fragment(), SaveButtonListener {
                 "statusKey" to binding.statusTitleTextView.text.toString())
 
             //init dialog
-            editProfileBottomSheetDialog = EditProfileBottomSheetDialogFragment(this)
+            editProfileBottomSheetDialog = EditProfileBottomSheetDialogFragment()
             //pass pre-existing profile to dialog fragment through arguments
             editProfileBottomSheetDialog?.arguments = bundle
             //show dialog to edit profile
@@ -164,7 +164,7 @@ class ProfileFragment : Fragment(), SaveButtonListener {
 
         //show dialog to edit bio
         binding.editBioTextView.setOnClickListener {
-            editBioBottomSheetDialog = EditBioBottomSheetDialogFragment(this)
+            editBioBottomSheetDialog = EditBioBottomSheetDialogFragment()
             editBioBottomSheetDialog?.arguments = bundleOf("bioKey" to binding.bioTextView.text.toString())
             editBioBottomSheetDialog?.show(childFragmentManager, null)
         }
@@ -224,11 +224,6 @@ class ProfileFragment : Fragment(), SaveButtonListener {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    override fun onSave() {
-        editBioBottomSheetDialog?.dismiss()
-        editProfileBottomSheetDialog?.dismiss()
     }
 
     companion object {

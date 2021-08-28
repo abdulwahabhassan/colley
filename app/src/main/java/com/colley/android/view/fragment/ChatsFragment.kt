@@ -1,15 +1,17 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.ChatsRecyclerAdapter
-import com.colley.android.databinding.FragmentPrivateMessagesBinding
+import com.colley.android.databinding.FragmentPrivateChatsBinding
 import com.colley.android.model.PrivateChat
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +30,7 @@ class ChatsFragment :
     ChatsRecyclerAdapter.BindViewHolderListener,
     ChatsRecyclerAdapter.ItemClickedListener {
 
-    private var _binding: FragmentPrivateMessagesBinding? = null
+    private var _binding: FragmentPrivateChatsBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -44,7 +46,7 @@ class ChatsFragment :
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPrivateMessagesBinding.inflate(inflater, container, false)
+        _binding = FragmentPrivateChatsBinding.inflate(inflater, container, false)
         recyclerView = binding.privateMessagesRecyclerView
         return binding.root
     }
@@ -83,33 +85,19 @@ class ChatsFragment :
                         recyclerView.adapter = adapter
                         adapter?.startListening()
                     } else {
-                        binding.privateMessagesProgressBar.visibility = View.GONE
-                        binding.noGroupsLayout.visibility = View.VISIBLE
+                        binding.privateMessagesProgressBar.visibility = GONE
+                        binding.noGroupsLayout.visibility = VISIBLE
+                        binding.newChatFab.visibility = VISIBLE
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {}
             }
         )
-//        if (chatsRef. != null)
-//        {
-//            //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
-//            //build an options to configure adapter. setQuery takes firebase query to listen to and a
-//            //model class to which snapShots should be parsed
-//            val options = FirebaseRecyclerOptions.Builder<PrivateChat>()
-//                .setQuery(chatsRef, PrivateChat::class.java)
-//                .build()
-//
-//            adapter = ChatsRecyclerAdapter(options, requireContext(), currentUser, this, this)
-//            manager = LinearLayoutManager(requireContext())
-//            recyclerView.layoutManager = manager
-//            recyclerView.adapter = adapter
-//            adapter?.startListening()
-//        } else {
-//            binding.privateMessagesProgressBar.visibility = View.GONE
-//            binding.noGroupsLayout.visibility = View.VISIBLE
-//        }
 
+        binding.newChatFab.setOnClickListener {
+
+        }
 
     }
 
@@ -135,8 +123,9 @@ class ChatsFragment :
     }
 
     override fun onBind() {
-        binding.privateMessagesProgressBar.visibility = View.GONE
-        binding.noGroupsLayout.visibility = View.GONE
+        binding.privateMessagesProgressBar.visibility = GONE
+        binding.noGroupsLayout.visibility = GONE
+        binding.newChatFab.visibility = VISIBLE
     }
 
     override fun onItemClick(chateeId: String) {

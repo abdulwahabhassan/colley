@@ -3,23 +3,21 @@ package com.colley.android.view.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.colley.android.R
 import com.colley.android.adapter.PrivateMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
-import com.colley.android.databinding.FragmentPrivateChatBinding
-import com.colley.android.model.GroupMessage
+import com.colley.android.databinding.FragmentPrivateMessageBinding
 import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
 import com.colley.android.model.SendButtonObserver
-import com.colley.android.observer.GroupMessageScrollToBottomObserver
 import com.colley.android.observer.PrivateMessageScrollToBottomObserver
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -41,7 +39,7 @@ class PrivateMessageFragment :
     PrivateMessageRecyclerAdapter.BindViewHolderListener {
 
     private val args: PrivateMessageFragmentArgs by navArgs()
-    private var _binding: FragmentPrivateChatBinding? = null
+    private var _binding: FragmentPrivateMessageBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -55,11 +53,37 @@ class PrivateMessageFragment :
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        //allows this fragment to be able to modify it's containing activity's toolbar menu
+        setHasOptionsMenu(true);
+    }
+
+    //since we have set hasOptionsMenu to true, our fragment can now override this call to allow us
+    //modify the menu
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        //this inflates a new menu
+        inflater.inflate(R.menu.private_message_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.chatee_info_menu_item -> {
+                val action = PrivateMessageFragmentDirections.actionPrivateMessageFragmentToChateeInfoFragment(args.chateeId)
+                findNavController().navigate(action)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPrivateChatBinding.inflate(inflater, container, false)
+        _binding = FragmentPrivateMessageBinding.inflate(inflater, container, false)
         recyclerView = binding.messageRecyclerView
         return binding.root
     }

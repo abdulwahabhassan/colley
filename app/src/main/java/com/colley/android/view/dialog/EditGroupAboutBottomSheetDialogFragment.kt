@@ -16,9 +16,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class EditGroupAboutBottomSheetDialogFragment(
-    private var saveButtonListener: SaveButtonListener
-    ) : BottomSheetDialogFragment() {
+class EditGroupAboutBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentEditAboutBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
@@ -60,7 +58,8 @@ class EditGroupAboutBottomSheetDialogFragment(
                 if (task.isSuccessful) {
                     parentFragment?.requireView()?.let { view -> Snackbar.make(view, "Update successful", Snackbar.LENGTH_LONG)
                         .show() }
-                    saveButtonListener.onSave()
+                    //dismiss dialog
+                    this.dismiss()
                 } else {
                     parentFragment?.requireView()?.let { view -> Snackbar.make(view, "Failed to update!", Snackbar.LENGTH_LONG)
                         .show() }
