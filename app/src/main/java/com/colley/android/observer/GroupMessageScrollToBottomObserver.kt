@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.colley.android.adapter.GroupMessageRecyclerAdapter
 
-class ScrollToBottomObserver(
+class GroupMessageScrollToBottomObserver(
     private val recycler: RecyclerView,
     private val adapter: GroupMessageRecyclerAdapter,
     private val manager: LinearLayoutManager

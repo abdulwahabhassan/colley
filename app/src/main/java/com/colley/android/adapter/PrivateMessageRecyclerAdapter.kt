@@ -12,6 +12,7 @@ import com.colley.android.databinding.ItemGroupMessageBinding
 import com.colley.android.databinding.ItemGroupMessageCurrentUserBinding
 import com.colley.android.model.Profile
 import com.colley.android.model.GroupMessage
+import com.colley.android.model.PrivateChat
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.imageview.ShapeableImageView
@@ -24,12 +25,12 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
-class GroupMessageRecyclerAdapter(
-    private val options: FirebaseRecyclerOptions<GroupMessage>,
+class PrivateMessageRecyclerAdapter(
+    private val options: FirebaseRecyclerOptions<PrivateChat>,
     private val currentUser: FirebaseUser?,
     private val onBindViewHolderListener: BindViewHolderListener,
     private val context: Context
-) : FirebaseRecyclerAdapter<GroupMessage, RecyclerView.ViewHolder>(options) {
+) : FirebaseRecyclerAdapter<PrivateChat, RecyclerView.ViewHolder>(options) {
 
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
     interface BindViewHolderListener {
@@ -54,10 +55,10 @@ class GroupMessageRecyclerAdapter(
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
-        model: GroupMessage
+        model: PrivateChat
     ) {
         val uid = currentUser?.uid
-        if (options.snapshots[position].userId != uid) {
+        if (options.snapshots[position].fromUserId != uid) {
 
             (holder as GroupMessageViewHolder).bind(model, position)
         } else {
@@ -73,21 +74,21 @@ class GroupMessageRecyclerAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val uid = currentUser?.uid
-        return if (options.snapshots[position].userId != uid) VIEW_TYPE_GROUP_MEMBER
+        return if (options.snapshots[position].fromUserId != uid) VIEW_TYPE_GROUP_MEMBER
         else VIEW_TYPE_CURRENT_USER
     }
 
     inner class CurrentUserMessageViewHolder(private val binding: ItemGroupMessageCurrentUserBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupMessage, itemPosition: Int) {
+        fun bind(item: PrivateChat, itemPosition: Int) {
 
             //load user photo
-            Firebase.database.reference.child("photos").child(item.userId!!).addListenerForSingleValueEvent(
+            Firebase.database.reference.child("photos").child(item.fromUserId!!).addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String?>()
                         //if the next message is from the same user, remove userName from the next message
-                        if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
+                        if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
                             binding.currentUserImageView.visibility = GONE
                         } else {
                             if (photo != null) {
@@ -114,12 +115,12 @@ class GroupMessageRecyclerAdapter(
             }
 
             //set username
-            Firebase.database.reference.child("profiles").child(item.userId!!).addListenerForSingleValueEvent(
+            Firebase.database.reference.child("profiles").child(item.fromUserId!!).addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val profile = snapshot.getValue<Profile>()
                         //if the next message is from the same user as in the previous message, remove userPhoto from the next message
-                        if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
+                        if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
                             binding.currentUserNameTextView.visibility = GONE
                         } else {
                             binding.currentUserNameTextView.text = profile?.name
@@ -147,14 +148,14 @@ class GroupMessageRecyclerAdapter(
 
     inner class GroupMessageViewHolder(private val binding: ItemGroupMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupMessage, itemPosition: Int) {
+        fun bind(item: PrivateChat, itemPosition: Int) {
 
             //load user photo
-            Firebase.database.reference.child("photos").child(item.userId!!).addListenerForSingleValueEvent(
+            Firebase.database.reference.child("photos").child(item.fromUserId!!).addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String?>()
-                        if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
+                        if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
                             binding.messengerImageView.visibility = GONE
                         } else {
                             if (photo != null) {
@@ -183,11 +184,11 @@ class GroupMessageRecyclerAdapter(
             }
 
             //set username
-            Firebase.database.reference.child("profiles").child(item.userId!!).addListenerForSingleValueEvent(
+            Firebase.database.reference.child("profiles").child(item.fromUserId!!).addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val profile = snapshot.getValue<Profile>()
-                        if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
+                        if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
                             binding.messengerNameTextView.visibility = GONE
                         } else {
                             binding.messengerNameTextView.text = profile?.name

@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemGroupBinding
-import com.colley.android.model.ChatGroup
+import com.colley.android.model.GroupChat
+import com.colley.android.model.GroupMessage
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseUser
@@ -52,12 +53,27 @@ class GroupsRecyclerAdapter (
 
     class GroupViewHolder (private val itemBinding : ItemGroupBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(chatGroupId: String, clickListener: ItemClickedListener) = with(itemBinding) {
+
+            //retrieve group's recent message and set it to recent message text view
+            Firebase.database.reference.child("group-messages").child("recent-message").child(chatGroupId).addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val recentMessage = snapshot.getValue<GroupMessage>()?.text
+                        if (recentMessage != null) {
+                            recentMessageTextView.text = recentMessage
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {}
+                }
+            )
+
             //add listener to chat group reference on database using chatGroupId to locate the specific group
             //By this logic, only groups that a user belong to will be displayed to them
             Firebase.database.reference.child("groups-id-name-photo").child(chatGroupId).addValueEventListener(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val chatGroup = snapshot.getValue<ChatGroup>()
+                        val chatGroup = snapshot.getValue<GroupChat>()
                         if (chatGroup != null) {
                             groupNameTextView.text = chatGroup.name
 

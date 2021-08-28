@@ -34,11 +34,6 @@
         android:label="@string/menu_item_profile_title"
         tools:layout="@layout/fragment_profile" />
     <fragment
-        android:id="@+id/messagesFragment"
-        android:name="com.colley.android.view.fragment.MessagesFragment"
-        android:label="@string/menu_item_messages_title"
-        tools:layout="@layout/fragment_messages" />
-    <fragment
         android:id="@+id/signupFragment"
         android:name="com.colley.android.view.fragment.SignupFragment"
         android:label="@string/sign_up_label"
@@ -79,7 +74,7 @@
         tools:layout="@layout/fragment_rate_app" />
     <fragment
         android:id="@+id/groupChatFragment"
-        android:name="com.colley.android.view.fragment.GroupChatFragment"
+        android:name="com.colley.android.view.fragment.GroupMessageFragment"
         tools:layout="@layout/fragment_group_chat" >
         <argument
             android:name="groupId"
@@ -95,6 +90,23 @@
         tools:layout="@layout/fragment_group_info" >
         <argument
             android:name="groupId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/privateMessagesFragment"
+        android:name="com.colley.android.view.fragment.ChatsFragment"
+        android:label="Messages"
+        tools:layout="@layout/fragment_private_messages" >
+        <action
+            android:id="@+id/action_privateMessagesFragment_to_privateChatFragment"
+            app:destination="@id/privateChatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/privateChatFragment"
+        android:name="com.colley.android.view.fragment.PrivateMessageFragment"
+        tools:layout="@layout/fragment_private_chat">
+        <argument
+            android:name="chateeId"
             app:argType="string" />
     </fragment>
 </navigation>

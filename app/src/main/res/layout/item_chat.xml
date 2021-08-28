@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,15 +7,16 @@
     android:paddingStart="@dimen/margin_16dp"
     android:paddingEnd="@dimen/margin_16dp"
     android:paddingTop="@dimen/margin_8dp"
-    android:paddingBottom="@dimen/margin_8dp">
+    android:paddingBottom="@dimen/margin_8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/groupImageView"
+        android:id="@+id/personImageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="center"
         android:background="@color/dark_grey"
-        android:src="@drawable/ic_group"
+        android:src="@drawable/ic_person"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -26,7 +26,7 @@
 
 
     <TextView
-        android:id="@+id/groupNameTextView"
+        android:id="@+id/personNameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -37,26 +37,31 @@
         android:textColor="@color/pearl"
         android:textSize="@dimen/text_size_15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/groupImageView"
-        app:layout_constraintEnd_toStartOf="@+id/unreadConversationCountTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/personImageView"
+        app:layout_constraintEnd_toStartOf="@+id/unreadChatCountTextView"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/groupImageView"
-        app:layout_constraintTop_toTopOf="@+id/groupImageView"
+        app:layout_constraintStart_toEndOf="@+id/personImageView"
+        app:layout_constraintTop_toTopOf="@+id/personImageView"
         app:layout_constraintVertical_bias="0.19999999" />
 
     <TextView
         android:id="@+id/recentMessageTextView"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:lines="1"
-        android:layout_height="wrap_content"
+        android:textAlignment="viewStart"
         android:textColor="@color/light_pearl"
-        app:layout_constraintEnd_toEndOf="@+id/groupNameTextView"
-        app:layout_constraintStart_toStartOf="@+id/groupNameTextView"
-        app:layout_constraintTop_toBottomOf="@+id/groupNameTextView" />
+        android:textSize="@dimen/text_size_14sp"
+        app:layout_constraintEnd_toStartOf="@+id/unreadChatCountTextView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/personImageView"
+        app:layout_constraintTop_toBottomOf="@+id/personNameTextView" />
 
     <TextView
-        android:id="@+id/unreadConversationCountTextView"
+        android:id="@+id/unreadChatCountTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lines="1"
@@ -67,7 +72,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/recentMessageTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/groupNameTextView"
-        app:layout_constraintTop_toTopOf="@+id/recentMessageTextView" />
+        app:layout_constraintStart_toEndOf="@+id/personNameTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

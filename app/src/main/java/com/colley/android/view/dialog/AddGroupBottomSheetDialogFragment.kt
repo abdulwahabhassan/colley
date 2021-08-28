@@ -18,7 +18,7 @@ import com.colley.android.view.fragment.GroupInfoFragment
 import com.colley.android.adapter.AddGroupMembersRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentAddGroupBottomSheetDialogBinding
-import com.colley.android.model.ChatGroup
+import com.colley.android.model.GroupChat
 import com.colley.android.model.NewGroup
 import com.colley.android.model.User
 import com.colley.android.model.GroupMessage
@@ -148,6 +148,8 @@ class AddGroupBottomSheetDialogFragment (
 
             //create a reference to group-messages on database and set initial message to "Welcome to the group"
                 dbRef.child("group-messages").child(key).push().setValue(GroupMessage(uid, "I welcome everyone to the group"))
+            //update group's recent message
+                dbRef.child("group-messages").child("recent-message").child(key).setValue(GroupMessage(uid, "I welcome everyone to the group"))
 
             //if a groupPhoto is selected, retrieve its uri and define a storage path for it
             if (groupImageUri != null) {
@@ -160,7 +162,7 @@ class AddGroupBottomSheetDialogFragment (
             } else {
                 //simply update database without group photo
                     val url = null
-                dbRef.child("groups-id-name-photo").child(key).setValue(ChatGroup(key, groupName, url))
+                dbRef.child("groups-id-name-photo").child(key).setValue(GroupChat(key, groupName, url))
             }
                 Snackbar.make(homeView, "Group created successfully! Uploading to database..", Snackbar.LENGTH_LONG).show()
 
@@ -259,7 +261,7 @@ class AddGroupBottomSheetDialogFragment (
                 // and add it to database
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { uri ->
-                        dbRef.child("groups-id-name-photo").child(key).setValue(ChatGroup(key, groupName, uri.toString())).addOnCompleteListener { task ->
+                        dbRef.child("groups-id-name-photo").child(key).setValue(GroupChat(key, groupName, uri.toString())).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 Toast.makeText(homeContext, "Group photo uploaded successfully", Toast.LENGTH_LONG).show()
                             } else {

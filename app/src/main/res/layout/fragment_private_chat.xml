@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragment.GroupMessageFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragment.PrivateMessageFragment">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -74,8 +74,5 @@
             android:padding="@dimen/padding_4dp"
             android:background="@drawable/ripple_effect_curved_edges"
             android:src="@drawable/ic_send_button_inactive" />
-
-
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

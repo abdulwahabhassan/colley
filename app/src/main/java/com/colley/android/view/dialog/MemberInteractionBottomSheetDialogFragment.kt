@@ -4,15 +4,12 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.colley.android.databinding.FragmentAddGroupBottomSheetDialogBinding
 import com.colley.android.databinding.FragmentMemberInteractionBottomSheetDialogBinding
-import com.colley.android.model.GroupMessage
-import com.colley.android.model.PrivateMessage
+import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseUser
@@ -103,21 +100,31 @@ class MemberInteractionBottomSheetDialogFragment(
         binding.sendButton.setOnClickListener {
 
             if (bundledMemberId != null) {
-                binding.editMMessageEditText
+
                 if (binding.editMMessageEditText.text?.trim()?.toString() != "") {
-                    val privateMessage = PrivateMessage(
-                        userId = uid,
+                    val privateMessage = PrivateChat(
+                        fromUserId = uid,
+                        toUserId = bundledMemberId,
                         text = binding.editMMessageEditText.text.toString()
                     )
 
+                    //create a reference for the message on user's messages location and retrieve its
+                    //key with which to update other locations that should have a ref to the message
                     val key = dbRef.child("user-messages").child(uid).child(bundledMemberId).push().key
 
                     //used to update multiple paths in the database
                     //here we save a copy of the message to both the sender and receiver's path
                     val childUpdates = hashMapOf<String, Any>(
                         "/user-messages/$uid/$bundledMemberId/$key" to privateMessage,
-                        "/user-messages/$bundledMemberId/$uid/$key" to privateMessage
+                        "/user-messages/recent-message/$uid/$bundledMemberId" to privateMessage,
+                        "/user-messages/$bundledMemberId/$uid/$key" to privateMessage,
+                        "/user-messages/recent-message/$bundledMemberId/$uid" to privateMessage
                     )
+
+                    //the value of the recent message is used when displaying a user's private
+                    //messages from different colleagues, so we make a reference for this to
+                    //make it easier to retrieve from the database
+
                     dbRef.updateChildren(childUpdates).addOnSuccessListener {
                         Toast.makeText(parentContext, "Message sent", Toast.LENGTH_SHORT).show()
                     }

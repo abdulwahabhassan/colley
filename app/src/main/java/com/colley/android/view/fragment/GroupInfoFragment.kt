@@ -20,7 +20,7 @@ import com.colley.android.listener.SaveButtonListener
 import com.colley.android.adapter.GroupMembersRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupInfoBinding
-import com.colley.android.model.ChatGroup
+import com.colley.android.model.GroupChat
 import com.colley.android.model.Profile
 import com.colley.android.view.dialog.AddGroupMemberBottomSheetDialogFragment
 import com.colley.android.view.dialog.EditGroupAboutBottomSheetDialogFragment
@@ -97,7 +97,7 @@ class GroupInfoFragment :
         //event listener for group photo
         infoValueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val group = snapshot.getValue<ChatGroup>()
+                val group = snapshot.getValue<GroupChat>()
 
                 //load group image
                 if (group?.groupPhoto != null) {

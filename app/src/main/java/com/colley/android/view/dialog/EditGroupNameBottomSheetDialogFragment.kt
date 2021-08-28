@@ -55,33 +55,43 @@ class EditGroupNameBottomSheetDialogFragment(
         binding.editGroupNameEditText.setText(bundledGroupName)
 
         binding.saveGroupNameButton.setOnClickListener {
-            //disable button to prevent multiple clicks
-            it.isEnabled = false
 
             val newGroupName = binding.editGroupNameEditText.text.toString().trim()
-            //check if user is an admin, only admins can change group name
-            arguments?.getString("groupIdKey")?.let { groupId ->
-                dbRef.child("groups").child(groupId).child("groupAdmins").addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val admins = snapshot.getValue<ArrayList<String>>()
-                            if (admins != null && admins.contains(uid)) {
-                                saveGroupName(newGroupName, it)
-                            } else {
-                                Toast.makeText(requiredContext, "Only admins can change group name", Toast.LENGTH_LONG).show()
-                                //re-enable button to allow for interaction
-                                it.isEnabled = true
-                            }
-                        }
 
-                        override fun onCancelled(error: DatabaseError) {
-                            Log.w(TAG, "getAdmins:OnCancelled", error.toException())
-                            it.isEnabled = true
-                        }
-                    }
-                )
+            //check that group name is less than or equal to 36
+            if (newGroupName.length <= 36) {
+                verifyIfAdmin(it, newGroupName)
+            } else {
+                Toast.makeText(requiredContext, "Group name is too long", Toast.LENGTH_LONG).show()
             }
 
+        }
+    }
+
+    private fun verifyIfAdmin(button: View, newGroupName: String) {
+        //disable button to prevent multiple clicks
+        button.isEnabled = false
+        //check if user is an admin, only admins can change group name
+        arguments?.getString("groupIdKey")?.let { groupId ->
+            dbRef.child("groups").child(groupId).child("groupAdmins").addListenerForSingleValueEvent(
+                object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val admins = snapshot.getValue<ArrayList<String>>()
+                        if (admins != null && admins.contains(uid)) {
+                            saveGroupName(newGroupName, button)
+                        } else {
+                            Toast.makeText(requiredContext, "Only admins can change group name", Toast.LENGTH_LONG).show()
+                            //re-enable button to allow for interaction
+                            button.isEnabled = true
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(TAG, "getAdmins:OnCancelled", error.toException())
+                        button.isEnabled = true
+                    }
+                }
+            )
         }
     }
 

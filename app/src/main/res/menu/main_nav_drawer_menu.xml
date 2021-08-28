@@ -10,7 +10,7 @@
                                 android:title="@string/menu_item_profile_title"
                                 android:icon="@drawable/ic_profile"/>
                             <item
-                                android:id="@+id/messagesFragment"
+                                android:id="@+id/privateMessagesFragment"
                                 android:title="@string/menu_item_messages_title"
                                 android:icon="@drawable/ic_messages" />
 

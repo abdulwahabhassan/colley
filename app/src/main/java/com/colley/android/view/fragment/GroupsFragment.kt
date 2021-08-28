@@ -28,7 +28,10 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 
-class GroupsFragment : Fragment(), GroupsRecyclerAdapter.ItemClickedListener, GroupsRecyclerAdapter.BindViewHolderListener {
+class GroupsFragment :
+    Fragment(),
+    GroupsRecyclerAdapter.ItemClickedListener,
+    GroupsRecyclerAdapter.BindViewHolderListener {
 
     private var _binding: FragmentGroupsBinding? = null
     private val binding get() = _binding!!

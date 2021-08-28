@@ -25,6 +25,8 @@
         app:boxCornerRadiusBottomStart="@dimen/corner_radius_8dp"
         app:boxCornerRadiusTopEnd="@dimen/corner_radius_8dp"
         app:boxCornerRadiusTopStart="@dimen/corner_radius_8dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="36"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginHorizontal="@dimen/margin_16dp"
         app:boxBackgroundColor="@color/white"

@@ -17,7 +17,7 @@ import com.colley.android.adapter.GroupMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupChatBinding
 import com.colley.android.model.GroupMessage
-import com.colley.android.observer.ScrollToBottomObserver
+import com.colley.android.observer.GroupMessageScrollToBottomObserver
 import com.colley.android.model.SendButtonObserver
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -31,9 +31,9 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 
-class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolderListener {
+class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolderListener {
 
-    private val args: GroupChatFragmentArgs by navArgs()
+    private val args: GroupMessageFragmentArgs by navArgs()
     private var _binding: FragmentGroupChatBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
@@ -66,7 +66,7 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.info_menu_item -> {
-                val action = GroupChatFragmentDirections.actionGroupChatFragmentToGroupInfoFragment(args.groupId)
+                val action = GroupMessageFragmentDirections.actionGroupChatFragmentToGroupInfoFragment(args.groupId)
                 findNavController().navigate(action)
                 true
             }
@@ -131,7 +131,7 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
 
         //scroll down when a new message arrives
         adapter.registerAdapterDataObserver(
-            ScrollToBottomObserver(binding.messageRecyclerView, adapter, manager)
+            GroupMessageScrollToBottomObserver(binding.messageRecyclerView, adapter, manager)
         )
         //disable the send button when there's no text in the input field
         binding.messageEditText.addTextChangedListener(SendButtonObserver(binding.sendButton))
@@ -144,6 +144,8 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
                     text = binding.messageEditText.text.toString()
                 )
                 dbRef.child("group-messages").child(args.groupId).push().setValue(groupMessage)
+                //update group's recent message
+                dbRef.child("group-messages").child("recent-message").child(args.groupId).setValue(groupMessage)
                 binding.messageEditText.setText("")
             }
         }
@@ -204,6 +206,8 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
                             .child(args.groupId)
                             .child(key!!)
                             .setValue(groupMessage)
+                        //update group's recent message
+                        dbRef.child("group-messages").child("recent-message").child(args.groupId).setValue(groupMessage)
                     }
             }
             .addOnFailureListener(requireActivity()) { e ->
@@ -235,7 +239,7 @@ class GroupChatFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolder
     }
 
     companion object {
-        private const val TAG = "MainActivity"
+        private const val TAG = "GroupMessageFragment"
         private const val LOADING_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/colley-c37ea.appspot.com/o/loading_gif%20copy.gif?alt=media&token=022770e5-9db3-426c-9ee2-582b9d66fbac"
     }
 
