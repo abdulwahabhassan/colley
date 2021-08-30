@@ -26,7 +26,6 @@
             android:textSize="@dimen/text_size_15sp" />
 
     <View
-        android:id="@+id/profileHorizontalLine"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_1dp"
         android:layout_marginTop="@dimen/margin_8dp"
@@ -41,6 +40,5 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_who_to_message"
             android:layout_height="match_parent"/>
-
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
 import com.colley.android.adapter.GroupsRecyclerAdapter
 import com.colley.android.databinding.FragmentGroupsBinding
+import com.colley.android.model.PrivateChat
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -40,7 +42,6 @@ class GroupsFragment :
     private lateinit var currentUser: FirebaseUser
     private var adapter: GroupsRecyclerAdapter? = null
     private var manager: LinearLayoutManager? = null
-    private lateinit var groupsValueEventListener: ValueEventListener
     private val uid: String
         get() = currentUser.uid
 
@@ -69,43 +70,21 @@ class GroupsFragment :
         //initialize currentUser
         currentUser = Firebase.auth.currentUser!!
 
-        //initialize value event listener
-        groupsValueEventListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val listOfGroups = snapshot.getValue<ArrayList<String>>()
+        //get a query reference to the ids of all the groups this user belongs to
+        val groupsRef = dbRef.child("user-groups").child(uid)
 
-                //if list is not null, initialize firebase recycler adapter
-                if (listOfGroups != null && listOfGroups.size > 0) {
+        //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
+        //build an options to configure adapter. setQuery takes firebase query to listen to and a
+        //model class to which snapShots should be parsed
+        val options = FirebaseRecyclerOptions.Builder<String>()
+            .setQuery(groupsRef, String::class.java)
+            .build()
 
-                    //get a query reference to the ids of all the groups this user belongs to
-                    val groupsRef = dbRef.child("user-groups").child(uid)
-
-                    //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
-                    //build an options to configure adapter. setQuery takes firebase query to listen to and a
-                    //model class to which snapShots should be parsed
-                    val options = FirebaseRecyclerOptions.Builder<String>()
-                        .setQuery(groupsRef, String::class.java)
-                        .build()
-
-                    adapter = GroupsRecyclerAdapter(options, requireContext(), currentUser, this@GroupsFragment, this@GroupsFragment)
-                    manager = LinearLayoutManager(requireContext())
-                    recyclerView.layoutManager = manager
-                    recyclerView.adapter = adapter
-                    adapter?.startListening()
-                } else {
-                    binding.groupsProgressBar.visibility = GONE
-                    binding.noGroupsLayout.visibility = VISIBLE
-                }
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG, "getGroups:OnCancelled", error.toException())
-            }
-        }
-
-        //add a listener to the reference of the list of groups this user belongs to
-        dbRef.child("user-groups").child(uid).addValueEventListener(groupsValueEventListener)
+        adapter = GroupsRecyclerAdapter(options, requireContext(), currentUser, this@GroupsFragment, this@GroupsFragment)
+        manager = LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = manager
+        recyclerView.adapter = adapter
+        adapter?.startListening()
 
 
     }
@@ -118,11 +97,6 @@ class GroupsFragment :
     override fun onStop() {
         super.onStop()
         adapter?.stopListening()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        dbRef.child("user-groups").child(uid).removeEventListener(groupsValueEventListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -143,9 +117,13 @@ class GroupsFragment :
 
 
     //hide progress bar when groups are displayed
-    override fun onDataAvailable() {
+    override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<String>) {
         binding.groupsProgressBar.visibility = GONE
-        binding.noGroupsLayout.visibility = GONE
+        if(snapshotArray.isEmpty()) {
+            binding.noGroupsLayout.visibility = VISIBLE
+        } else {
+            binding.noGroupsLayout.visibility = GONE
+        }
     }
 
     companion object {

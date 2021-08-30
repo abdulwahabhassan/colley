@@ -10,8 +10,10 @@ import com.colley.android.R
 import com.colley.android.databinding.ItemGroupBinding
 import com.colley.android.model.GroupChat
 import com.colley.android.model.GroupMessage
+import com.colley.android.model.PrivateChat
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -29,10 +31,9 @@ class GroupsRecyclerAdapter (
         )
     : FirebaseRecyclerAdapter<String, GroupsRecyclerAdapter.GroupViewHolder>(options) {
 
-
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
     interface DataChangedListener {
-        fun onDataAvailable()
+        fun onDataAvailable(snapshotArray: ObservableSnapshotArray<String>)
     }
 
     interface ItemClickedListener {
@@ -55,7 +56,7 @@ class GroupsRecyclerAdapter (
 
         //display GroupMessageFragment EditText layout only when data has been bound,
         //otherwise show progress bar loading
-        onDataChangedListener.onDataAvailable()
+        onDataChangedListener.onDataAvailable(snapshots)
     }
 
     class GroupViewHolder (private val itemBinding : ItemGroupBinding) : RecyclerView.ViewHolder(itemBinding.root) {

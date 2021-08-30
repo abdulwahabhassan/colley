@@ -111,7 +111,7 @@ class ChateeInfoFragment : Fragment() {
         }
 
         //add event listener to chatee bio
-        dbRef.child("bios").child(uid).addListenerForSingleValueEvent(bioValueEventListener)
+        dbRef.child("bios").child(args.chateeId).addListenerForSingleValueEvent(bioValueEventListener)
 
         photoValueEventListener = object : ValueEventListener {
 

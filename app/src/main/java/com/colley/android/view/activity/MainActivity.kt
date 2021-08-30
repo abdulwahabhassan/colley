@@ -2,6 +2,7 @@ package com.colley.android.view.activity
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ActionMode
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -111,7 +112,6 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Glide.with(this@MainActivity).load(R.drawable.ic_profile).into(imageView)
                     Log.w(TAG, "photo is null")
-                    Snackbar.make(binding.root, "No profile picture", Snackbar.LENGTH_LONG).show()
                 }
             }
 
@@ -162,10 +162,6 @@ class MainActivity : AppCompatActivity() {
             }.show()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        dbRef.child("photos").child(auth.currentUser?.uid!!).removeEventListener(photoEventListener)
-    }
 
     companion object{
         const val TAG = "MainActivity"

@@ -15,6 +15,7 @@ import com.colley.android.databinding.FragmentPrivateChatsBinding
 import com.colley.android.model.PrivateChat
 import com.colley.android.view.dialog.NewMessageBottomSheetDialogFragment
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -68,34 +69,18 @@ class ChatsFragment :
         //get a query reference to chats
         val chatsRef = dbRef.child("user-messages").child("recent-message").child(uid)
 
-        //add a listener to chatRef to monitor it value on single change. If null, inform user that
-        //they have no active chat
-        chatsRef.addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.value != null) {
-                        //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
-                        //build an options to configure adapter. setQuery takes firebase query to listen to and a
-                        //model class to which snapShots should be parsed
-                        val options = FirebaseRecyclerOptions.Builder<PrivateChat>()
-                            .setQuery(chatsRef, PrivateChat::class.java)
-                            .build()
+        //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
+        //build an options to configure adapter. setQuery takes firebase query to listen to and a
+        //model class to which snapShots should be parsed
+        val options = FirebaseRecyclerOptions.Builder<PrivateChat>()
+            .setQuery(chatsRef, PrivateChat::class.java)
+            .build()
 
-                        adapter = ChatsRecyclerAdapter(options, requireContext(), currentUser, this@ChatsFragment, this@ChatsFragment)
-                        manager = LinearLayoutManager(requireContext())
-                        recyclerView.layoutManager = manager
-                        recyclerView.adapter = adapter
-                        adapter?.startListening()
-                    } else {
-                        binding.privateMessagesProgressBar.visibility = GONE
-                        binding.noGroupsLayout.visibility = VISIBLE
-                        binding.newChatFab.visibility = VISIBLE
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            }
-        )
+        adapter = ChatsRecyclerAdapter(options, requireContext(), currentUser, this@ChatsFragment, this@ChatsFragment)
+        manager = LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = manager
+        recyclerView.adapter = adapter
+        adapter?.startListening()
 
         binding.newChatFab.setOnClickListener {
             newMessageBottomSheetDialog = NewMessageBottomSheetDialogFragment()
@@ -122,11 +107,15 @@ class ChatsFragment :
     }
 
 
-
-    override fun onDataAvailable() {
+    override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>) {
         binding.privateMessagesProgressBar.visibility = GONE
-        binding.noGroupsLayout.visibility = GONE
         binding.newChatFab.visibility = VISIBLE
+
+        if (snapshotArray.isEmpty()) {
+            binding.noChatsLayout.visibility = VISIBLE
+        } else {
+            binding.noChatsLayout.visibility = GONE
+        }
     }
 
     override fun onItemClick(chateeId: String) {

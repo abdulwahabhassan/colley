@@ -12,6 +12,7 @@ import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -32,7 +33,7 @@ class ChatsRecyclerAdapter(
 
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
     interface DataChangedListener {
-        fun onDataAvailable()
+        fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>)
     }
 
     interface ItemClickedListener {
@@ -57,7 +58,7 @@ class ChatsRecyclerAdapter(
 
         //display GroupMessageFragment EditText layout only when data has been bound,
         //otherwise show progress bar loading
-        onDataChangedListener.onDataAvailable()
+        onDataChangedListener.onDataAvailable(snapshots)
     }
 
     class PrivateMessageViewHolder (private val itemBinding : ItemChatBinding) : RecyclerView.ViewHolder(itemBinding.root) {
