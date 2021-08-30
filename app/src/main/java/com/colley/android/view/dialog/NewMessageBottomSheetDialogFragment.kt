@@ -43,7 +43,7 @@ class NewMessageBottomSheetDialogFragment : BottomSheetDialogFragment(), WhoToMe
     private lateinit var currentUser: FirebaseUser
     private lateinit var recyclerView: RecyclerView
     private var selectedMembersCount = 0
-    private var selectedContact: User? = null
+    private var selectedContact: String? = null
     private val selectedMembersList = arrayListOf<String>()
     private val listOfUsers = arrayListOf<User>()
     private val uid: String
@@ -86,11 +86,6 @@ class NewMessageBottomSheetDialogFragment : BottomSheetDialogFragment(), WhoToMe
             }
         )
 
-
-        with(binding) {
-
-        }
-
     }
 
 
@@ -101,30 +96,28 @@ class NewMessageBottomSheetDialogFragment : BottomSheetDialogFragment(), WhoToMe
     }
 
     override fun onItemClick(user: User) {
-        
+        selectedContact = user.userId
     }
 
-    //interface method to update selected group members count when a member is selected
-    //this method also updates the selected members list that will be sent to the database
-    override fun onItemSelected(userId: String, view: CheckBox) {
-        if (view.isChecked) {
-            selectedMembersCount++
-            binding.selectedMemberCountTextView.text = selectedMembersCount.toString()
-            if (!selectedMembersList.contains(userId)) {
-                selectedMembersList.add(userId)
-            }
-        } else {
-            selectedMembersCount--
-            binding.selectedMemberCountTextView.text = selectedMembersCount.toString()
-            if (selectedMembersList.contains(userId)) {
-                selectedMembersList.remove(userId)
-            }
-        }
-        when (selectedMembersCount) {
-            0 -> binding.selectedMemberCountTextView.visibility = GONE
-            else -> binding.selectedMemberCountTextView.visibility = VISIBLE
-        }
-    }
+//    //interface method to update selected group members count when a member is selected
+//    //this method also updates the selected members list that will be sent to the database
+//    override fun onItemSelected(userId: String, view: CheckBox) {
+//        if (view.isChecked) {
+//
+//
+//
+//        } else {
+//            selectedMembersCount--
+//            binding.selectedMemberCountTextView.text = selectedMembersCount.toString()
+//            if (selectedMembersList.contains(userId)) {
+//                selectedMembersList.remove(userId)
+//            }
+//        }
+//        when (selectedMembersCount) {
+//            0 -> binding.selectedMemberCountTextView.visibility = GONE
+//            else -> binding.selectedMemberCountTextView.visibility = VISIBLE
+//        }
+//    }
 
     companion object {
         const val TAG = "NewMessageDialog"

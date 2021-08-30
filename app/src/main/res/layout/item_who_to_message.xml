@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/margin_16dp"
-    android:background="@drawable/ripple_effect_curved_edges"
-    android:layout_marginStart="@dimen/margin_16dp"
-    android:layout_marginTop="@dimen/margin_8dp"
-    android:layout_marginBottom="@dimen/margin_8dp">
+    android:paddingEnd="@dimen/margin_16dp"
+    android:layout_marginTop="@dimen/margin_4dp"
+    android:paddingStart="@dimen/margin_16dp"
+    android:paddingTop="@dimen/margin_8dp"
+    android:paddingBottom="@dimen/margin_8dp"
+    android:background="@drawable/ripple_effect_curved_edges_16dp">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/groupMemberImageView"
+        android:id="@+id/userImageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="center"
@@ -26,7 +27,7 @@
 
 
     <TextView
-        android:id="@+id/groupMemberNameTextView"
+        android:id="@+id/userNameTextView"
         android:layout_width="@dimen/width_0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -36,11 +37,11 @@
         android:textAlignment="viewStart"
         android:textColor="@color/pearl"
         android:textSize="@dimen/text_size_15sp"
-        app:layout_constraintBottom_toBottomOf="@+id/groupMemberImageView"
+        app:layout_constraintBottom_toBottomOf="@+id/userImageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/groupMemberImageView"
-        app:layout_constraintTop_toTopOf="@+id/groupMemberImageView" />
+        app:layout_constraintStart_toEndOf="@+id/userImageView"
+        app:layout_constraintTop_toTopOf="@+id/userImageView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

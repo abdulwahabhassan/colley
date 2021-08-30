@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/ripple_effect_curved"
+    android:background="@drawable/ripple_effect_curved_edges_16dp"
     android:paddingStart="@dimen/margin_16dp"
     android:paddingEnd="@dimen/margin_16dp"
     android:paddingTop="@dimen/margin_8dp"

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemNewGroupMemberBinding
+import com.colley.android.databinding.ItemWhoToMessageBinding
 import com.colley.android.model.Profile
 import com.colley.android.model.User
 import com.google.firebase.auth.FirebaseUser
@@ -23,50 +24,24 @@ class WhoToMessageRecyclerAdapter(
     private val currentUser: FirebaseUser?,
     private val clickListener: ItemClickedListener,
     private val context: Context,
-    private val listOfMembers: ArrayList<User>
+    private val listOfUsers: ArrayList<User>
 ) :
-    RecyclerView.Adapter<WhoToMessageRecyclerAdapter.GroupMemberViewHolder>() {
+    RecyclerView.Adapter<WhoToMessageRecyclerAdapter.UserViewHolder>() {
 
-    //list to keep tracked of selected members to add to group
-    private var memberSelectedList = arrayListOf<String>()
 
     interface ItemClickedListener {
         fun onItemClick(user: User)
-        fun onItemSelected(userId: String, view: CheckBox)
     }
 
-    inner class GroupMemberViewHolder (private val itemBinding : ItemNewGroupMemberBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+    inner class UserViewHolder (private val itemBinding : ItemWhoToMessageBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(user: User, clickListener: ItemClickedListener, context: Context) = with(itemBinding) {
-
-
-            addGroupMemberCheckBox.setOnClickListener {
-
-                //get reference to clicked user's id
-                val clickedUserId = user.userId
-
-                //a list of selected members is used to keep track of selected users when views are recycled
-                if (memberSelectedList.contains(clickedUserId)) {
-                    //remove a user if they have already been selected
-                    memberSelectedList.remove(clickedUserId)
-                } else {
-                    //add a user if they haven't be selected
-                    memberSelectedList.add(clickedUserId!!)
-                }
-
-                //clickListener to count and display selected users
-                clickListener.onItemSelected(user.userId!!, it as CheckBox)
-
-            }
-            //during onBindViewHolder, which may occur when views are recycled, we use the tracking list
-            //of selected user to keep checkbox status consistent
-            addGroupMemberCheckBox.isChecked = memberSelectedList.contains(user.userId)
 
             //set name
             Firebase.database.reference.child("profiles").child(user.userId!!).addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val name = snapshot.getValue<Profile>()?.name
-                        groupMemberNameTextView.text = name
+                        userNameTextView.text = name
 
                     }
 
@@ -82,9 +57,9 @@ class WhoToMessageRecyclerAdapter(
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String>()
                         if (photo != null) {
-                            Glide.with(context).load(photo).into(groupMemberImageView)
+                            Glide.with(context).load(photo).into(userImageView)
                         } else {
-                            Glide.with(context).load(R.drawable.ic_person).into(groupMemberImageView)
+                            Glide.with(context).load(R.drawable.ic_person).into(userImageView)
                         }
                     }
 
@@ -100,18 +75,18 @@ class WhoToMessageRecyclerAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupMemberViewHolder {
-        val viewBinding = ItemNewGroupMemberBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return GroupMemberViewHolder(viewBinding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+        val viewBinding = ItemWhoToMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return UserViewHolder(viewBinding)
     }
 
-    override fun onBindViewHolder(holder: GroupMemberViewHolder, position: Int) {
-        val member = listOfMembers[position]
+    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
+        val member = listOfUsers[position]
         holder.bind(member, clickListener, context)
     }
 
     override fun getItemCount(): Int {
-        return listOfMembers.size
+        return listOfUsers.size
     }
 
     companion object {

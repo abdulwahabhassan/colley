@@ -44,7 +44,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/saveAboutButton"
         android:textColor="@color/light_pearl"
-        android:background="@drawable/ripple_effect_curved_edges"
+        android:background="@drawable/ripple_effect_curved_edges_8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16dp"

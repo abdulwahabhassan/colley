@@ -128,7 +128,7 @@
         android:textSize="@dimen/text_size_12sp"
         android:paddingStart="@dimen/padding_12dp"
         android:drawableStart="@drawable/ic_save"
-        android:background="@drawable/ripple_effect_curved_edges"
+        android:background="@drawable/ripple_effect_curved_edges_8dp"
         android:layout_gravity="center"
         android:text="@string/save_text"/>
 

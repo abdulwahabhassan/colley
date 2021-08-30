@@ -33,7 +33,7 @@
         android:layout_marginTop="@dimen/margin_8dp"
         android:textColor="@color/light_pearl"
         android:textSize="@dimen/text_size_12sp"
-        android:background="@drawable/ripple_effect_curved_edges"
+        android:background="@drawable/ripple_effect_curved_edges_8dp"
         android:padding="@dimen/padding_8dp"
         android:drawablePadding="@dimen/padding_4dp"
         android:text="@string/select_group_icon_text"
@@ -109,7 +109,7 @@
         android:layout_gravity="end"
         android:padding="@dimen/padding_8dp"
         android:drawableStart="@drawable/ic_save"
-        android:background="@drawable/ripple_effect_curved_edges"
+        android:background="@drawable/ripple_effect_curved_edges_8dp"
         android:layout_marginEnd="@dimen/margin_16dp"
         android:textSize="@dimen/text_size_12sp"
         android:text="@string/create_text"/>
@@ -141,14 +141,21 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <View
+        android:id="@+id/profileHorizontalLine"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_1dp"
+        android:layout_marginTop="@dimen/margin_8dp"
+        android:layout_marginEnd="@dimen/margin_8dp"
+        android:layout_marginStart="@dimen/margin_8dp"
+        android:background="@color/lighter_pearl" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/addGroupMembersRecyclerView"
             android:layout_width="match_parent"
             android:overScrollMode="never"
-            android:layout_marginTop="@dimen/margin_16dp"
             android:layout_marginStart="@dimen/margin_8dp"
             android:layout_marginEnd="@dimen/margin_8dp"
-            android:background="@drawable/add_group_members_card_view_background"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_new_group_member"
             android:layout_height="match_parent"/>

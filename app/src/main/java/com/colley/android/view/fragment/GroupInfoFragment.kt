@@ -313,7 +313,7 @@ class GroupInfoFragment :
 
         //edit group name
         binding.editGroupNameButton.setOnClickListener {
-            editGroupNameBottomSheetDialog = EditGroupNameBottomSheetDialogFragment( requireContext())
+            editGroupNameBottomSheetDialog = EditGroupNameBottomSheetDialogFragment(requireContext())
             editGroupNameBottomSheetDialog?.arguments = bundleOf(
                 "groupNameKey" to binding.groupNameTextView.text.toString(),
                 "groupIdKey" to args.groupId

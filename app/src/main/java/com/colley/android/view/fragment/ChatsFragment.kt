@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.ChatsRecyclerAdapter
 import com.colley.android.databinding.FragmentPrivateChatsBinding
 import com.colley.android.model.PrivateChat
+import com.colley.android.view.dialog.NewMessageBottomSheetDialogFragment
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -38,6 +39,7 @@ class ChatsFragment :
     private var adapter: ChatsRecyclerAdapter? = null
     private var manager: LinearLayoutManager? = null
     private lateinit var recyclerView: RecyclerView
+    private var newMessageBottomSheetDialog: NewMessageBottomSheetDialogFragment? = null
 
     private val uid: String
         get() = currentUser.uid
@@ -96,7 +98,8 @@ class ChatsFragment :
         )
 
         binding.newChatFab.setOnClickListener {
-
+            newMessageBottomSheetDialog = NewMessageBottomSheetDialogFragment()
+            newMessageBottomSheetDialog?.show(childFragmentManager, null)
         }
 
     }
