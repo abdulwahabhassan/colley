@@ -12,6 +12,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.view.fragment.GroupInfoFragment
@@ -24,6 +25,7 @@ import com.colley.android.model.GroupChat
 import com.colley.android.model.NewGroup
 import com.colley.android.model.User
 import com.colley.android.model.GroupMessage
+import com.colley.android.view.fragment.ChatsFragmentDirections
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -35,20 +37,19 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
-class NewMessageBottomSheetDialogFragment : BottomSheetDialogFragment(), WhoToMessageRecyclerAdapter.ItemClickedListener {
+class NewMessageBottomSheetDialogFragment :
+    BottomSheetDialogFragment(),
+    WhoToMessageRecyclerAdapter.ItemClickedListener {
 
     private var _binding: FragmentNewMessageBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
     private lateinit var recyclerView: RecyclerView
-    private var selectedMembersCount = 0
-    private var selectedContact: String? = null
-    private val selectedMembersList = arrayListOf<String>()
+    private var selectedUserId: String? = null
     private val listOfUsers = arrayListOf<User>()
     private val uid: String
         get() = currentUser.uid
-    private var groupImageUri: Uri? = null
 
 
     override fun onCreateView(
@@ -88,36 +89,24 @@ class NewMessageBottomSheetDialogFragment : BottomSheetDialogFragment(), WhoToMe
 
     }
 
-
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
 
+    //when a user is selected, launch private message fragment and dismiss dialog
     override fun onItemClick(user: User) {
-        selectedContact = user.userId
-    }
+        selectedUserId = user.userId
 
-//    //interface method to update selected group members count when a member is selected
-//    //this method also updates the selected members list that will be sent to the database
-//    override fun onItemSelected(userId: String, view: CheckBox) {
-//        if (view.isChecked) {
-//
-//
-//
-//        } else {
-//            selectedMembersCount--
-//            binding.selectedMemberCountTextView.text = selectedMembersCount.toString()
-//            if (selectedMembersList.contains(userId)) {
-//                selectedMembersList.remove(userId)
-//            }
-//        }
-//        when (selectedMembersCount) {
-//            0 -> binding.selectedMemberCountTextView.visibility = GONE
-//            else -> binding.selectedMemberCountTextView.visibility = VISIBLE
-//        }
-//    }
+        selectedUserId?.let {
+            ChatsFragmentDirections.actionChatsFragmentToPrivateMessageFragment(it)
+
+        }?.also {
+            findNavController().navigate(it)
+            this.dismiss()
+        }
+
+    }
 
     companion object {
         const val TAG = "NewMessageDialog"

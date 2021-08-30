@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View.*
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
@@ -15,6 +16,7 @@ import com.colley.android.model.GroupMessage
 import com.colley.android.model.PrivateChat
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -28,13 +30,13 @@ import com.google.firebase.storage.ktx.storage
 class PrivateMessageRecyclerAdapter(
     private val options: FirebaseRecyclerOptions<PrivateChat>,
     private val currentUser: FirebaseUser?,
-    private val onBindViewHolderListener: BindViewHolderListener,
+    private val onDataChangedListener: DataChangedListener,
     private val context: Context
 ) : FirebaseRecyclerAdapter<PrivateChat, RecyclerView.ViewHolder>(options) {
 
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
-    interface BindViewHolderListener {
-        fun onBind()
+    interface DataChangedListener {
+        fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>)
     }
 
 
@@ -57,6 +59,7 @@ class PrivateMessageRecyclerAdapter(
         position: Int,
         model: PrivateChat
     ) {
+
         val uid = currentUser?.uid
         if (options.snapshots[position].fromUserId != uid) {
 
@@ -64,11 +67,15 @@ class PrivateMessageRecyclerAdapter(
         } else {
             (holder as CurrentUserMessageViewHolder).bind(model, position)
         }
+    }
 
+    //Callback triggered after all child events in a particular snapshot have been processed.
+    //Useful for batch events, such as removing a loading indicator
+    override fun onDataChanged() {
+        super.onDataChanged()
         //display GroupMessageFragment EditText layout only when data has been bound,
         //otherwise show progress bar loading
-        onBindViewHolderListener.onBind()
-
+        onDataChangedListener.onDataAvailable(snapshots)
     }
 
 

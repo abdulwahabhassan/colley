@@ -20,6 +20,7 @@ import com.colley.android.model.Profile
 import com.colley.android.model.SendButtonObserver
 import com.colley.android.observer.PrivateMessageScrollToBottomObserver
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -36,7 +37,7 @@ import com.google.firebase.storage.ktx.storage
 
 class PrivateMessageFragment :
     Fragment(),
-    PrivateMessageRecyclerAdapter.BindViewHolderListener {
+    PrivateMessageRecyclerAdapter.DataChangedListener {
 
     private val args: PrivateMessageFragmentArgs by navArgs()
     private var _binding: FragmentPrivateMessageBinding? = null
@@ -115,7 +116,7 @@ class PrivateMessageFragment :
         )
 
         //get a query reference to messages
-        val messagesRef = dbRef.child("user-messages").child(currentUser?.uid).child(args.chateeId)
+        val messagesRef = dbRef.child("user-messages").child(currentUser.uid).child(args.chateeId)
 
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         //build an options to configure adapter. setQuery takes firebase query to listen to and a
@@ -253,9 +254,17 @@ class PrivateMessageFragment :
             }
     }
 
-    override fun onBind() {
+    override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>) {
+
         binding.progressBar.visibility = View.GONE
         binding.linearLayout.visibility = View.VISIBLE
+
+        if (snapshotArray.isEmpty()) {
+            binding.startChattingTextView.text = "Start a conversation with ${(activity as AppCompatActivity?)!!.supportActionBar!!.title}"
+        } else {
+            binding.startChattingTextView.visibility = View.GONE
+        }
+
     }
 
     override fun onResume() {
@@ -266,7 +275,6 @@ class PrivateMessageFragment :
     override fun onStop() {
         super.onStop()
         adapter.stopListening()
-        binding.linearLayout.visibility = View.VISIBLE
     }
 
     override fun onDestroy() {

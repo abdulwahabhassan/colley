@@ -18,7 +18,6 @@ package com.colley.android.observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
-import com.colley.android.adapter.GroupMessageRecyclerAdapter
 import com.colley.android.adapter.PrivateMessageRecyclerAdapter
 
 class PrivateMessageScrollToBottomObserver(

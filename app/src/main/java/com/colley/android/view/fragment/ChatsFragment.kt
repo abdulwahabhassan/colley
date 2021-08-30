@@ -7,7 +7,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.ChatsRecyclerAdapter
@@ -28,7 +28,7 @@ import com.google.firebase.ktx.Firebase
 
 class ChatsFragment :
     Fragment(),
-    ChatsRecyclerAdapter.BindViewHolderListener,
+    ChatsRecyclerAdapter.DataChangedListener,
     ChatsRecyclerAdapter.ItemClickedListener {
 
     private var _binding: FragmentPrivateChatsBinding? = null
@@ -121,18 +121,20 @@ class ChatsFragment :
         _binding = null
     }
 
-    companion object {
 
-    }
 
-    override fun onBind() {
+    override fun onDataAvailable() {
         binding.privateMessagesProgressBar.visibility = GONE
         binding.noGroupsLayout.visibility = GONE
         binding.newChatFab.visibility = VISIBLE
     }
 
     override fun onItemClick(chateeId: String) {
-        val action = ChatsFragmentDirections.actionPrivateMessagesFragmentToPrivateChatFragment(chateeId)
-        view?.findNavController()?.navigate(action)
+        val action = ChatsFragmentDirections.actionChatsFragmentToPrivateMessageFragment(chateeId)
+        findNavController().navigate(action)
+    }
+
+    companion object {
+
     }
 }

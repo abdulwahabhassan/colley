@@ -31,7 +31,7 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 
-class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHolderListener {
+class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.DataChangedListener {
 
     private val args: GroupMessageFragmentArgs by navArgs()
     private var _binding: FragmentGroupMessageBinding? = null
@@ -233,7 +233,7 @@ class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.BindViewHol
         _binding = null
     }
 
-    override fun onBind() {
+    override fun onDataAvailable() {
         binding.progressBar.visibility = GONE
         binding.linearLayout.visibility = VISIBLE
     }

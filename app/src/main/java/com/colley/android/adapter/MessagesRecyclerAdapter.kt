@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.databinding.ItemMessageBinding
 import com.colley.android.model.Message
 
-class MessagesRecyclerAdapter : RecyclerView.Adapter<MessagesRecyclerAdapter.MessageViewHolder>() {
+class MessagesRecyclerAdapter :
+    RecyclerView.Adapter<MessagesRecyclerAdapter.MessageViewHolder>() {
 
     var listOfMessages = arrayListOf<Message>()
     private lateinit var clickListener : ItemClickedListener

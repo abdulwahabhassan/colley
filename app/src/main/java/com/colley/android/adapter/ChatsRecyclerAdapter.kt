@@ -24,15 +24,15 @@ class ChatsRecyclerAdapter(
     private val options: FirebaseRecyclerOptions<PrivateChat>,
     private val context: Context,
     private val currentUser: FirebaseUser?,
-    private val onBindViewHolderListener: BindViewHolderListener,
+    private val onDataChangedListener: DataChangedListener,
     private val clickListener: ItemClickedListener
 )
     : FirebaseRecyclerAdapter<PrivateChat, ChatsRecyclerAdapter.PrivateMessageViewHolder>(options) {
 
 
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
-    interface BindViewHolderListener {
-        fun onBind()
+    interface DataChangedListener {
+        fun onDataAvailable()
     }
 
     interface ItemClickedListener {
@@ -48,7 +48,16 @@ class ChatsRecyclerAdapter(
         holder.bind(currentUser, model, context, clickListener)
         //display chat groups only when data has been bound,
         //otherwise show progress bar loading
-        onBindViewHolderListener.onBind()
+    }
+
+    //Callback triggered after all child events in a particular snapshot have been processed.
+    //Useful for batch events, such as removing a loading indicator
+    override fun onDataChanged() {
+        super.onDataChanged()
+
+        //display GroupMessageFragment EditText layout only when data has been bound,
+        //otherwise show progress bar loading
+        onDataChangedListener.onDataAvailable()
     }
 
     class PrivateMessageViewHolder (private val itemBinding : ItemChatBinding) : RecyclerView.ViewHolder(itemBinding.root) {

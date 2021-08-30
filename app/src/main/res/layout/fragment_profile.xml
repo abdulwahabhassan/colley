@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_16dp"
-            android:layout_marginBottom="@dimen/margin_24dp"
+            android:layout_marginBottom="@dimen/margin_16dp"
             android:background="@drawable/ripple_effect_curved_edges_8dp"
             android:elevation="1dp"
             android:padding="@dimen/padding_8dp"
@@ -107,14 +107,15 @@
                 android:textStyle="bold"
                 app:drawableStartCompat="@drawable/ic_name"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profileLabelTextView" />
+                app:layout_constraintTop_toBottomOf="@+id/profileHorizontalLine" />
+
 
             <TextView
                 android:id="@+id/nameTextView"
                 android:layout_width="@dimen/width_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_16dp"
-                android:layout_marginTop="@dimen/margin_16dp"
+
                 android:layout_marginEnd="@dimen/margin_16dp"
                 android:ellipsize="end"
                 android:lines="1"
@@ -125,8 +126,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/userProfileNameTextView"
-                app:layout_constraintTop_toBottomOf="@+id/profileLabelTextView" />
-
+                app:layout_constraintTop_toTopOf="@+id/userProfileNameTextView"
+                app:layout_constraintVertical_bias="1.0" />
 
             <TextView
                 android:id="@+id/schoolTextView"
@@ -146,7 +147,7 @@
                 android:layout_width="@dimen/width_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/margin_16dp"
+
                 android:layout_marginEnd="@dimen/margin_16dp"
                 android:ellipsize="end"
                 android:lines="1"
@@ -157,14 +158,14 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/schoolTextView"
-                app:layout_constraintTop_toBottomOf="@+id/nameTextView" />
+                app:layout_constraintTop_toTopOf="@+id/schoolTextView"
+                app:layout_constraintVertical_bias="1.0" />
 
             <TextView
                 android:id="@+id/courseOfStudyTextView"
                 android:layout_width="@dimen/width_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/margin_16dp"
                 android:ellipsize="end"
                 android:lines="1"
                 android:text=""
@@ -173,14 +174,13 @@
                 app:layout_constraintBottom_toBottomOf="@+id/courseTextView"
                 app:layout_constraintEnd_toEndOf="@+id/schoolNameTextView"
                 app:layout_constraintStart_toEndOf="@+id/courseTextView"
-                app:layout_constraintTop_toBottomOf="@+id/schoolNameTextView" />
+                app:layout_constraintTop_toTopOf="@+id/courseTextView" />
 
             <TextView
                 android:id="@+id/statusTitleTextView"
                 android:layout_width="@dimen/width_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/margin_16dp"
                 android:ellipsize="end"
                 android:lines="1"
                 android:text=""
@@ -189,7 +189,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/statusTextView"
                 app:layout_constraintEnd_toEndOf="@+id/courseOfStudyTextView"
                 app:layout_constraintStart_toEndOf="@+id/statusTextView"
-                app:layout_constraintTop_toBottomOf="@+id/courseOfStudyTextView" />
+                app:layout_constraintTop_toTopOf="@+id/statusTextView" />
 
 
             <TextView
@@ -277,7 +277,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_16dp"
-                android:layout_marginTop="@dimen/margin_8dp"
+                android:layout_marginTop="@dimen/margin_16dp"
                 android:layout_marginEnd="@dimen/margin_16dp"
                 android:textColor="@color/light_pearl" />
 

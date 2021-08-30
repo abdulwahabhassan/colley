@@ -27,13 +27,13 @@ import com.google.firebase.storage.ktx.storage
 class GroupMessageRecyclerAdapter(
     private val options: FirebaseRecyclerOptions<GroupMessage>,
     private val currentUser: FirebaseUser?,
-    private val onBindViewHolderListener: BindViewHolderListener,
+    private val onDataChangedListener: DataChangedListener,
     private val context: Context
 ) : FirebaseRecyclerAdapter<GroupMessage, RecyclerView.ViewHolder>(options) {
 
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
-    interface BindViewHolderListener {
-        fun onBind()
+    interface DataChangedListener {
+        fun onDataAvailable()
     }
 
 
@@ -64,10 +64,16 @@ class GroupMessageRecyclerAdapter(
             (holder as CurrentUserMessageViewHolder).bind(model, position)
         }
 
+    }
+
+    //Callback triggered after all child events in a particular snapshot have been processed.
+    //Useful for batch events, such as removing a loading indicator
+    override fun onDataChanged() {
+        super.onDataChanged()
+
         //display GroupMessageFragment EditText layout only when data has been bound,
         //otherwise show progress bar loading
-        onBindViewHolderListener.onBind()
-
+        onDataChangedListener.onDataAvailable()
     }
 
 

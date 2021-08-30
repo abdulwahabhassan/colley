@@ -28,6 +28,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/item_group_message" />
 
+    <TextView
+        android:id="@+id/startChattingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/light_pearl"
+        android:textSize="@dimen/text_size_15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/messageRecyclerView"
+        app:layout_constraintVertical_bias="0.44" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -63,6 +75,7 @@
             android:padding="@dimen/padding_4dp"
             android:background="@drawable/ripple_effect_curved_edges_8dp"
             app:srcCompat="@drawable/ic_add_new_photo" />
+
 
         <ImageView
             android:id="@+id/sendButton"

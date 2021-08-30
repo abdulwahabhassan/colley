@@ -87,32 +87,32 @@ app:layoutDescription="@xml/fragment_profile_xml_constraintlayout3_scene">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"
             android:drawablePadding="@dimen/padding_4dp"
             android:text="@string/name_text"
+            android:layout_marginTop="@dimen/margin_16dp"
             android:textColor="@color/light_pearl"
             android:textStyle="bold"
             app:drawableStartCompat="@drawable/ic_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profileLabelTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/profileHorizontalLine" />
 
         <TextView
             android:id="@+id/nameTextView"
             android:layout_width="@dimen/width_0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_16dp"
             android:layout_marginEnd="@dimen/margin_16dp"
             android:ellipsize="end"
             android:lines="1"
             android:text=""
+            android:layout_marginTop="@dimen/margin_16dp"
             android:textAlignment="viewEnd"
             android:textColor="@color/light_pearl"
             app:layout_constraintBottom_toBottomOf="@+id/userProfileNameTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/userProfileNameTextView"
-            app:layout_constraintTop_toBottomOf="@+id/profileLabelTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/profileHorizontalLine" />
 
 
         <TextView
@@ -250,7 +250,7 @@ app:layoutDescription="@xml/fragment_profile_xml_constraintlayout3_scene">
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_16dp"
-            android:layout_marginTop="@dimen/margin_8dp"
+            android:layout_marginTop="@dimen/margin_16dp"
             android:layout_marginEnd="@dimen/margin_16dp"
             android:textColor="@color/light_pearl" />
 

@@ -24,15 +24,15 @@ class GroupsRecyclerAdapter (
     private val options: FirebaseRecyclerOptions<String>,
     private val context: Context,
     private val currentUser: FirebaseUser?,
-    private val onBindViewHolderListener: BindViewHolderListener,
+    private val onDataChangedListener: DataChangedListener,
     private val clickListener: ItemClickedListener
         )
     : FirebaseRecyclerAdapter<String, GroupsRecyclerAdapter.GroupViewHolder>(options) {
 
 
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
-    interface BindViewHolderListener {
-        fun onBind()
+    interface DataChangedListener {
+        fun onDataAvailable()
     }
 
     interface ItemClickedListener {
@@ -46,9 +46,16 @@ class GroupsRecyclerAdapter (
 
     override fun onBindViewHolder(holder: GroupViewHolder, position: Int, model: String) {
         holder.bind(model, clickListener)
-        //display chat groups only when data has been bound,
+    }
+
+    //Callback triggered after all child events in a particular snapshot have been processed.
+    //Useful for batch events, such as removing a loading indicator
+    override fun onDataChanged() {
+        super.onDataChanged()
+
+        //display GroupMessageFragment EditText layout only when data has been bound,
         //otherwise show progress bar loading
-        onBindViewHolderListener.onBind()
+        onDataChangedListener.onDataAvailable()
     }
 
     class GroupViewHolder (private val itemBinding : ItemGroupBinding) : RecyclerView.ViewHolder(itemBinding.root) {

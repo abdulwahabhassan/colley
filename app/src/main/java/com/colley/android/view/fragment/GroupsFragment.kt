@@ -31,7 +31,7 @@ import com.google.firebase.ktx.Firebase
 class GroupsFragment :
     Fragment(),
     GroupsRecyclerAdapter.ItemClickedListener,
-    GroupsRecyclerAdapter.BindViewHolderListener {
+    GroupsRecyclerAdapter.DataChangedListener {
 
     private var _binding: FragmentGroupsBinding? = null
     private val binding get() = _binding!!
@@ -141,8 +141,9 @@ class GroupsFragment :
         parentFragment?.findNavController()?.navigate(action)
     }
 
+
     //hide progress bar when groups are displayed
-    override fun onBind() {
+    override fun onDataAvailable() {
         binding.groupsProgressBar.visibility = GONE
         binding.noGroupsLayout.visibility = GONE
     }

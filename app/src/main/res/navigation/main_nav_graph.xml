@@ -93,12 +93,12 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/privateChatsFragment"
+        android:id="@+id/chatsFragment"
         android:name="com.colley.android.view.fragment.ChatsFragment"
         android:label="Messages"
         tools:layout="@layout/fragment_private_chats" >
         <action
-            android:id="@+id/action_privateMessagesFragment_to_privateChatFragment"
+            android:id="@+id/action_chatsFragment_to_privateMessageFragment"
             app:destination="@id/privateMessageFragment" />
     </fragment>
     <fragment
