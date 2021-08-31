@@ -15,8 +15,26 @@
 
 <!--    custom bottomSheetDialogTheme-->
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Colley.BottomSheetDialog</item>
+<!--    to allow action mode visually overtakes the action bar position-->
+        <item name="windowActionModeOverlay">true</item>
+<!--     custom theme for action mode-->
+        <item name="actionModeTheme">@style/Base.Widget.AppCompat.ActionMode</item>
 
+    </style>
 
+<!--    custom style for ActionMode theme-->
+    <style name="Base.Widget.AppCompat.ActionMode" parent="">
+        <item name="background">@color/pearl</item>
+        <item name="height">@dimen/height_50dp</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_arrow_back</item>
+        <item name="titleTextStyle">@style/ActionModeTitleTextStyle</item>
+    </style>
+
+<!--    custom text style for ActionMode theme style-->
+    <style name="ActionModeTitleTextStyle">
+        <item name="android:textColor">@color/apricot</item>
+        <item name="android:textSize">@dimen/text_size_16sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="ColorOnSecondaryFab">
@@ -73,4 +91,5 @@
 
 <!--    shape appearance for group photo-->
 
+    <dimen name="height_50dp">50dp</dimen>
 </resources>

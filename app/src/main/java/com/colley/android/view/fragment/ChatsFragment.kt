@@ -1,19 +1,22 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.colley.android.R
 import com.colley.android.adapter.ChatsRecyclerAdapter
 import com.colley.android.databinding.FragmentPrivateChatsBinding
 import com.colley.android.model.PrivateChat
 import com.colley.android.view.dialog.NewMessageBottomSheetDialogFragment
+import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseAuth
@@ -42,8 +45,42 @@ class ChatsFragment :
     private lateinit var recyclerView: RecyclerView
     private var newMessageBottomSheetDialog: NewMessageBottomSheetDialogFragment? = null
 
+    private var actionMode: ActionMode? = null
+
     private val uid: String
         get() = currentUser.uid
+
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        //allows this fragment to be able to modify it's containing activity's toolbar menu
+//        setHasOptionsMenu(true);
+//    }
+//
+//    //since we have set hasOptionsMenu to true, our fragment can now override this call to allow us
+//    //modify the menu
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        super.onCreateOptionsMenu(menu, inflater)
+//        menu.clear()
+//        //this inflates a new menu
+//        inflater.inflate(R.menu.on_long_click_chat_menu, menu)
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        return when (item.itemId) {
+//            R.id.delete_chat_menu_item -> {
+//                AlertDialog.Builder(requireContext())
+//                    .setMessage("Delete chat with ")
+//                    .setPositiveButton("Yes") { dialog, which ->
+//
+//                        dialog.dismiss()
+//                    }.setNegativeButton("No") {
+//                            dialog, which -> dialog.dismiss()
+//                    }.show()
+//                true
+//            }
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -123,7 +160,49 @@ class ChatsFragment :
         findNavController().navigate(action)
     }
 
-    companion object {
+    //action mode call back
+    private val actionModeCallBack: ActionMode.Callback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mode?.menuInflater?.inflate(R.menu.on_long_click_chat_menu, menu)
+            mode?.title = "Delete"
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.delete_chat_menu_item -> {
+                    AlertDialog.Builder(requireContext())
+                        .setMessage("Delete chat with ")
+                        .setPositiveButton("Yes") { dialog, which ->
+                            //dismiss dialog
+                            dialog.dismiss()
+                            //finish and close action mode by calling onDestroyActionMode method
+                            mode?.finish()
+                        }.setNegativeButton("No") { dialog, which -> dialog.dismiss()
+                            //finish and close action mode by calling onDestroyActionMode method
+                            mode?.finish()
+                        }.show()
+
+                    true
+                } else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            actionMode = null
+        }
 
     }
+
+    override fun onItemLongCLicked(chateeId: String) {
+        if (actionMode == null) {
+            actionMode = (activity as AppCompatActivity?)!!.startSupportActionMode(actionModeCallBack)
+        }
+//        (activity as AppCompatActivity?)!!.supportActionBar?.title = "Yay"
+    }
+
 }

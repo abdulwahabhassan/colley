@@ -211,18 +211,13 @@ class ProfileFragment : Fragment() {
             }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
 
         //remove event listener
         dbRef.child("profiles").child(uid).removeEventListener(profileValueEventListener)
         dbRef.child("bios").child(uid).removeEventListener(bioValueEventListener)
         dbRef.child("photos").child(uid).removeEventListener(photoValueEventListener)
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         _binding = null
     }
 

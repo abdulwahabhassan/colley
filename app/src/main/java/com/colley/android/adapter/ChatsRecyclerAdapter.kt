@@ -38,6 +38,7 @@ class ChatsRecyclerAdapter(
 
     interface ItemClickedListener {
         fun onItemClick(chateeId: String)
+        fun onItemLongCLicked(chateeId: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PrivateMessageViewHolder {
@@ -128,6 +129,11 @@ class ChatsRecyclerAdapter(
 
             root.setOnClickListener {
                 clickListener.onItemClick(chateeId)
+            }
+
+            root.setOnLongClickListener {
+                clickListener.onItemLongCLicked(chateeId)
+                true
             }
         }
     }
