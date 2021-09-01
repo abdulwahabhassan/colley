@@ -49,8 +49,6 @@ class ChatsRecyclerAdapter(
 
     override fun onBindViewHolder(holder: PrivateMessageViewHolder, position: Int, model: PrivateChat) {
         holder.bind(currentUser, model, context, clickListener)
-        //display chat groups only when data has been bound,
-        //otherwise show progress bar loading
     }
 
     //Callback triggered after all child events in a particular snapshot have been processed.

@@ -8,6 +8,8 @@ import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemIssueBinding
 import com.colley.android.model.Issue
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class IssuesFragmentRecyclerAdapter (private val clickListener: ItemClickedListener)
     : RecyclerView.Adapter<IssuesFragmentRecyclerAdapter.IssueViewHolder>() {
@@ -21,18 +23,20 @@ class IssuesFragmentRecyclerAdapter (private val clickListener: ItemClickedListe
     class IssueViewHolder (private val itemBinding : ItemIssueBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(issue: Issue, clickListener: ItemClickedListener) = with(itemBinding) {
 
+
+
             issueTitleTextView.text = issue.title
             issueBodyTextView.text = issue.body
             issueTimeStampTextView.text = issue.timeStamp
-            userNameTextView.text = issue.userName
-            userSchoolTextView.text = issue.userSchool
+//            userNameTextView.text = issue.userName
+//            userSchoolTextView.text = issue.userSchool
             contributionsTextView.text = issue.contributionsCount.toString()
             endorsementTextView.text = issue.endorsementsCount.toString()
-            if (issue.userPhoto != null) {
-                Glide.with(this.root.context).load(issue.userPhoto).into(userImageView)
-            } else {
-                Glide.with(this.root.context).load(R.drawable.ic_profile).into(userImageView)
-            }
+//            if (issue.userPhoto != null) {
+//                Glide.with(this.root.context).load(issue.userPhoto).into(userImageView)
+//            } else {
+//                Glide.with(this.root.context).load(R.drawable.ic_profile).into(userImageView)
+//            }
             pinImageView.setOnClickListener {
                 it.isActivated = when (it.isActivated) {
                     true -> false

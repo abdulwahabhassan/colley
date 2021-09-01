@@ -1,30 +1,32 @@
 package com.colley.android.view.dialog
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.colley.android.contract.OpenDocumentContract
-import com.colley.android.databinding.FragmentAddGroupBottomSheetDialogBinding
+import android.widget.Toast
 import com.colley.android.databinding.FragmentRaiseIssueBottomSheetDialogBinding
-import com.colley.android.model.User
+import com.colley.android.model.Issue
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RaiseIssueBottomSheetDialogFragment(
-    parentContext: Context,
-    issuesView: View
+    val parentContext: Context,
+    val issuesView: View
 ) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentRaiseIssueBottomSheetDialogBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
     private val uid: String
@@ -36,7 +38,7 @@ class RaiseIssueBottomSheetDialogFragment(
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentRaiseIssueBottomSheetDialogBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,5 +46,52 @@ class RaiseIssueBottomSheetDialogFragment(
         //initialize database and current user
         dbRef = Firebase.database.reference
         currentUser = Firebase.auth.currentUser!!
+
+        binding?.raiseIssueButton?.setOnClickListener {
+            //Disable editing during creation
+            setEditingEnabled(false)
+
+            val title = binding?.issueTitleNameEditText?.text.toString()
+            val body = binding?.issueBodyEditText?.text.toString()
+            val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
+            val date: String = df.format(Calendar.getInstance().time)
+
+            //make instance of new issue
+            val issue = Issue(
+                 userId = uid,
+                 title = title,
+                 body = body,
+                 timeStamp = date,
+             )
+
+            //create and push new issue to database, retrieve key and add it as issueId
+            val key = dbRef.child("issues").push()
+                .setValue(issue, DatabaseReference.CompletionListener { error, ref ->
+                    if (error != null) {
+                        Toast.makeText(context, "Unable to create issue", Toast.LENGTH_LONG).show()
+                        Log.w(AddGroupBottomSheetDialogFragment.TAG, "Unable to write issue to database.", error.toException())
+                        setEditingEnabled(true)
+                        return@CompletionListener
+                    }
+                    //after creating group, retrieve its key on the database and set it as the issue id
+                    val key = ref.key
+                    dbRef.child("issues").child(key!!).child("issueId").setValue(key)
+                })
+            Snackbar.make(issuesView, "Your issue has been raised successfully!", Snackbar.LENGTH_LONG).show()
+            //dismiss dialog
+            this.dismiss()
+        }
+    }
+
+    //used to disable fields during creation
+    private fun setEditingEnabled(enabled: Boolean) {
+            binding?.issueTitleNameEditText?.isEnabled = enabled
+            binding?.issueBodyEditText?.isEnabled = enabled
+            binding?.raiseIssueButton?.isEnabled = enabled
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

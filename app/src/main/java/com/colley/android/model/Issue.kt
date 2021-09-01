@@ -1,12 +1,11 @@
 package com.colley.android.model
 
 class Issue(
-    val title: String,
-    val body: String,
-    val timeStamp: String,
+    val issueId: String? = null,
+    val userId: String? = null,
+    val title: String? = null,
+    val body: String? = null,
+    val timeStamp: String? = null,
     val contributionsCount: Int = 0,
-    val endorsementsCount: Int = 0,
-    val userName: String,
-    val userSchool: String,
-    val userPhoto: String? = null
+    val endorsementsCount: Int = 0
     )

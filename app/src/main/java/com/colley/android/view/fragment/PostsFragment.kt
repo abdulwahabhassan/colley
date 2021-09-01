@@ -25,6 +25,22 @@ class PostsFragment : Fragment(),
         setHasOptionsMenu(true)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater.inflate(R.menu.posts_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.search_posts_menu_item -> {
+                Toast.makeText(context, "Searching posts", Toast.LENGTH_LONG).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,16 +55,6 @@ class PostsFragment : Fragment(),
         val recyclerViewAdapter = PostsFragmentRecyclerAdapter(this)
         recyclerViewAdapter.setList(DummyData.getListOfPosts())
         recyclerView.adapter = recyclerViewAdapter
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.search_menu_item -> {
-                Toast.makeText(context, "Search in posts", Toast.LENGTH_LONG).show()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
 
