@@ -57,11 +57,14 @@ class GroupMessageRecyclerAdapter(
         model: GroupMessage
     ) {
         val uid = currentUser?.uid
-        if (options.snapshots[position].userId != uid) {
+        //check first if snapshots size is not zero to avoid out of bound exception
+        if (snapshots.size != 0) {
+            if (snapshots[position].userId != uid) {
 
-            (holder as GroupMessageViewHolder).bind(model, position)
-        } else {
-            (holder as CurrentUserMessageViewHolder).bind(model, position)
+                (holder as GroupMessageViewHolder).bind(model, position)
+            } else {
+                (holder as CurrentUserMessageViewHolder).bind(model, position)
+            }
         }
 
     }
@@ -79,7 +82,7 @@ class GroupMessageRecyclerAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val uid = currentUser?.uid
-        return if (options.snapshots[position].userId != uid) VIEW_TYPE_GROUP_MEMBER
+        return if (snapshots[position].userId != uid) VIEW_TYPE_GROUP_MEMBER
         else VIEW_TYPE_CURRENT_USER
     }
 
@@ -92,15 +95,18 @@ class GroupMessageRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String?>()
-                        //if the next message is from the same user, remove userName from the next message
-                        if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
-                            binding.currentUserImageView.visibility = GONE
-                        } else {
-                            if (photo != null) {
-                                loadImageIntoView(binding.currentUserImageView, photo)
+                        //check first if snapshots size is not zero to avoid out of bound exception
+                        if (snapshots.size != 0) {
+                            //if the next message is from the same user, remove userName from the next message
+                            if(itemPosition > 0 && snapshots[itemPosition].userId == snapshots[itemPosition - 1].userId) {
+                                binding.currentUserImageView.visibility = GONE
                             } else {
-                                Glide.with(context).load(R.drawable.ic_person).into(binding.currentUserImageView)
-                                binding.currentUserImageView.visibility = VISIBLE
+                                if (photo != null) {
+                                    loadImageIntoView(binding.currentUserImageView, photo)
+                                } else {
+                                    Glide.with(context).load(R.drawable.ic_person).into(binding.currentUserImageView)
+                                    binding.currentUserImageView.visibility = VISIBLE
+                                }
                             }
                         }
                     }
@@ -124,12 +130,15 @@ class GroupMessageRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val profile = snapshot.getValue<Profile>()
-                        //if the next message is from the same user as in the previous message, remove userPhoto from the next message
-                        if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
-                            binding.currentUserNameTextView.visibility = GONE
-                        } else {
-                            binding.currentUserNameTextView.text = profile?.name
-                            binding.currentUserNameTextView.visibility = VISIBLE
+                        //check first if snapshots size is not zero to avoid out of bound exception
+                        if (snapshots.size != 0) {
+                            //if the next message is from the same user as in the previous message, remove userPhoto from the next message
+                            if(itemPosition > 0 && snapshots[itemPosition].userId == snapshots[itemPosition - 1].userId) {
+                                binding.currentUserNameTextView.visibility = GONE
+                            } else {
+                                binding.currentUserNameTextView.text = profile?.name
+                                binding.currentUserNameTextView.visibility = VISIBLE
+                            }
                         }
                     }
 
@@ -160,14 +169,17 @@ class GroupMessageRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String?>()
-                        if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
-                            binding.messengerImageView.visibility = GONE
-                        } else {
-                            if (photo != null) {
-                                loadImageIntoView(binding.messengerImageView, photo)
+                        //check first if snapshots size is not zero to avoid out of bound exception
+                        if (snapshots.size != 0) {
+                            if(itemPosition > 0 && snapshots[itemPosition].userId == snapshots[itemPosition - 1].userId) {
+                                binding.messengerImageView.visibility = GONE
                             } else {
-                                Glide.with(context).load(R.drawable.ic_person).into(binding.messengerImageView)
-                                binding.messengerImageView.visibility = VISIBLE
+                                if (photo != null) {
+                                    loadImageIntoView(binding.messengerImageView, photo)
+                                } else {
+                                    Glide.with(context).load(R.drawable.ic_person).into(binding.messengerImageView)
+                                    binding.messengerImageView.visibility = VISIBLE
+                                }
                             }
                         }
 
@@ -193,11 +205,14 @@ class GroupMessageRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val profile = snapshot.getValue<Profile>()
-                        if(itemPosition > 0 && options.snapshots[itemPosition].userId == options.snapshots[itemPosition - 1].userId) {
-                            binding.messengerNameTextView.visibility = GONE
-                        } else {
-                            binding.messengerNameTextView.text = profile?.name
-                            binding.messengerNameTextView.visibility = VISIBLE
+                        //check first if snapshots size is not zero to avoid out of bound exception
+                        if (snapshots.size != 0) {
+                            if(itemPosition > 0 && snapshots[itemPosition].userId == snapshots[itemPosition - 1].userId) {
+                                binding.messengerNameTextView.visibility = GONE
+                            } else {
+                                binding.messengerNameTextView.text = profile?.name
+                                binding.messengerNameTextView.visibility = VISIBLE
+                            }
                         }
 
                     }

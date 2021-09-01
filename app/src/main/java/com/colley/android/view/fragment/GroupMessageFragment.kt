@@ -102,7 +102,7 @@ class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.DataChanged
                     val groupName = snapshot.getValue<String>()
                     //set action bar title
                     if (groupName != null) {
-                        (activity as AppCompatActivity?)!!.supportActionBar!!.title = groupName
+                        (activity as AppCompatActivity?)?.supportActionBar?.title = groupName
                     }
                 }
 

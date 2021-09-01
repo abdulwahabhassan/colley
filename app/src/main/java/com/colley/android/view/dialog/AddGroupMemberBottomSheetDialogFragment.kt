@@ -96,7 +96,8 @@ class AddGroupMemberBottomSheetDialogFragment (
                             listOfUsers.add(it.getValue<User>()!!)
                         }
                         //pass filtered list to recycler adapter
-                        val adapter = AddGroupMembersRecyclerAdapter(currentUser, this@AddGroupMemberBottomSheetDialogFragment, requireContext(), listOfUsers)
+
+                        val adapter = AddGroupMembersRecyclerAdapter(currentUser, this@AddGroupMemberBottomSheetDialogFragment, groupContext, listOfUsers)
                         adapter.notifyDataSetChanged()
                         recyclerView.adapter = adapter
                     }

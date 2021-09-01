@@ -27,7 +27,7 @@ class MemberInteractionBottomSheetDialogFragment(
 ) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentMemberInteractionBottomSheetDialogBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
     private val uid: String
@@ -41,7 +41,7 @@ class MemberInteractionBottomSheetDialogFragment(
 
         _binding = FragmentMemberInteractionBottomSheetDialogBinding
             .inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,7 +62,7 @@ class MemberInteractionBottomSheetDialogFragment(
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val memberProfile = snapshot.getValue<Profile>()
                         if (memberProfile != null) {
-                            binding.groupMemberName.text = "${memberProfile.name}, ${memberProfile.school}"
+                            binding?.groupMemberName?.text = "${memberProfile.name}, ${memberProfile.school}"
                         }
                     }
 
@@ -78,7 +78,9 @@ class MemberInteractionBottomSheetDialogFragment(
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val memberPhoto = snapshot.getValue<String>()
                         if (memberPhoto != null) {
-                            Glide.with(parentContext).load(memberPhoto).into(binding.groupMemberImageView)
+                            binding?.groupMemberImageView?.let {
+                                Glide.with(parentContext).load(memberPhoto).into(it)
+                            }
                         }
                     }
 
@@ -91,21 +93,21 @@ class MemberInteractionBottomSheetDialogFragment(
 
 
         //show message text box when user click "send message"
-        binding.sendMessageTextView.setOnClickListener {
-            binding.editMessageTextInputLayout.visibility = VISIBLE
-            binding.sendButton.visibility = VISIBLE
+        binding?.sendMessageTextView?.setOnClickListener {
+            binding?.editMessageTextInputLayout?.visibility = VISIBLE
+            binding?.sendButton?.visibility = VISIBLE
         }
 
         //send message when clicked
-        binding.sendButton.setOnClickListener {
+        binding?.sendButton?.setOnClickListener {
 
             if (bundledMemberId != null) {
 
-                if (binding.editMMessageEditText.text?.trim()?.toString() != "") {
+                if (binding?.editMMessageEditText?.text?.trim()?.toString() != "") {
                     val privateMessage = PrivateChat(
                         fromUserId = uid,
                         toUserId = bundledMemberId,
-                        text = binding.editMMessageEditText.text.toString()
+                        text = binding?.editMMessageEditText?.text.toString()
                     )
 
                     //create a reference for the message on user's messages location and retrieve its
@@ -129,7 +131,7 @@ class MemberInteractionBottomSheetDialogFragment(
                         Toast.makeText(parentContext, "Message sent", Toast.LENGTH_SHORT).show()
                     }
 
-                    binding.editMMessageEditText.setText("")
+                    binding?.editMMessageEditText?.setText("")
                 } else {
                     Toast.makeText(parentContext, "Empty message not sent", Toast.LENGTH_SHORT).show()
                 }

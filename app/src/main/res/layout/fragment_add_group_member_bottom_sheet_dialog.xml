@@ -75,7 +75,7 @@
             android:layout_marginEnd="@dimen/margin_8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_new_group_member"
-            android:layout_height="match_parent"/>
+            android:layout_height="130dp"/>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

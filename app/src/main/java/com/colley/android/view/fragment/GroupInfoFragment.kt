@@ -230,79 +230,84 @@ class GroupInfoFragment :
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val admins = snapshot.getValue<ArrayList<String>>()
                         if (admins != null && admins.contains(uid)) {
-                            Toast.makeText(requireContext(), "You cannot leave the group while an admin", Toast.LENGTH_LONG).show()
+                            context?.let { context -> Toast.makeText(context,
+                                "You cannot leave the group while an admin",
+                                Toast.LENGTH_LONG).show()
+                            }
                         } else {
-                            //open dialog
-                            AlertDialog.Builder(requireContext())
-                                .setMessage("Are you sure you want to leave this group?")
-                                .setPositiveButton("Yes") {
-                                        dialog, _ ->
-                                    //run transaction on database list of group members
-                                    dbRef.child("groups").child(args.groupId).child("members").runTransaction(
-                                        object : Transaction.Handler {
-                                            override fun doTransaction(currentData: MutableData): Transaction.Result {
-                                                //retrieve the database list which is a mutable data and store in list else
-                                                //return the same data back to database if null
-                                                val list = currentData.getValue<ArrayList<String>>()
-                                                    ?: return Transaction.success(currentData)
-                                                //remove the current user from the list if they exist
-                                                if (list.contains(uid)) {
-                                                    list.remove(uid)
+                                //check if context is not null to prevent NullPointerException in cases
+                                    //where user clicks "leave group" button and back button simultaneously
+                            context?.let { context ->
+                                //open dialog
+                                AlertDialog.Builder(context)
+                                    .setMessage("Are you sure you want to leave this group?")
+                                    .setPositiveButton("Yes") { dialog, _ ->
+                                        //run transaction on database list of group members
+                                        dbRef.child("groups").child(args.groupId).child("members").runTransaction(
+                                            object : Transaction.Handler {
+                                                override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                                    //retrieve the database list which is a mutable data and store in list else
+                                                    //return the same data back to database if null
+                                                    val list = currentData.getValue<ArrayList<String>>()
+                                                        ?: return Transaction.success(currentData)
+                                                    //remove the current user from the list if they exist
+                                                    if (list.contains(uid)) {
+                                                        list.remove(uid)
+                                                    }
+                                                    //set the value of the database members to the new list
+                                                    currentData.value = list
+                                                    //return updated list to database
+                                                    return Transaction.success(currentData)
                                                 }
-                                                //set the value of the database members to the new list
-                                                currentData.value = list
-                                                //return updated list to database
-                                                return Transaction.success(currentData)
-                                            }
 
-                                            override fun onComplete(
-                                                error: DatabaseError?,
-                                                committed: Boolean,
-                                                currentData: DataSnapshot?
-                                            ) {
-                                                if (committed && error == null) {
-                                                    //run transaction to remove group from user's list of groups they belong to
-                                                    dbRef.child("user-groups").child(uid).runTransaction(
-                                                        object : Transaction.Handler {
-                                                            override fun doTransaction(
-                                                                currentData: MutableData
-                                                            ): Transaction.Result {
-                                                                //retrieve the database list, if null, return same null value to database
-                                                                val listOfGroups = currentData.getValue<ArrayList<String>>()
-                                                                    ?: return Transaction.success(currentData)
-                                                                //remove group's id in the list of group's this members belongs to
-                                                                if (listOfGroups.contains(args.groupId)) {
-                                                                    listOfGroups.remove(args.groupId)
+                                                override fun onComplete(
+                                                    error: DatabaseError?,
+                                                    committed: Boolean,
+                                                    currentData: DataSnapshot?
+                                                ) {
+                                                    if (committed && error == null) {
+                                                        //run transaction to remove group from user's list of groups they belong to
+                                                        dbRef.child("user-groups").child(uid).runTransaction(
+                                                            object : Transaction.Handler {
+                                                                override fun doTransaction(
+                                                                    currentData: MutableData
+                                                                ): Transaction.Result {
+                                                                    //retrieve the database list, if null, return same null value to database
+                                                                    val listOfGroups = currentData.getValue<ArrayList<String>>()
+                                                                        ?: return Transaction.success(currentData)
+                                                                    //remove group's id in the list of group's this members belongs to
+                                                                    if (listOfGroups.contains(args.groupId)) {
+                                                                        listOfGroups.remove(args.groupId)
+                                                                    }
+                                                                    //set database list to this update list and return it
+                                                                    currentData.value = listOfGroups
+                                                                    return Transaction.success(currentData)
                                                                 }
-                                                                //set database list to this update list and return it
-                                                                currentData.value = listOfGroups
-                                                                return Transaction.success(currentData)
-                                                            }
 
-                                                            override fun onComplete(
-                                                                error: DatabaseError?,
-                                                                committed: Boolean,
-                                                                currentData: DataSnapshot?
-                                                            ) {
-                                                                if (!committed && error != null) {
-                                                                    Log.w(TAG, "updateGroupsList:onComplete:$error")
+                                                                override fun onComplete(
+                                                                    error: DatabaseError?,
+                                                                    committed: Boolean,
+                                                                    currentData: DataSnapshot?
+                                                                ) {
+                                                                    if (!committed && error != null) {
+                                                                        Log.w(TAG, "updateGroupsList:onComplete:$error")
+                                                                    }
                                                                 }
-                                                            }
 
-                                                        }
-                                                    )
-                                                    Snackbar.make(requireView(), "You are no longer a member of this group", Snackbar.LENGTH_LONG).show()
-                                                } else {
-                                                    Log.d(TAG, "leaveGroupTransaction:onComplete:$error")
+                                                            }
+                                                        )
+                                                        Snackbar.make(requireView(), "You are no longer a member of this group", Snackbar.LENGTH_LONG).show()
+                                                    } else {
+                                                        Log.d(TAG, "leaveGroupTransaction:onComplete:$error")
+                                                    }
                                                 }
-                                            }
 
-                                        }
-                                    )
-                                    dialog.dismiss()
-                                }.setNegativeButton("No") {
-                                        dialog, _ -> dialog.dismiss()
-                                }.show()
+                                            }
+                                        )
+                                        dialog.dismiss()
+                                    }.setNegativeButton("No") { dialog, _ -> dialog.dismiss()
+                                    }.show()
+                            }
                         }
                     }
 

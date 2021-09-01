@@ -46,6 +46,7 @@ class ChatsFragment :
     private var selectedChatsCount = 0
     private lateinit var recyclerView: RecyclerView
     private var listOfSelectedChats = arrayListOf<String>()
+    private var listOfSelectedChatViews = arrayListOf<View>()
     private var newMessageBottomSheetDialog: NewMessageBottomSheetDialogFragment? = null
 
     private var actionMode: ActionMode? = null
@@ -53,37 +54,6 @@ class ChatsFragment :
     private val uid: String
         get() = currentUser.uid
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        //allows this fragment to be able to modify it's containing activity's toolbar menu
-//        setHasOptionsMenu(true);
-//    }
-//
-//    //since we have set hasOptionsMenu to true, our fragment can now override this call to allow us
-//    //modify the menu
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        super.onCreateOptionsMenu(menu, inflater)
-//        menu.clear()
-//        //this inflates a new menu
-//        inflater.inflate(R.menu.on_long_click_chat_menu, menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return when (item.itemId) {
-//            R.id.delete_chat_menu_item -> {
-//                AlertDialog.Builder(requireContext())
-//                    .setMessage("Delete chat with ")
-//                    .setPositiveButton("Yes") { dialog, which ->
-//
-//                        dialog.dismiss()
-//                    }.setNegativeButton("No") {
-//                            dialog, which -> dialog.dismiss()
-//                    }.show()
-//                true
-//            }
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -247,6 +217,12 @@ class ChatsFragment :
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
+            listOfSelectedChats.clear()
+            selectedChatsCount = listOfSelectedChats.size
+            //change background resource of all selected views to reflect their deselection
+            listOfSelectedChatViews.forEach {
+                it.setBackgroundResource(R.drawable.ripple_effect_curved_edges_16dp)
+            }
             actionMode = null
         }
 
@@ -264,12 +240,14 @@ class ChatsFragment :
     private fun updateSelection(chateeId: String, view: View) {
         if (!listOfSelectedChats.contains(chateeId)) {
             listOfSelectedChats.add(chateeId)
-            selectedChatsCount++
+            listOfSelectedChatViews.add(view)
+            selectedChatsCount = listOfSelectedChats.size
             actionMode?.title = selectedChatsCount.toString()
             view.setBackgroundResource(R.drawable.selected_chat_background)
         } else {
             listOfSelectedChats.remove(chateeId)
-            selectedChatsCount--
+            listOfSelectedChatViews.remove(view)
+            selectedChatsCount = listOfSelectedChats.size
             actionMode?.title = selectedChatsCount.toString()
             view.setBackgroundResource(R.drawable.ripple_effect_curved_edges_16dp)
         }

@@ -11,6 +11,7 @@ import com.colley.android.R
 import com.colley.android.databinding.ItemChatBinding
 import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
+import com.colley.android.view.fragment.ChatsFragment
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
@@ -30,7 +31,6 @@ class ChatsRecyclerAdapter(
     private val clickListener: ItemClickedListener
 )
     : FirebaseRecyclerAdapter<PrivateChat, ChatsRecyclerAdapter.PrivateMessageViewHolder>(options) {
-
 
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
     interface DataChangedListener {
@@ -129,6 +129,7 @@ class ChatsRecyclerAdapter(
             )
 
             root.setOnClickListener {
+
                 clickListener.onItemClick(chateeId, it)
             }
 
