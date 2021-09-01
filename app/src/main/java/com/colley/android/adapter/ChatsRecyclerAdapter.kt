@@ -2,6 +2,7 @@ package com.colley.android.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
@@ -37,8 +38,8 @@ class ChatsRecyclerAdapter(
     }
 
     interface ItemClickedListener {
-        fun onItemClick(chateeId: String)
-        fun onItemLongCLicked(chateeId: String)
+        fun onItemClick(chateeId: String, view: View)
+        fun onItemLongCLicked(chateeId: String, view: View)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PrivateMessageViewHolder {
@@ -128,11 +129,11 @@ class ChatsRecyclerAdapter(
             )
 
             root.setOnClickListener {
-                clickListener.onItemClick(chateeId)
+                clickListener.onItemClick(chateeId, it)
             }
 
             root.setOnLongClickListener {
-                clickListener.onItemLongCLicked(chateeId)
+                clickListener.onItemLongCLicked(chateeId, it)
                 true
             }
         }
