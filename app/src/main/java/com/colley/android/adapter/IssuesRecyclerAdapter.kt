@@ -120,6 +120,8 @@ class IssuesRecyclerAdapter(
                                 if (contribution != null) {
                                     //set contribution
                                     contributionsTextView.text = contribution.toString()
+                                } else {
+                                    contributionsTextView.text = 0.toString()
                                 }
                             }
 
@@ -137,6 +139,8 @@ class IssuesRecyclerAdapter(
                                 if (endorsement != null) {
                                     //set endorsement
                                     endorsementTextView.text = endorsement.toString()
+                                } else {
+                                    endorsementTextView.text = 0.toString()
                                 }
                             }
 
