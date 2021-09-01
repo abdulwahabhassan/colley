@@ -74,5 +74,6 @@
     <string name="leave_group_text">Leave Group</string>
     <string name="select_who_to_message_text">Select Who To Message</string>
     <string name="delete_chat_text">Delete Chat</string>
+    <string name="raise_text">Raise</string>
 
 </resources>

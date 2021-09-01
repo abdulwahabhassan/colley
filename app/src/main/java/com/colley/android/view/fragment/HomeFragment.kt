@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.colley.android.R
 import com.colley.android.databinding.FragmentHomeBinding
 import com.colley.android.view.dialog.AddGroupBottomSheetDialogFragment
+import com.colley.android.view.dialog.RaiseIssueBottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -22,7 +23,8 @@ class HomeFragment : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var viewPagerAdapter: FragmentStateAdapter
     lateinit var homeFab: FloatingActionButton
-    lateinit var addGroupBottomSheetDialog: AddGroupBottomSheetDialogFragment
+    private lateinit var addGroupBottomSheetDialog: AddGroupBottomSheetDialogFragment
+    lateinit var raiseIssueBottomSheetDialog: RaiseIssueBottomSheetDialogFragment
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,7 +104,8 @@ class HomeFragment : Fragment() {
         binding.homeFab.setOnClickListener {
             when (viewPager.currentItem) {
                 0 -> {
-                    Snackbar.make(requireView(), "Write an issue", Snackbar.LENGTH_LONG).show()
+                    raiseIssueBottomSheetDialog = RaiseIssueBottomSheetDialogFragment(requireContext(), requireView())
+                    raiseIssueBottomSheetDialog.show(parentFragmentManager, null)
                 }
                 1 -> {
                     Snackbar.make(requireView(), "Make a post", Snackbar.LENGTH_LONG).show()

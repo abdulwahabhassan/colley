@@ -34,8 +34,8 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 class AddGroupBottomSheetDialogFragment (
-    private val homeContext: Context,
-    private val homeView: View
+    private val groupContext: Context,
+    private val groupView: View
         ) : BottomSheetDialogFragment(), AddGroupMembersRecyclerAdapter.ItemClickedListener {
 
     private var _binding: FragmentAddGroupBottomSheetDialogBinding? = null
@@ -81,7 +81,7 @@ class AddGroupBottomSheetDialogFragment (
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach {
                        listOfUsers.add(it.getValue<User>()!!)
-                        val adapter = AddGroupMembersRecyclerAdapter(currentUser, this@AddGroupBottomSheetDialogFragment, homeContext, listOfUsers)
+                        val adapter = AddGroupMembersRecyclerAdapter(currentUser, this@AddGroupBottomSheetDialogFragment, groupContext, listOfUsers)
                         adapter.notifyDataSetChanged()
                         recyclerView.adapter = adapter
                     }
@@ -159,7 +159,7 @@ class AddGroupBottomSheetDialogFragment (
                     val url = null
                 dbRef.child("groups-id-name-photo").child(key).setValue(GroupChat(key, groupName, url))
             }
-                Snackbar.make(homeView, "Group created successfully! Uploading to database..", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(groupView, "Group created successfully! Uploading to database..", Snackbar.LENGTH_LONG).show()
 
             //update each users list of groups they are a member of
             selectedMembersList.forEach {
@@ -258,9 +258,9 @@ class AddGroupBottomSheetDialogFragment (
                     .addOnSuccessListener { uri ->
                         dbRef.child("groups-id-name-photo").child(key).setValue(GroupChat(key, groupName, uri.toString())).addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(homeContext, "Group photo uploaded successfully", Toast.LENGTH_LONG).show()
+                                Toast.makeText(groupContext, "Group photo uploaded successfully", Toast.LENGTH_LONG).show()
                             } else {
-                                Toast.makeText(homeContext, "Photo uploaded failed", Toast.LENGTH_LONG).show()
+                                Toast.makeText(groupContext, "Photo uploaded failed", Toast.LENGTH_LONG).show()
                             }
                         }
                     }
@@ -274,7 +274,7 @@ class AddGroupBottomSheetDialogFragment (
 
     //Display selected photo
     private fun displaySelectedPhoto(groupImageUri: Uri) {
-        Glide.with(homeContext).load(groupImageUri).into(binding.addGroupImageView)
+        Glide.with(groupContext).load(groupImageUri).into(binding.addGroupImageView)
     }
 
 
