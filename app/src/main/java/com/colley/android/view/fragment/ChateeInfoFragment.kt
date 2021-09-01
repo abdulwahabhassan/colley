@@ -34,7 +34,7 @@ class ChateeInfoFragment : Fragment() {
 
     private val args: ChateeInfoFragmentArgs by navArgs()
     private var _binding: FragmentChateeInfoBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
     private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
     val uid: String
@@ -57,7 +57,7 @@ class ChateeInfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentChateeInfoBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,12 +70,10 @@ class ChateeInfoFragment : Fragment() {
                     Log.e(TAG, "profile for user ${args.chateeId} is unexpectedly null")
 
                 } else {
-                    with(binding) {
-                        nameTextView.text = profile.name
-                        schoolNameTextView.text = profile.school
-                        courseOfStudyTextView.text = profile.course
-                        statusTitleTextView.text = profile.role
-                    }
+                    binding?.nameTextView?.text = profile.name
+                    binding?.schoolNameTextView?.text = profile.school
+                    binding?.courseOfStudyTextView?.text = profile.course
+                    binding?.statusTitleTextView?.text = profile.role
                 }
             }
 
@@ -95,10 +93,10 @@ class ChateeInfoFragment : Fragment() {
                 val bio = snapshot.getValue<String>()
                 if (bio == null || bio == "") {
                     Log.e(TAG, "bio for user ${args.chateeId} is unexpectedly null")
-                    binding.bioTextView.hint = "Talk about yourself"
-                    binding.bioTextView.text = bio
+                    binding?.bioTextView?.hint = "Talk about yourself"
+                    binding?.bioTextView?.text = bio
                 } else {
-                    binding.bioTextView.text = bio
+                    binding?.bioTextView?.text = bio
                 }
             }
 
@@ -119,11 +117,17 @@ class ChateeInfoFragment : Fragment() {
                 val photo = snapshot.getValue<String>()
                 if (photo == null) {
                     Log.e(TAG, "photo for user ${args.chateeId} is unexpectedly null")
-                    Glide.with(requireContext()).load(R.drawable.ic_profile).into(binding.profilePhotoImageView)
-                    binding.photoProgressBar.visibility = View.GONE
+                    binding?.profilePhotoImageView?.let {
+                        Glide.with(requireContext()).load(R.drawable.ic_profile).into(
+                            it
+                        )
+                    }
+                    binding?.photoProgressBar?.visibility = View.GONE
                 } else {
-                    Glide.with(requireContext()).load(photo).into(binding.profilePhotoImageView)
-                    binding.photoProgressBar.visibility = View.GONE
+                    binding?.profilePhotoImageView?.let {
+                        Glide.with(requireContext()).load(photo).into(it)
+                    }
+                    binding?.photoProgressBar?.visibility = View.GONE
                 }
 
             }
@@ -133,7 +137,7 @@ class ChateeInfoFragment : Fragment() {
                 Snackbar.make(requireView(),
                     "Error in fetching photo",
                     Snackbar.LENGTH_LONG).show()
-                binding.photoProgressBar.visibility = View.GONE
+                binding?.photoProgressBar?.visibility = View.GONE
             }
         }
 

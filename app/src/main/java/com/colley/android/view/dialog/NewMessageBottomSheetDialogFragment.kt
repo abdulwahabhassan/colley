@@ -37,7 +37,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
-class NewMessageBottomSheetDialogFragment :
+class NewMessageBottomSheetDialogFragment (
+    private val parentContext: Context
+        ) :
     BottomSheetDialogFragment(),
     WhoToMessageRecyclerAdapter.ItemClickedListener {
 
@@ -75,7 +77,7 @@ class NewMessageBottomSheetDialogFragment :
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach {
                        listOfUsers.add(it.getValue<User>()!!)
-                        val adapter = WhoToMessageRecyclerAdapter(currentUser, this@NewMessageBottomSheetDialogFragment, requireContext(), listOfUsers)
+                        val adapter = WhoToMessageRecyclerAdapter(currentUser, this@NewMessageBottomSheetDialogFragment, parentContext, listOfUsers)
                         adapter.notifyDataSetChanged()
                         recyclerView.adapter = adapter
                     }

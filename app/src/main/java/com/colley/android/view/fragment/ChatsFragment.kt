@@ -93,7 +93,7 @@ class ChatsFragment :
         adapter?.startListening()
 
         binding.newChatFab.setOnClickListener {
-            newMessageBottomSheetDialog = NewMessageBottomSheetDialogFragment()
+            newMessageBottomSheetDialog = NewMessageBottomSheetDialogFragment(requireContext())
             newMessageBottomSheetDialog?.show(childFragmentManager, null)
         }
 

@@ -56,10 +56,6 @@ class AddGroupBottomSheetDialogFragment (
         }
     }
 
-    interface SaveButtonListener {
-        fun onSave()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -85,7 +81,7 @@ class AddGroupBottomSheetDialogFragment (
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach {
                        listOfUsers.add(it.getValue<User>()!!)
-                        val adapter = AddGroupMembersRecyclerAdapter(currentUser, this@AddGroupBottomSheetDialogFragment, requireContext(), listOfUsers)
+                        val adapter = AddGroupMembersRecyclerAdapter(currentUser, this@AddGroupBottomSheetDialogFragment, homeContext, listOfUsers)
                         adapter.notifyDataSetChanged()
                         recyclerView.adapter = adapter
                     }

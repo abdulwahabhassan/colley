@@ -107,7 +107,7 @@ class PrivateMessageFragment :
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val profile = snapshot.getValue<Profile>()
                     if (profile != null) {
-                        (activity as AppCompatActivity?)!!.supportActionBar!!.title = profile.name
+                        (activity as AppCompatActivity?)?.supportActionBar?.title = profile.name
                     }
                 }
 
