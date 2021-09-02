@@ -60,10 +60,11 @@
             android:layout_weight="1"
             android:textSize="@dimen/text_size_14sp"
             android:maxLines="3"
+            android:gravity="start"
             android:textColor="@color/light_pearl"
             android:background="@drawable/edit_text_background"
             android:hint="@string/say_something_text"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:padding="@dimen/padding_10dp" />
 
         <ImageView

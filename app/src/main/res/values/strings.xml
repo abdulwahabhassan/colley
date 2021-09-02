@@ -75,7 +75,7 @@
     <string name="select_who_to_message_text">Select Who To Message</string>
     <string name="delete_chat_text">Delete Chat</string>
     <string name="raise_text">Raise</string>
-    <string name="issue_title_text">Title</string>
-    <string name="body_text">Body</string>
+    <string name="issue_title_text">Title the issue</string>
+    <string name="body_text">What\'s the issue?</string>
 
 </resources>

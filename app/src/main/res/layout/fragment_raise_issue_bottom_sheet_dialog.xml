@@ -37,9 +37,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
+            android:inputType="text"
             android:textSize="@dimen/text_size_14sp"
             android:hint="@string/issue_title_text"
-            android:maxLines="1"
             android:textColor="@color/light_pearl" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,12 +64,12 @@
             android:id="@+id/issueBodyEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:padding="12dp"
+            android:gravity="start"
             android:textSize="@dimen/text_size_14sp"
             android:hint="@string/body_text"
-            android:lines="6"
-            android:maxLines="6"
+            android:inputType="textMultiLine"
+            android:lines="5"
             android:textColor="@color/light_pearl" />
     </com.google.android.material.textfield.TextInputLayout>
 

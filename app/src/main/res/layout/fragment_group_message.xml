@@ -44,14 +44,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="start"
             android:layout_margin="@dimen/margin_8dp"
             android:layout_weight="1"
             android:textSize="@dimen/text_size_14sp"
+            android:inputType="textMultiLine"
             android:maxLines="3"
             android:textColor="@color/light_pearl"
             android:background="@drawable/edit_text_background"
             android:hint="@string/say_something_text"
-            android:inputType="text"
             android:padding="@dimen/padding_10dp" />
 
         <ImageView

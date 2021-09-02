@@ -63,9 +63,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
+            android:gravity="start"
             android:textSize="@dimen/text_size_14sp"
             android:hint="@string/group_name_text"
-            android:maxLines="1"
+            android:inputType="text"
             android:textColor="@color/light_pearl" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,12 +91,12 @@
             android:id="@+id/addGroupDescriptionEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="start"
             android:padding="12dp"
             android:textSize="@dimen/text_size_14sp"
+            android:inputType="textMultiLine"
             android:hint="@string/group_description_text"
             android:lines="3"
-            android:maxLines="3"
             android:textColor="@color/light_pearl" />
     </com.google.android.material.textfield.TextInputLayout>
 

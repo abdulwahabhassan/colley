@@ -48,13 +48,22 @@ class RaiseIssueBottomSheetDialogFragment(
         currentUser = Firebase.auth.currentUser!!
 
         binding?.raiseIssueButton?.setOnClickListener {
+
+
             //Disable editing during creation
             setEditingEnabled(false)
 
-            val title = binding?.issueTitleNameEditText?.text.toString()
-            val body = binding?.issueBodyEditText?.text.toString()
+            val title = binding?.issueTitleNameEditText?.text.toString().trim()
+            val body = binding?.issueBodyEditText?.text.toString().trim()
             val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
             val date: String = df.format(Calendar.getInstance().time)
+
+            //if fields are empty, do not upload issue to database
+            if (title == "" && body == "") {
+                Toast.makeText(context, "Fields cannot be empty", Toast.LENGTH_SHORT).show()
+                setEditingEnabled(true)
+                return@setOnClickListener
+            }
 
             //make instance of new issue
             val issue = Issue(
