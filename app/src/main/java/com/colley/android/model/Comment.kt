@@ -1,9 +1,9 @@
 package com.colley.android.model
 
-class Comment(val commentText: String,
-              val commenterName: String,
-              val commenterPhoto: String? = null,
-              val commentTimeStamp: String) {
+class Comment(val commentText: String? = null,
+              val commenterId: String? = null,
+              val commentTimeStamp: String? = null,
+              val commentId: String? = null) {
 
     companion object{
 

@@ -66,7 +66,7 @@ class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.DataChanged
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.group_info_menu_item -> {
-                val action = GroupMessageFragmentDirections.actionGroupChatFragmentToGroupInfoFragment(args.groupId)
+                val action = GroupMessageFragmentDirections.actionGroupMessageFragmentToGroupInfoFragment(args.groupId)
                 findNavController().navigate(action)
                 true
             }

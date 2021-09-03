@@ -114,7 +114,7 @@ class GroupsFragment :
 
     //open group chat fragment, passing group id as argument
     override fun onItemClick(chatGroupId: String) {
-        val action = HomeFragmentDirections.actionHomeFragmentToGroupChatFragment(chatGroupId)
+        val action = HomeFragmentDirections.actionHomeFragmentToGroupMessageFragment(chatGroupId)
         parentFragment?.findNavController()?.navigate(action)
     }
 

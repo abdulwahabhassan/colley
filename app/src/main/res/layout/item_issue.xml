@@ -4,11 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/ripple_effect_curved_edges_16dp"
+    android:background="@drawable/ripple_effect_rectangular"
     android:clickable="true"
     android:focusable="true"
-    android:paddingTop="@dimen/padding_16dp"
-    android:paddingBottom="@dimen/margin_8dp">
+    android:paddingTop="@dimen/padding_16dp">
 
     <TextView
         android:id="@+id/issueTitleTextView"
@@ -30,15 +29,12 @@
         android:id="@+id/issueBodyTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/ripple_effect_curved_edges_16dp"
         android:ellipsize="end"
         android:maxLines="3"
-        android:clickable="true"
         android:paddingStart="@dimen/padding_16dp"
-        android:paddingTop="@dimen/margin_8dp"
+        android:paddingTop="@dimen/padding_4dp"
         android:paddingEnd="@dimen/padding_16dp"
         android:paddingBottom="@dimen/margin_8dp"
-
         android:textColor="@color/light_pearl"
         android:textSize="@dimen/text_size_15sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,9 +46,13 @@
         android:id="@+id/userNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="@dimen/margin_4dp"
         android:textSize="@dimen/text_size_14sp"
         android:textStyle="bold"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/ripple_effect_rectangular"
+        android:padding="@dimen/margin_2dp"
         android:textColor="@color/pearl"
         app:layout_constraintBottom_toBottomOf="@+id/userImageView"
         app:layout_constraintEnd_toStartOf="@+id/userImageView"
@@ -109,7 +109,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/contributionsTextView"
         app:layout_constraintTop_toBottomOf="@+id/contributionsTextView"
-        app:drawableStartCompat="@drawable/ic_endorsements" />
+        app:drawableStartCompat="@drawable/ic_endorse" />
 
     <ImageView
         android:id="@+id/pinImageView"
@@ -117,7 +117,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_16dp"
         android:visibility="gone"
-        android:src="@drawable/pin_drawable_state_selector"
+        android:src="@drawable/bookmark_drawable_state_selector"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -127,7 +127,22 @@
         android:layout_height="wrap_content"
         android:textColor="@color/pearl"
         android:textSize="@dimen/text_size_12sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/ripple_effect_rectangular"
+        android:padding="@dimen/padding_2dp"
         app:layout_constraintEnd_toEndOf="@+id/userNameTextView"
         app:layout_constraintTop_toBottomOf="@+id/userNameTextView" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="@dimen/margin_8dp"
+        android:background="@color/lighter_pearl"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userSchoolTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

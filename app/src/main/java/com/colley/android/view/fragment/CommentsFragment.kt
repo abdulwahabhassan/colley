@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.CommentsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentCommentsBinding
 import com.colley.android.model.Comment
+import com.colley.android.model.CommentModel
 import com.colley.android.model.DummyData
 
 class CommentsFragment : Fragment(), CommentsFragmentRecyclerAdapter.ItemClickedListener {
@@ -39,7 +40,7 @@ class CommentsFragment : Fragment(), CommentsFragmentRecyclerAdapter.ItemClicked
         _binding = null
     }
 
-    override fun onItemClick(comment: Comment) {
+    override fun onItemClick(comment: CommentModel) {
 
     }
 }

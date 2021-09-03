@@ -37,14 +37,14 @@ object DummyData {
         )
     }
 
-    fun getListOfComments(): ArrayList<Comment> {
+    fun getListOfComments(): ArrayList<CommentModel> {
         return arrayListOf(
-            Comment(
+            CommentModel(
                 "I am personally of the opinion that caution should be taken",
                 "Emmanuel Campbell",
                 "https://rebrand.ly/bfdcfd",
                 "Just now"),
-            Comment(
+            CommentModel(
                 "Wahala be like bicyle. This issue no suppose long pass as e don be so " +
                         "I no like say we still dey drag this matter. Na wa ooh.. shuu.. Shey we " +
                         "no go decide move ahead make the rest meet us for front. Na waka me I dey so oh",
@@ -52,18 +52,18 @@ object DummyData {
                 "https://rebrand.ly/zlhfnjj",
                 "37min"
             ),
-            Comment(
+            CommentModel(
                 "Hahahhaha.. I can't laugh alone. Apostle must hear this!",
                 "Mirabell Sanchez Ozioma",
                 "https://rebrand.ly/00p0y9v",
                 "1hr"),
-            Comment(
+            CommentModel(
                 "***giggling***",
                 "Patricia Benedict",
                 "https://rebrand.ly/cc685c",
                 "1d"
             ),
-            Comment(
+            CommentModel(
                 "Wahala be like bicyle. This issue no suppose long pass as e don be so " +
                         "I no like say we still dey drag this matter. Na wa ooh.. shuu.. Shey we " +
                         "no go decide move ahead make the rest meet us for front. Na waka me I dey so oh",
@@ -71,17 +71,17 @@ object DummyData {
                 commenterPhoto = null,
                 "8months"
             ),
-            Comment(
+            CommentModel(
                 "Hahahhaha.. I can't laugh alone. Apostle must hear this!",
                 "Mirabell Sanchez Ozioma",
                 "https://rebrand.ly/00p0y9v",
                 "1hr"),
-            Comment(
+            CommentModel(
                 "I am personally of the opinion that caution should be taken",
                 "Emmanuel Campbell",
                 "https://rebrand.ly/bfdcfd",
                 "Just now"),
-            Comment(
+            CommentModel(
                 "Wahala be like bicyle. This issue no suppose long pass as e don be so " +
                         "I no like say we still dey drag this matter. Na wa ooh.. shuu.. Shey we " +
                         "no go decide move ahead make the rest meet us for front. Na waka me I dey so oh",
@@ -89,13 +89,13 @@ object DummyData {
                 "https://rebrand.ly/zlhfnjj",
                 "1yr"
             ),
-            Comment(
+            CommentModel(
                 "***giggling***",
                 "Patricia Benedict",
                 "https://rebrand.ly/cc685c",
                 "1d"
             ),
-            Comment(
+            CommentModel(
                 "Wahala be like bicyle. This issue no suppose long pass as e don be so " +
                         "I no like say we still dey drag this matter. Na wa ooh.. shuu.. Shey we " +
                         "no go decide move ahead make the rest meet us for front. Na waka me I dey so oh",
@@ -103,12 +103,12 @@ object DummyData {
                 commenterPhoto = null,
                 "8months"
             ),
-            Comment(
+            CommentModel(
                 "Hahahhaha.. I can't laugh alone. Apostle must hear this!",
                 "Mirabell Sanchez Ozioma",
                 "https://rebrand.ly/00p0y9v",
                 "1hr"),
-            Comment(
+            CommentModel(
                 "I am personally of the opinion that caution should be taken",
                 "Emmanuel Campbell",
                 "https://rebrand.ly/bfdcfd",

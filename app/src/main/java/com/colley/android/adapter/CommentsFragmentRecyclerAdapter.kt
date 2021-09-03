@@ -7,19 +7,20 @@ import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemCommentBinding
 import com.colley.android.model.Comment
+import com.colley.android.model.CommentModel
 
 
 class CommentsFragmentRecyclerAdapter(private val clickListener: ItemClickedListener) :
     RecyclerView.Adapter<CommentsFragmentRecyclerAdapter.CommentViewHolder>() {
 
-    private var listOfComments = arrayListOf<Comment>()
+    private var listOfComments = arrayListOf<CommentModel>()
 
     interface ItemClickedListener {
-        fun onItemClick(comment: Comment)
+        fun onItemClick(comment: CommentModel)
     }
 
     class CommentViewHolder (private val itemBinding: ItemCommentBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(comment: Comment, clickListener: ItemClickedListener) = with(itemBinding) {
+        fun bind(comment: CommentModel, clickListener: ItemClickedListener) = with(itemBinding) {
 
             commentTextTextView.text = comment.commentText
             commenterNameTextView.text = comment.commenterName
@@ -51,7 +52,7 @@ class CommentsFragmentRecyclerAdapter(private val clickListener: ItemClickedList
         return listOfComments.size
     }
 
-    fun setList(list: ArrayList<Comment>) {
+    fun setList(list: ArrayList<CommentModel>) {
         this.listOfComments = list
         notifyDataSetChanged()
     }

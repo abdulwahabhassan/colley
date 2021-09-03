@@ -21,8 +21,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RaiseIssueBottomSheetDialogFragment(
-    val parentContext: Context,
-    val issuesView: View
+    private val parentContext: Context,
+    private val issuesView: View
 ) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentRaiseIssueBottomSheetDialogBinding? = null
@@ -43,6 +43,7 @@ class RaiseIssueBottomSheetDialogFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         //initialize database and current user
         dbRef = Firebase.database.reference
         currentUser = Firebase.auth.currentUser!!
@@ -60,7 +61,7 @@ class RaiseIssueBottomSheetDialogFragment(
 
             //if fields are empty, do not upload issue to database
             if (title == "" && body == "") {
-                Toast.makeText(context, "Fields cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(parentContext, "Fields cannot be empty", Toast.LENGTH_SHORT).show()
                 setEditingEnabled(true)
                 return@setOnClickListener
             }
@@ -74,11 +75,11 @@ class RaiseIssueBottomSheetDialogFragment(
              )
 
             //create and push new issue to database, retrieve key and add it as issueId
-            val key = dbRef.child("issues").push()
+            dbRef.child("issues").push()
                 .setValue(issue, DatabaseReference.CompletionListener { error, ref ->
                     if (error != null) {
-                        Toast.makeText(context, "Unable to create issue", Toast.LENGTH_LONG).show()
-                        Log.w(AddGroupBottomSheetDialogFragment.TAG, "Unable to write issue to database.", error.toException())
+                        Toast.makeText(parentContext, "Unable to create issue", Toast.LENGTH_LONG).show()
+                        Log.w(AddGroupBottomSheetDialogFragment.TAG, "Unable to write issue to database. ${error.message}")
                         setEditingEnabled(true)
                         return@CompletionListener
                     }

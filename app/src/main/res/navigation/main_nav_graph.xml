@@ -20,8 +20,11 @@
         android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_groupChatFragment"
+            android:id="@+id/action_homeFragment_to_groupMessageFragment"
             app:destination="@id/groupMessageFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_viewIssueFragment"
+            app:destination="@id/viewIssueFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -80,7 +83,7 @@
             android:name="groupId"
             app:argType="string" />
         <action
-            android:id="@+id/action_groupChatFragment_to_groupInfoFragment"
+            android:id="@+id/action_groupMessageFragment_to_groupInfoFragment"
             app:destination="@id/groupInfoFragment" />
     </fragment>
     <fragment
@@ -120,4 +123,23 @@
             android:name="chateeId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/viewIssueFragment"
+        android:name="com.colley.android.view.fragment.ViewIssueFragment"
+        android:label="Issue"
+        tools:layout="@layout/fragment_view_issue">
+        <argument
+            android:name="issueId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupsFragment"
+        android:name="com.colley.android.view.fragment.GroupsFragment"
+        android:label="fragment_groups"
+        tools:layout="@layout/fragment_groups" />
+    <fragment
+        android:id="@+id/issuesFragment"
+        android:name="com.colley.android.view.fragment.IssuesFragment"
+        android:label="fragment_issues"
+        tools:layout="@layout/fragment_issues" />
 </navigation>

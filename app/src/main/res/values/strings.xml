@@ -77,5 +77,9 @@
     <string name="raise_text">Raise</string>
     <string name="issue_title_text">Title the issue</string>
     <string name="body_text">What\'s the issue?</string>
+    <string name="endorse">Endorse</string>
+    <string name="no_comments_text">No comments</string>
+    <string name="anonymous_text">Anonymous</string>
+    <string name="write_comment_text">Write comment..</string>
 
 </resources>

@@ -7,6 +7,7 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
@@ -85,8 +86,9 @@ class IssuesFragment :
         //initialize currentUser
         currentUser = auth.currentUser!!
 
-        //get a query reference to chats
-        val issuesRef = dbRef.child("issues")
+        //get a query reference to chats //order by endorsementsCount
+        //appears on top
+        val issuesRef = dbRef.child("issues").orderByChild("endorsementsCount")
 
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         //build an options to configure adapter. setQuery takes firebase query to listen to and a
@@ -97,6 +99,11 @@ class IssuesFragment :
 
         adapter = IssuesRecyclerAdapter(options, requireContext(), currentUser, this, this)
         manager = LinearLayoutManager(requireContext())
+        //reversing and stacking is actually counterintuitive as used in this scenario, the purpose
+        //of the manipulation is such that most recent items appear at the top since firebase does
+        //not provide a method to sort queries in descending order
+        manager?.reverseLayout = true
+        manager?.stackFromEnd = true
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
         adapter?.startListening()
@@ -120,7 +127,10 @@ class IssuesFragment :
         _binding = null
     }
 
+    //navigate to new fragment with issue id
     override fun onItemClick(issueId: String, view: View) {
+        val action = HomeFragmentDirections.actionHomeFragmentToViewIssueFragment(issueId)
+        parentFragment?.findNavController()?.navigate(action)
 
     }
 

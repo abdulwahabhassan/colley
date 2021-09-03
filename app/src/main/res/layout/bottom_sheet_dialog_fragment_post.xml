@@ -18,10 +18,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabRippleColor="@color/white"
+        app:tabIndicatorColor="@color/white"
         app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
-        app:tabTextColor="@color/light_pearl"
+        app:tabTextColor="@color/very_light_pearl"
         app:tabSelectedTextColor="@color/pearl"
-        app:tabIndicatorColor="@color/pearl"/>
+        />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/bottomSheetViewPager"

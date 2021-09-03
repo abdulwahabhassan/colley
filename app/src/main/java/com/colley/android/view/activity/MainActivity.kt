@@ -12,7 +12,9 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -138,6 +140,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
 
     //method called when user tries to navigate up within an activity's hierarchy to a previous screen
     //we override this method so that we pass the navigation task to the navController to take care of appropriately

@@ -6,6 +6,6 @@ class Issue(
     val title: String? = null,
     val body: String? = null,
     val timeStamp: String? = null,
-    val contributionsCount: Int = 0,
-    val endorsementsCount: Int = 0
+    var contributionsCount: Int = 0,
+    var endorsementsCount: Int = 0
     )

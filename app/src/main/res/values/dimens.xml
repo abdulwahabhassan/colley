@@ -38,4 +38,5 @@
     <dimen name="width_32dp">32dp</dimen>
     <dimen name="height_32dp">32dp</dimen>
     <dimen name="padding_12dp">12dp</dimen>
+    <dimen name="padding_2dp">2dp</dimen>
 </resources>
