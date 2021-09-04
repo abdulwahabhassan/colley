@@ -3,6 +3,7 @@ package com.colley.android.adapter
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.Toast
@@ -30,6 +31,7 @@ import com.google.firebase.storage.ktx.storage
 class PrivateMessageRecyclerAdapter(
     private val options: FirebaseRecyclerOptions<PrivateChat>,
     private val currentUser: FirebaseUser?,
+    private val clickListener: ItemClickedListener,
     private val onDataChangedListener: DataChangedListener,
     private val context: Context
 ) : FirebaseRecyclerAdapter<PrivateChat, RecyclerView.ViewHolder>(options) {
@@ -39,13 +41,17 @@ class PrivateMessageRecyclerAdapter(
         fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>)
     }
 
+    interface ItemClickedListener {
+        fun onItemLongCLicked(message: GroupMessage, view: View)
+        fun onUserClicked(userId: String, view: View)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_GROUP_MEMBER) {
             val view = inflater.inflate(R.layout.item_group_message, parent, false)
             val binding = ItemGroupMessageBinding.bind(view)
-            GroupMessageViewHolder(binding)
+            ChateeMessageViewHolder(binding)
         } else {
             val view = inflater.inflate(R.layout.item_group_message_current_user, parent, false)
             val binding = ItemGroupMessageCurrentUserBinding.bind(view)
@@ -63,7 +69,7 @@ class PrivateMessageRecyclerAdapter(
         val uid = currentUser?.uid
         if (options.snapshots[position].fromUserId != uid) {
 
-            (holder as GroupMessageViewHolder).bind(model, position)
+            (holder as ChateeMessageViewHolder).bind(model, position)
         } else {
             (holder as CurrentUserMessageViewHolder).bind(model, position)
         }
@@ -153,9 +159,14 @@ class PrivateMessageRecyclerAdapter(
     }
 
 
-    inner class GroupMessageViewHolder(private val binding: ItemGroupMessageBinding) :
+    inner class ChateeMessageViewHolder(private val binding: ItemGroupMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: PrivateChat, itemPosition: Int) {
+
+            //view user profile when image is clicked
+            binding.messengerImageView.setOnClickListener {
+                item.fromUserId?.let { it1 -> clickListener.onUserClicked(it1, it) }
+            }
 
             //load user photo
             Firebase.database.reference.child("photos").child(item.fromUserId!!).addListenerForSingleValueEvent(

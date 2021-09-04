@@ -15,6 +15,7 @@ import com.colley.android.R
 import com.colley.android.adapter.PrivateMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentPrivateMessageBinding
+import com.colley.android.model.GroupMessage
 import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
 import com.colley.android.model.SendButtonObserver
@@ -37,7 +38,8 @@ import com.google.firebase.storage.ktx.storage
 
 class PrivateMessageFragment :
     Fragment(),
-    PrivateMessageRecyclerAdapter.DataChangedListener {
+    PrivateMessageRecyclerAdapter.DataChangedListener,
+    PrivateMessageRecyclerAdapter.ItemClickedListener {
 
     private val args: PrivateMessageFragmentArgs by navArgs()
     private var _binding: FragmentPrivateMessageBinding? = null
@@ -125,7 +127,7 @@ class PrivateMessageFragment :
             .setQuery(messagesRef, PrivateChat::class.java)
             .build()
 
-        adapter = PrivateMessageRecyclerAdapter(options, currentUser, this, requireContext())
+        adapter = PrivateMessageRecyclerAdapter(options, currentUser, this, this, requireContext())
         manager = LinearLayoutManager(requireContext())
         manager.stackFromEnd = true
         recyclerView.layoutManager = manager
@@ -286,5 +288,14 @@ class PrivateMessageFragment :
     companion object {
         private const val TAG = "PrivateMessageFragment"
         private const val LOADING_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/colley-c37ea.appspot.com/o/loading_gif%20copy.gif?alt=media&token=022770e5-9db3-426c-9ee2-582b9d66fbac"
+    }
+
+    override fun onItemLongCLicked(message: GroupMessage, view: View) {
+
+    }
+
+    override fun onUserClicked(userId: String, view: View) {
+        val action = PrivateMessageFragmentDirections.actionPrivateMessageFragmentToChateeInfoFragment(userId)
+        findNavController().navigate(action)
     }
 }
