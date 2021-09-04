@@ -66,9 +66,11 @@ class GroupsRecyclerAdapter (
             Firebase.database.reference.child("group-messages").child("recent-message").child(chatGroupId).addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
-                        val recentMessage = snapshot.getValue<GroupMessage>()?.text
-                        if (recentMessage != null) {
-                            recentMessageTextView.text = recentMessage
+                        val recentMessage = snapshot.getValue<GroupMessage>()
+                        if (recentMessage?.text != null) {
+                            recentMessageTextView.text = recentMessage.text
+                        } else {
+                            recentMessageTextView.text = "image.img"
                         }
                     }
 
