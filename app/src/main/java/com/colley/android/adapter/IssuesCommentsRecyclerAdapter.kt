@@ -48,8 +48,6 @@ class IssuesCommentsRecyclerAdapter(
                 : RecyclerView.ViewHolder(itemBinding.root) {
                 fun bind(comment: Comment, clickListener: ItemClickedListener) = with (itemBinding) {
 
-
-
                     //set commenter's name
                     Firebase.database.reference.child("profiles").child(comment.commenterId!!).addListenerForSingleValueEvent(
                         object : ValueEventListener {

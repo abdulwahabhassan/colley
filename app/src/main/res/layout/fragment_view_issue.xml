@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layoutDescription="@xml/fragment_view_issue_scene"
     tools:context=".view.fragment.ViewIssueFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,9 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/padding_16dp"
-        android:paddingBottom="@dimen/margin_8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -148,6 +145,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_marginTop="@dimen/margin_8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
@@ -160,9 +158,7 @@
             android:background="@drawable/ripple_effect_curved_edges_8dp"
             android:clickable="true"
             android:focusable="true"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userSchoolTextView">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/commentTextView"
@@ -187,8 +183,6 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/userSchoolTextView"
             tools:layout_editor_absoluteX="295dp">
 
             <TextView
@@ -236,8 +230,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/margin_8dp"
-
         android:elevation="1dp"
+        android:visibility="gone"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -263,13 +257,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/issuesCommentsRecyclerView"
         android:layout_width="match_parent"
-
         android:layout_height="@dimen/height_0dp"
         android:overScrollMode="never"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/second_divider"
+        app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/item_comment" />
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.motion.widget.MotionLayout>

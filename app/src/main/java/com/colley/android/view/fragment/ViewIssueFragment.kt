@@ -3,6 +3,8 @@ package com.colley.android.view.fragment
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
@@ -277,16 +279,15 @@ class ViewIssueFragment :
 
     override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<Comment>) {
         //dismiss progress bar once snapshot is available
-        binding?.issuesCommentProgressBar?.visibility = View.GONE
+        binding?.issuesCommentProgressBar?.visibility = GONE
 
         //show that there are no comments if snapshot is empty else hide view
         //show recycler view if snapshot is not empty else hide
         if (snapshotArray.isEmpty()) {
-            binding?.noCommentsLayout?.visibility = View.VISIBLE
+            binding?.noCommentsLayout?.visibility = VISIBLE
         } else {
-            binding?.noCommentsLayout?.visibility = View.GONE
-            binding?.issuesCommentsRecyclerView?.visibility = View.VISIBLE
-
+            binding?.noCommentsLayout?.visibility = GONE
+            binding?.issuesCommentsRecyclerView?.visibility = VISIBLE
         }
     }
 
