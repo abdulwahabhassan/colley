@@ -1,32 +1,25 @@
 package com.colley.android.view.fragment
 
-import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
-import com.colley.android.adapter.ChatsRecyclerAdapter
-import com.colley.android.adapter.CommentsFragmentRecyclerAdapter
 import com.colley.android.adapter.IssuesCommentsRecyclerAdapter
-import com.colley.android.databinding.FragmentIssuesBinding
-import com.colley.android.databinding.FragmentRaiseIssueBottomSheetDialogBinding
 import com.colley.android.databinding.FragmentViewIssueBinding
 import com.colley.android.model.Comment
 import com.colley.android.model.Issue
-import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
-import com.colley.android.view.dialog.AddGroupBottomSheetDialogFragment
 import com.colley.android.view.dialog.IssueCommentBottomSheetDialogFragment
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
@@ -52,6 +45,7 @@ class ViewIssueFragment :
     private lateinit var currentUser: FirebaseUser
     private lateinit var recyclerView: RecyclerView
     private lateinit var commentSheetDialog: IssueCommentBottomSheetDialogFragment
+    private var issue: Issue? = null
     private var adapter: IssuesCommentsRecyclerAdapter? = null
     private var manager: LinearLayoutManager? = null
     private val uid: String
@@ -128,7 +122,7 @@ class ViewIssueFragment :
         dbRef.child("issues").child(args.issueId).addValueEventListener(
             object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val issue = snapshot.getValue<Issue>()
+                    issue = snapshot.getValue<Issue>()
                     if(issue != null) {
 
                         //listener for contrbutions count used to set count text
@@ -159,12 +153,12 @@ class ViewIssueFragment :
                         )
 
                         //set issue title, body and time stamp, these don't need to change
-                        binding?.issueTitleTextView?.text = issue.title
-                        binding?.issueBodyTextView?.text = issue.body
-                        binding?.issueTimeStampTextView?.text = issue.timeStamp.toString()
+                        binding?.issueTitleTextView?.text = issue?.title
+                        binding?.issueBodyTextView?.text = issue?.body
+                        binding?.issueTimeStampTextView?.text = issue?.timeStamp.toString()
 
                         //listener for user photo
-                        dbRef.child("photos").child(issue.userId.toString())
+                        dbRef.child("photos").child(issue?.userId.toString())
                             .addListenerForSingleValueEvent(
                             object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -191,7 +185,7 @@ class ViewIssueFragment :
                         )
 
                         //listener for profile to set name and school
-                        dbRef.child("profiles").child(issue.userId.toString()).addListenerForSingleValueEvent(
+                        dbRef.child("profiles").child(issue?.userId.toString()).addListenerForSingleValueEvent(
                             object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     val profile = snapshot.getValue<Profile>()
@@ -247,6 +241,26 @@ class ViewIssueFragment :
                 }
             )
         }
+
+        //view profile when clicked
+        binding?.userImageView?.setOnClickListener {
+            val action = issue?.userId?.let { it1 ->
+                ViewIssueFragmentDirections.actionViewIssueFragmentToUserInfoFragment(it1)
+            }
+            if (action != null) {
+                parentFragment?.findNavController()?.navigate(action)
+            }
+        }
+
+        //view user profile when clicked
+        binding?.userNameTextView?.setOnClickListener {
+            val action = issue?.userId?.let { it1 ->
+                ViewIssueFragmentDirections.actionViewIssueFragmentToUserInfoFragment(it1)
+            }
+            if (action != null) {
+                parentFragment?.findNavController()?.navigate(action)
+            }
+        }
     }
 
 
@@ -258,6 +272,12 @@ class ViewIssueFragment :
     override fun onItemLongCLicked(comment: Comment, view: View) {
         //create option to delete
         //create option to respond
+    }
+
+    //view user profile
+    override fun onUserClicked(userId: String, view: View) {
+        val action = ViewIssueFragmentDirections.actionViewIssueFragmentToUserInfoFragment(userId)
+        parentFragment?.findNavController()?.navigate(action)
     }
 
     override fun onResume() {

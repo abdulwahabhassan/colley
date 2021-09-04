@@ -31,7 +31,10 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
 
-class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.DataChangedListener {
+class GroupMessageFragment :
+    Fragment(),
+    GroupMessageRecyclerAdapter.DataChangedListener,
+    GroupMessageRecyclerAdapter.ItemClickedListener {
 
     private val args: GroupMessageFragmentArgs by navArgs()
     private var _binding: FragmentGroupMessageBinding? = null
@@ -123,7 +126,7 @@ class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.DataChanged
             .setQuery(messagesRef, GroupMessage::class.java)
             .build()
 
-        adapter = GroupMessageRecyclerAdapter(options, currentUser, this, requireContext())
+        adapter = GroupMessageRecyclerAdapter(options, currentUser, this, this, requireContext())
         manager = LinearLayoutManager(requireContext())
         manager.stackFromEnd = true
         recyclerView.layoutManager = manager
@@ -241,6 +244,15 @@ class GroupMessageFragment : Fragment(), GroupMessageRecyclerAdapter.DataChanged
     companion object {
         private const val TAG = "GroupMessageFragment"
         private const val LOADING_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/colley-c37ea.appspot.com/o/loading_gif%20copy.gif?alt=media&token=022770e5-9db3-426c-9ee2-582b9d66fbac"
+    }
+
+    override fun onItemLongCLicked(message: GroupMessage, view: View) {
+
+    }
+
+    override fun onUserClicked(userId: String, view: View) {
+        val action = GroupMessageFragmentDirections.actionGroupMessageFragmentToUserInfoFragment(userId)
+        findNavController().navigate(action)
     }
 
 }

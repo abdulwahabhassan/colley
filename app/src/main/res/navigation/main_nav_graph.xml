@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_homeFragment_to_viewIssueFragment"
             app:destination="@id/viewIssueFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_userInfoFragment"
+            app:destination="@id/userInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -85,6 +88,9 @@
         <action
             android:id="@+id/action_groupMessageFragment_to_groupInfoFragment"
             app:destination="@id/groupInfoFragment" />
+        <action
+            android:id="@+id/action_groupMessageFragment_to_userInfoFragment"
+            app:destination="@id/userInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/groupInfoFragment"
@@ -94,6 +100,9 @@
         <argument
             android:name="groupId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_groupInfoFragment_to_userInfoFragment"
+            app:destination="@id/userInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatsFragment"
@@ -131,6 +140,9 @@
         <argument
             android:name="issueId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_viewIssueFragment_to_userInfoFragment"
+            app:destination="@id/userInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/groupsFragment"
@@ -142,4 +154,12 @@
         android:name="com.colley.android.view.fragment.IssuesFragment"
         android:label="fragment_issues"
         tools:layout="@layout/fragment_issues" />
+    <fragment
+        android:id="@+id/userInfoFragment"
+        android:name="com.colley.android.view.fragment.UserInfoFragment"
+        tools:layout="@layout/fragment_user_info">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
 </navigation>

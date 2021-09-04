@@ -44,6 +44,7 @@ class IssuesRecyclerAdapter(
     interface ItemClickedListener {
         fun onItemClick(issueId: String, view: View)
         fun onItemLongCLicked(issueId: String, view: View)
+        fun onUserClicked(userId: String, view: View)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IssueViewHolder {
@@ -174,6 +175,12 @@ class IssuesRecyclerAdapter(
                     clickListener.onItemLongCLicked(issue.issueId, it)
                 }
                 true
+            }
+
+            userNameTextView.setOnClickListener {
+                if(issue.userId != null) {
+                    clickListener.onUserClicked(issue.userId, it)
+                }
             }
         }
     }

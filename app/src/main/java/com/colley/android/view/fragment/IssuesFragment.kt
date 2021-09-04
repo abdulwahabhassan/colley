@@ -5,20 +5,14 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
-import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
-import com.colley.android.adapter.ChatsRecyclerAdapter
-import com.colley.android.adapter.IssuesFragmentRecyclerAdapter
 import com.colley.android.adapter.IssuesRecyclerAdapter
 import com.colley.android.databinding.FragmentIssuesBinding
-import com.colley.android.model.DummyData
 import com.colley.android.model.Issue
-import com.colley.android.model.PrivateChat
-import com.colley.android.view.dialog.NewMessageBottomSheetDialogFragment
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseAuth
@@ -136,6 +130,11 @@ class IssuesFragment :
 
     override fun onItemLongCLicked(issueId: String, view: View) {
 
+    }
+
+    override fun onUserClicked(userId: String, view: View) {
+        val action = HomeFragmentDirections.actionHomeFragmentToUserInfoFragment(userId)
+        parentFragment?.findNavController()?.navigate(action)
     }
 
     override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<Issue>) {

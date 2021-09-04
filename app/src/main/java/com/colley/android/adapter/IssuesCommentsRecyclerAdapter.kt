@@ -42,6 +42,7 @@ class IssuesCommentsRecyclerAdapter(
     interface ItemClickedListener {
         fun onItemClick(comment: Comment, view: View)
         fun onItemLongCLicked(comment: Comment, view: View)
+        fun onUserClicked(userId: String, view: View)
     }
 
             inner class IssueCommentViewHolder(private val itemBinding: ItemCommentBinding)
@@ -94,6 +95,10 @@ class IssuesCommentsRecyclerAdapter(
                     //on click
                     root.setOnClickListener {
                         clickListener.onItemClick(comment, it)
+                    }
+
+                    commenterImageView.setOnClickListener {
+                        clickListener.onUserClicked(comment.commenterId, it)
                     }
 
                 }

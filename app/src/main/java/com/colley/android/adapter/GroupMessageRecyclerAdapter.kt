@@ -3,6 +3,7 @@ package com.colley.android.adapter
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemGroupMessageBinding
 import com.colley.android.databinding.ItemGroupMessageCurrentUserBinding
+import com.colley.android.model.Comment
 import com.colley.android.model.Profile
 import com.colley.android.model.GroupMessage
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -27,6 +29,7 @@ import com.google.firebase.storage.ktx.storage
 class GroupMessageRecyclerAdapter(
     private val options: FirebaseRecyclerOptions<GroupMessage>,
     private val currentUser: FirebaseUser?,
+    private val clickListener: ItemClickedListener,
     private val onDataChangedListener: DataChangedListener,
     private val context: Context
 ) : FirebaseRecyclerAdapter<GroupMessage, RecyclerView.ViewHolder>(options) {
@@ -34,6 +37,11 @@ class GroupMessageRecyclerAdapter(
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
     interface DataChangedListener {
         fun onDataAvailable()
+    }
+
+    interface ItemClickedListener {
+        fun onItemLongCLicked(message: GroupMessage, view: View)
+        fun onUserClicked(userId: String, view: View)
     }
 
 
@@ -155,6 +163,8 @@ class GroupMessageRecyclerAdapter(
             } else {
                 binding.currentUserMessagePhotoImageView.visibility = GONE
             }
+
+
         }
 
     }
@@ -163,6 +173,11 @@ class GroupMessageRecyclerAdapter(
     inner class GroupMessageViewHolder(private val binding: ItemGroupMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: GroupMessage, itemPosition: Int) {
+
+            //view user profile when image is clicked
+            binding.messengerImageView.setOnClickListener {
+                item.userId?.let { it1 -> clickListener.onUserClicked(it1, it) }
+            }
 
             //load user photo
             Firebase.database.reference.child("photos").child(item.userId!!).addListenerForSingleValueEvent(
