@@ -9,7 +9,7 @@ import com.colley.android.R
 import com.colley.android.adapter.PostsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentPostsBinding
 import com.colley.android.model.DummyData
-import com.colley.android.model.Post
+import com.colley.android.model.PostModel
 import com.colley.android.view.dialog.PostBottomSheetDialogFragment
 
 
@@ -58,7 +58,7 @@ class PostsFragment : Fragment(),
     }
 
 
-    override fun onItemClick(post: Post) {
+    override fun onItemClick(postModel: PostModel) {
         val bottomSheetDialog = PostBottomSheetDialogFragment()
         bottomSheetDialog.show(childFragmentManager, null)
     }

@@ -55,6 +55,15 @@
         app:layout_constraintStart_toStartOf="@+id/groupNameTextView"
         app:layout_constraintTop_toBottomOf="@+id/groupNameTextView" />
 
+    <ImageView
+        android:id="@+id/recentMessageImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_photo"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/groupNameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/recentMessageTextView" />
+
     <TextView
         android:id="@+id/unreadConversationCountTextView"
         android:layout_width="wrap_content"

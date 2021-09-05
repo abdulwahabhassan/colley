@@ -3,6 +3,8 @@ package com.colley.android.adapter
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -68,9 +70,14 @@ class GroupsRecyclerAdapter (
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val recentMessage = snapshot.getValue<GroupMessage>()
                         if (recentMessage?.text != null) {
+//                            if recentMessage is a text, set to text and hide image indicator else
+//                                set to show image indicator and hide text view
+                            recentMessageImageView.visibility = GONE
                             recentMessageTextView.text = recentMessage.text
+                            recentMessageTextView.visibility = VISIBLE
                         } else {
-                            recentMessageTextView.text = "image.img"
+                            recentMessageImageView.visibility = VISIBLE
+                            recentMessageTextView.visibility = GONE
                         }
                     }
 

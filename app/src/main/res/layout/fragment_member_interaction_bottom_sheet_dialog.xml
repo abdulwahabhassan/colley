@@ -24,7 +24,6 @@
         android:layout_marginTop="@dimen/margin_16dp"
         android:background="@color/dark_grey"
         android:scaleType="center"
-        android:src="@drawable/ic_person"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"

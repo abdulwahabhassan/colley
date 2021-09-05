@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.colley.android.R
 import com.colley.android.databinding.FragmentMemberInteractionBottomSheetDialogBinding
 import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
@@ -84,6 +85,10 @@ class MemberInteractionBottomSheetDialogFragment(
                         if (memberPhoto != null) {
                             binding?.groupMemberImageView?.let {
                                 Glide.with(parentContext).load(memberPhoto).into(it)
+                            }
+                        } else {
+                            binding?.groupMemberImageView?.let {
+                                Glide.with(parentContext).load(R.drawable.ic_person_colored).into(it)
                             }
                         }
                     }

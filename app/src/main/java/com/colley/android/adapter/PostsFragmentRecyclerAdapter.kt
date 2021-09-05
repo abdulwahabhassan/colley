@@ -9,62 +9,62 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemPostBinding
-import com.colley.android.model.Post
+import com.colley.android.model.PostModel
 
 class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListener) :
     RecyclerView.Adapter<PostsFragmentRecyclerAdapter.PostViewHolder>() {
 
-    var listOfPosts = arrayListOf<Post>()
+    var listOfPosts = arrayListOf<PostModel>()
 
 
     interface ItemClickedListener {
-        fun onItemClick(post: Post)
+        fun onItemClick(postModel: PostModel)
     }
 
 
     class PostViewHolder (private val itemBinding : ItemPostBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         @SuppressLint("SetTextI18n")
-        fun bind(post: Post, clickListener: ItemClickedListener) = with(itemBinding) {
+        fun bind(postModel: PostModel, clickListener: ItemClickedListener) = with(itemBinding) {
 
-            nameTextView.text = post.name
-            schoolTextView.text = post.school
-            timeStampTextView.text = post.timeStamp
-            contentTextView.text = post.text
+            nameTextView.text = postModel.name
+            schoolTextView.text = postModel.school
+            timeStampTextView.text = postModel.timeStamp
+            contentTextView.text = postModel.text
 
-            if(post.location == null) {
+            if(postModel.location == null) {
                 locationTextView.visibility = GONE
             } else {
-                locationTextView.text = post.location
+                locationTextView.text = postModel.location
             }
 
-            when (post.likes) {
+            when (postModel.likes) {
                 0 -> likeCountTextView.visibility = GONE
-                1 -> likeCountTextView.text = "${post.likes} like"
-                else -> likeCountTextView.text = "${post.likes} likes"
+                1 -> likeCountTextView.text = "${postModel.likes} like"
+                else -> likeCountTextView.text = "${postModel.likes} likes"
             }
 
-            when (post.comments) {
+            when (postModel.comments) {
                 0 -> commentCountTextView.visibility = GONE
-                1 -> commentCountTextView.text = "${post.comments} comment"
-                else -> commentCountTextView.text = "${post.comments} comments"
+                1 -> commentCountTextView.text = "${postModel.comments} comment"
+                else -> commentCountTextView.text = "${postModel.comments} comments"
             }
 
-            when (post.promotions) {
+            when (postModel.promotions) {
                 0 -> promotionCountTextView.visibility = GONE
-                1 -> promotionCountTextView.text = "${post.promotions} promotion"
-                else -> promotionCountTextView.text = "${post.promotions} promotions"
+                1 -> promotionCountTextView.text = "${postModel.promotions} promotion"
+                else -> promotionCountTextView.text = "${postModel.promotions} promotions"
             }
 
-                Glide.with(root.context).load(post.image).into(contentImageView)
+                Glide.with(root.context).load(postModel.image).into(contentImageView)
 
-            if (post.userPhoto != null) {
-                Glide.with(root.context).load(post.userPhoto).into(userPhotoImageView)
+            if (postModel.userPhoto != null) {
+                Glide.with(root.context).load(postModel.userPhoto).into(userPhotoImageView)
             } else {
                 Glide.with(root.context).load(R.drawable.ic_profile).into(userPhotoImageView)
             }
 
             contentTextView.setOnClickListener {
-                clickListener.onItemClick(post)
+                clickListener.onItemClick(postModel)
             }
 
             likeLinearLayout.setOnClickListener {
@@ -78,7 +78,7 @@ class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListene
                 }
             }
             commentLinearLayout.setOnClickListener {
-                clickListener.onItemClick(post)
+                clickListener.onItemClick(postModel)
             }
             promoteLinearLayout.setOnClickListener {
                 Toast.makeText(root.context, "promote", Toast.LENGTH_SHORT).show()
@@ -101,7 +101,7 @@ class PostsFragmentRecyclerAdapter(private val clickListener: ItemClickedListene
         return listOfPosts.size
     }
 
-    fun setList(list: ArrayList<Post>) {
+    fun setList(list: ArrayList<PostModel>) {
         this.listOfPosts = list
         notifyDataSetChanged()
     }

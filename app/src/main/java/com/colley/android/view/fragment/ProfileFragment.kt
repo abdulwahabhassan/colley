@@ -123,7 +123,7 @@ class ProfileFragment : Fragment() {
                 val photo = snapshot.getValue<String>()
                 if (photo == null) {
                     Log.e(TAG, "photo for user $uid is unexpectedly null")
-                    Glide.with(requireContext()).load(R.drawable.ic_profile).into(binding.profilePhotoImageView)
+                    Glide.with(requireContext()).load(R.drawable.ic_person_colored).into(binding.profilePhotoImageView)
                     binding.photoProgressBar.visibility = GONE
                 } else {
                     Glide.with(requireContext()).load(photo).into(binding.profilePhotoImageView)

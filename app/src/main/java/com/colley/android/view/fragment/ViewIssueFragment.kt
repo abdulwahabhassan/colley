@@ -234,7 +234,7 @@ class ViewIssueFragment :
                         currentData: DataSnapshot?
                     ) {
                         if (error == null && committed) {
-                            Toast.makeText(context, "Endorsed", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Endorsed", Toast.LENGTH_SHORT).show()
                         }
                     }
 

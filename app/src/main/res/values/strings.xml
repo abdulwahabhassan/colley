@@ -47,7 +47,7 @@
     <string name="bio_text">Bio</string>
     <string name="info_text">Info</string>
     <string name="edit_text">Edit</string>
-    <string name="notification_placeholder_text">Sam Michael from UNIBEN commented on your post</string>
+    <string name="notification_placeholder_text">Sam Michael from UNIBEN commented on your postModel</string>
     <string name="search_text">Search</string>
     <string name="policy_support_text"><![CDATA[Policy & Support]]></string>
     <string name="menu_item_logout_title">Logout</string>
@@ -81,5 +81,7 @@
     <string name="no_comments_text">No comments</string>
     <string name="anonymous_text">Anonymous</string>
     <string name="write_comment_text">Write comment..</string>
+    <string name="location_text">Tag your location</string>
+    <string name="post_text">Post</string>
 
 </resources>

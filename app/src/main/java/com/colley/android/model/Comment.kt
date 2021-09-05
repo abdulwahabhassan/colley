@@ -5,7 +5,4 @@ class Comment(val commentText: String? = null,
               val commentTimeStamp: String? = null,
               val commentId: String? = null) {
 
-    companion object{
-
-    }
 }

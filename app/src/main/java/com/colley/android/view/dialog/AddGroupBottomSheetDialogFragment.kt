@@ -133,7 +133,7 @@ class AddGroupBottomSheetDialogFragment (
         //in case of error
             if (error != null) {
                 Toast.makeText(context, "Unable to create group", Toast.LENGTH_LONG).show()
-                Log.w(TAG, "Unable to write message to database.", error.toException())
+                Log.w(TAG, "Unable to write new group to database.", error.toException())
                 setEditingEnabled(true)
                 return@CompletionListener
             }

@@ -7,7 +7,7 @@
     android:background="@drawable/ripple_effect_rectangular"
     android:clickable="true"
     android:focusable="true"
-    android:paddingTop="@dimen/padding_16dp">
+    android:paddingTop="@dimen/padding_8dp">
 
     <TextView
         android:id="@+id/issueTitleTextView"

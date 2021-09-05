@@ -117,9 +117,9 @@ object DummyData {
     }
 
 
-    fun getListOfPosts(): ArrayList<Post> {
+    fun getListOfPosts(): ArrayList<PostModel> {
         return arrayListOf(
-            Post(
+            PostModel(
                 userPhoto = "https://rebrand.ly/zlhfnjj",
                 "Omowumi Abimbola",
                 "University of Ibadan",
@@ -129,7 +129,7 @@ object DummyData {
                 likes = 0,
                 comments = 0,
                 promotions = 1 ),
-            Post(
+            PostModel(
                 userPhoto = "https://rebrand.ly/00p0y9v",
                 "Ella David Andrews",
                 "University of Uyo",
@@ -142,7 +142,7 @@ object DummyData {
                 likes = 19,
                 comments = 4,
                 promotions = 1 ),
-            Post(
+            PostModel(
                 userPhoto = "https://rebrand.ly/amrrend",
                 "Fatima Abdulwahab",
                 "Kaduna Polytechnic",
@@ -152,7 +152,7 @@ object DummyData {
                 likes = 125,
                 comments = 43,
                 promotions = 0 ),
-            Post(
+            PostModel(
                 userPhoto = "https://rebrand.ly/bfdcfd",
                 "Alasa Umoru",
                 "University of Benin",

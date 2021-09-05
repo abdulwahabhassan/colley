@@ -46,6 +46,11 @@
         <item name="cornerSize">50%</item>
     </style>
 
+<!--    style postModel picture-->
+    <style name="CurvedEdgedShapeAppearance" parent="">
+        <item name="cornerSize">10%</item>
+    </style>
+
     <style name="messageImageCornerRadius" parent="">
         <item name="cornerSize">3%</item>
     </style>
@@ -90,6 +95,5 @@
     </style>
 
 <!--    shape appearance for group photo-->
-
     <dimen name="height_50dp">50dp</dimen>
 </resources>

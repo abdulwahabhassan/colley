@@ -3,15 +3,15 @@ package com.colley.android.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemChatBinding
 import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
-import com.colley.android.view.fragment.ChatsFragment
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
@@ -83,12 +83,15 @@ class ChatsRecyclerAdapter(
 
                         //set recent message
                         if(chat.text != null) {
+                            recentMessageImageView.visibility = GONE
                             recentMessageTextView.text = chat.text
+                            recentMessageTextView.visibility  = VISIBLE
                         }
 
                         //set recent message as "photo image" if it is a photo
                         if (chat.image != null) {
-                            recentMessageTextView.text = "Sent Image"
+                            recentMessageImageView.visibility = VISIBLE
+                            recentMessageTextView.visibility  = GONE
                         }
                     }
 
@@ -103,6 +106,8 @@ class ChatsRecyclerAdapter(
                         val photo = snapshot.getValue<String>()
                         if (photo != null) {
                             Glide.with(context).load(photo).into(this@with.personImageView)
+                        } else {
+                            Glide.with(context).load(R.drawable.ic_person).into(this@with.personImageView)
                         }
                     }
 
