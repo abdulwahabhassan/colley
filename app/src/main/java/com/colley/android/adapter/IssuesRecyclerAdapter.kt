@@ -95,7 +95,7 @@ class IssuesRecyclerAdapter(
                             if (photo != null) {
                                 Glide.with(root.context).load(photo).into(userImageView)
                             } else {
-                                Glide.with(root.context).load(R.drawable.ic_profile).into(userImageView)
+                                Glide.with(root.context).load(R.drawable.ic_person).into(userImageView)
                             }
                         }
 
@@ -110,48 +110,6 @@ class IssuesRecyclerAdapter(
             issueTimeStampTextView.text = issue.timeStamp
             contributionsTextView.text = issue.contributionsCount.toString()
             endorsementTextView.text = issue.endorsementsCount.toString()
-
-//            //check if issue id is not null before querying the issue
-//            if (issue.issueId != null) {
-//
-////                //add listener to contribution count to update on value change
-////                Firebase.database.reference.child("issues").child(issue.issueId)
-////                    .child("contributionsCount").addListenerForSingleValueEvent(
-////                        object : ValueEventListener {
-////                            override fun onDataChange(snapshot: DataSnapshot) {
-////                                val contribution = snapshot.getValue<Int>()
-////                                //if contribution count is not null and 0
-////                                if (contribution != null) {
-////                                    //set contribution
-////                                    contributionsTextView.text = contribution.toString()
-////                                } else {
-////                                    contributionsTextView.text = 0.toString()
-////                                }
-////                            }
-////
-////                            override fun onCancelled(error: DatabaseError) {}
-////                        }
-////                    )
-//
-//                //add listener to endorsement count to update on value change
-//                Firebase.database.reference.child("issues").child(issue.issueId)
-//                    .child("endorsementCount").addListenerForSingleValueEvent(
-//                        object : ValueEventListener {
-//                            override fun onDataChange(snapshot: DataSnapshot) {
-//                                val endorsement = snapshot.getValue<Int>()
-//                                //if endorsement count is not null and 0
-//                                if (endorsement != null) {
-//                                    //set endorsement
-//                                    endorsementTextView.text = endorsement.toString()
-//                                } else {
-//                                    endorsementTextView.text = 0.toString()
-//                                }
-//                            }
-//
-//                            override fun onCancelled(error: DatabaseError) {} }
-//                    )
-//            }
-
 
 //            pinImageView.setOnClickListener {
 //                it.isActivated = when (it.isActivated) {

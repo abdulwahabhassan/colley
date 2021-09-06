@@ -104,16 +104,6 @@ class IssuesFragment :
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        adapter?.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        adapter?.stopListening()
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()

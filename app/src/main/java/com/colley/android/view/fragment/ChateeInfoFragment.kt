@@ -118,7 +118,7 @@ class ChateeInfoFragment : Fragment() {
                 if (photo == null) {
                     Log.e(TAG, "photo for user ${args.chateeId} is unexpectedly null")
                     binding?.profilePhotoImageView?.let {
-                        Glide.with(requireContext()).load(R.drawable.ic_profile).into(
+                        Glide.with(requireContext()).load(R.drawable.ic_person_colored).into(
                             it
                         )
                     }

@@ -67,12 +67,15 @@ class PrivateMessageRecyclerAdapter(
     ) {
 
         val uid = currentUser?.uid
-        if (options.snapshots[position].fromUserId != uid) {
+        if (snapshots.size != 0) {
+            if (options.snapshots[position].fromUserId != uid) {
 
-            (holder as ChateeMessageViewHolder).bind(model, position)
-        } else {
-            (holder as CurrentUserMessageViewHolder).bind(model, position)
+                (holder as ChateeMessageViewHolder).bind(model, position)
+            } else {
+                (holder as CurrentUserMessageViewHolder).bind(model, position)
+            }
         }
+
     }
 
     //Callback triggered after all child events in a particular snapshot have been processed.
@@ -100,17 +103,21 @@ class PrivateMessageRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String?>()
-                        //if the next message is from the same user, remove userName from the next message
-                        if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
-                            binding.currentUserImageView.visibility = GONE
-                        } else {
-                            if (photo != null) {
-                                loadImageIntoView(binding.currentUserImageView, photo)
+
+                        if (snapshots.size != 0) {
+                            //if the next message is from the same user, remove userName from the next message
+                            if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
+                                binding.currentUserImageView.visibility = GONE
                             } else {
-                                Glide.with(context).load(R.drawable.ic_person).into(binding.currentUserImageView)
-                                binding.currentUserImageView.visibility = VISIBLE
+                                if (photo != null) {
+                                    loadImageIntoView(binding.currentUserImageView, photo)
+                                } else {
+                                    Glide.with(context).load(R.drawable.ic_person).into(binding.currentUserImageView)
+                                    binding.currentUserImageView.visibility = VISIBLE
+                                }
                             }
                         }
+
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -132,13 +139,16 @@ class PrivateMessageRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val profile = snapshot.getValue<Profile>()
-                        //if the next message is from the same user as in the previous message, remove userPhoto from the next message
-                        if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
-                            binding.currentUserNameTextView.visibility = GONE
-                        } else {
-                            binding.currentUserNameTextView.text = profile?.name
-                            binding.currentUserNameTextView.visibility = VISIBLE
+                        if (snapshots.size != 0) {
+                            //if the next message is from the same user as in the previous message, remove userPhoto from the next message
+                            if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
+                                binding.currentUserNameTextView.visibility = GONE
+                            } else {
+                                binding.currentUserNameTextView.text = profile?.name
+                                binding.currentUserNameTextView.visibility = VISIBLE
+                            }
                         }
+
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -206,13 +216,15 @@ class PrivateMessageRecyclerAdapter(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val profile = snapshot.getValue<Profile>()
-                        if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
-                            binding.messengerNameTextView.visibility = GONE
-                        } else {
-                            binding.messengerNameTextView.text = profile?.name
-                            binding.messengerNameTextView.visibility = VISIBLE
-                        }
 
+                        if (snapshots.size != 0) {
+                            if(itemPosition > 0 && options.snapshots[itemPosition].fromUserId == options.snapshots[itemPosition - 1].fromUserId) {
+                                binding.messengerNameTextView.visibility = GONE
+                            } else {
+                                binding.messengerNameTextView.text = profile?.name
+                                binding.messengerNameTextView.visibility = VISIBLE
+                            }
+                        }
                     }
 
                     override fun onCancelled(error: DatabaseError) {

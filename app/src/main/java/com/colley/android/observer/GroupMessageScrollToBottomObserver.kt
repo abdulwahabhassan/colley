@@ -38,4 +38,5 @@ class GroupMessageScrollToBottomObserver(
             manager.scrollToPosition(positionStart)
         }
     }
+
 }

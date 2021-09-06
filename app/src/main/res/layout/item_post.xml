@@ -13,6 +13,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/ripple_effect_rectangular"
         android:paddingTop="@dimen/margin_8dp">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -108,9 +111,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_8dp"
             android:background="@drawable/ripple_effect_curved_edges_16dp"
-            android:src="@drawable/ic_launcher_foreground"
-            app:layout_constraintTop_toBottomOf="@+id/contentTextView"
-            tools:layout_editor_absoluteX="0dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contentTextView" />
 
 
         <TextView

@@ -38,4 +38,5 @@ class PrivateMessageScrollToBottomObserver(
             manager.scrollToPosition(positionStart)
         }
     }
+
 }
