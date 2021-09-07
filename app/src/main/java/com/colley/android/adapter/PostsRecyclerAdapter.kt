@@ -12,38 +12,32 @@ import com.colley.android.R
 import com.colley.android.databinding.ItemPostBinding
 import com.colley.android.model.Post
 import com.colley.android.model.Profile
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
-import com.firebase.ui.database.paging.DatabasePagingOptions
 import com.firebase.ui.database.paging.FirebaseRecyclerPagingAdapter
 import com.firebase.ui.database.paging.LoadingState
 
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class PostsRecyclerAdapter(
-    private val options: DatabasePagingOptions<Post>,
+    private val options: FirebaseRecyclerOptions<Post>,
     private val context: Context,
     private val currentUser: FirebaseUser?,
-    private val loadingStateListener: LoadingStateChanged,
-//    private val onDataChangedListener: DataChangedListener,
+    private val onDataChangedListener: DataChangedListener,
     private val clickListener: ItemClickedListener
 )
-    : FirebaseRecyclerPagingAdapter<Post, PostsRecyclerAdapter.PostViewHolder>(options) {
+    : FirebaseRecyclerAdapter<Post, PostsRecyclerAdapter.PostViewHolder>(options) {
 
-//    //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
-//    interface DataChangedListener {
-//        fun onDataAvailable(snapshotArray: ObservableSnapshotArray<Post>)
-//    }
-
-
-    interface LoadingStateChanged {
-        fun onLoadingStateChanged(state: LoadingState)
+    //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
+    interface DataChangedListener {
+        fun onDataAvailable(snapshotArray: ObservableSnapshotArray<Post>)
     }
 
     interface ItemClickedListener {
@@ -62,15 +56,15 @@ class PostsRecyclerAdapter(
         holder.bind(currentUser, model, context, clickListener)
     }
 
-//    //Callback triggered after all child events in a particular snapshot have been processed.
-//    //Useful for batch events, such as removing a loading indicator
-//    override fun onDataChanged() {
-//        super.onDataChanged()
-//
-//        //display GroupMessageFragment EditText layout only when data has been bound,
-//        //otherwise show progress bar loading
-//        onDataChangedListener.onDataAvailable(snapshots)
-//    }
+    //Callback triggered after all child events in a particular snapshot have been processed.
+    //Useful for batch events, such as removing a loading indicator
+    override fun onDataChanged() {
+        super.onDataChanged()
+
+        //display GroupMessageFragment EditText layout only when data has been bound,
+        //otherwise show progress bar loading
+        onDataChangedListener.onDataAvailable(snapshots)
+    }
 
     class PostViewHolder (private val itemBinding : ItemPostBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         @SuppressLint("SetTextI18n")
@@ -212,19 +206,5 @@ class PostsRecyclerAdapter(
             }
         }
     }
-
-
-//    override fun getItemId(position: Int): Long {
-//        return position.toLong()
-//    }
-//
-//    override fun getItemViewType(position: Int): Int {
-//        return position
-//    }
-
-    override fun onLoadingStateChanged(state: LoadingState) {
-        loadingStateListener.onLoadingStateChanged(state)
-    }
-
 
 }
