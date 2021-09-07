@@ -1,4 +1,4 @@
-Recpackage com.colley.android.adapter
+package com.colley.android.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -31,15 +31,15 @@ class PostsRecyclerAdapter(
     private val context: Context,
     private val currentUser: FirebaseUser?,
     private val loadingStateListener: LoadingStateChanged,
-    private val onDataChangedListener: DataChangedListener,
+//    private val onDataChangedListener: DataChangedListener,
     private val clickListener: ItemClickedListener
 )
     : FirebaseRecyclerPagingAdapter<Post, PostsRecyclerAdapter.PostViewHolder>(options) {
 
-    //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
-    interface DataChangedListener {
-        fun onDataAvailable(snapshotArray: ObservableSnapshotArray<Post>)
-    }
+//    //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
+//    interface DataChangedListener {
+//        fun onDataAvailable(snapshotArray: ObservableSnapshotArray<Post>)
+//    }
 
 
     interface LoadingStateChanged {

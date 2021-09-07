@@ -1,7 +1,5 @@
 package com.colley.android.view.fragment
 
-
-
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -9,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedList
 import androidx.paging.PagingConfig
-
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -32,7 +29,7 @@ import com.google.firebase.ktx.Firebase
 
 class PostsFragment : Fragment(),
     PostsRecyclerAdapter.ItemClickedListener,
-    PostsRecyclerAdapter.DataChangedListener,
+//    PostsRecyclerAdapter.DataChangedListener,
     PostsRecyclerAdapter.LoadingStateChanged{
 
     private var _binding: FragmentPostsBinding? = null
@@ -102,18 +99,34 @@ class PostsFragment : Fragment(),
 //            .setQuery(postsRef, Post::class.java)
 //            .build()
 
-        val config = PagingConfig(10, 5, false)
+//        val config = PagedList.Config.Builder()
+//            .setEnablePlaceholders(false)
+//            .setPrefetchDistance(5)
+//            .setPageSize(10)
+//            .build()
 
-        val pagingOptions = DatabasePagingOptions.Builder<Post>()
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setPrefetchDistance(5)
+            .setPageSize(10)
+            .build()
+
+        val options = DatabasePagingOptions.Builder<Post>()
             .setLifecycleOwner(viewLifecycleOwner)
             .setQuery(postsRef, config, Post::class.java)
             .build()
 
-        pagingAdapter = PostsRecyclerAdapter(pagingOptions, requireContext(), currentUser, this, this, this)
+        pagingAdapter = PostsRecyclerAdapter(options, requireContext(), currentUser, this, this)
         manager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = manager
         recyclerView.adapter = pagingAdapter
-        //pagingAdapter.startListening()
+        pagingAdapter.startListening()
+
+        // Reload data on swipe
+        swipeRefreshLayout.setOnRefreshListener {
+            //Reload Data
+            pagingAdapter.refresh()
+        }
 //        adapter = PostsRecyclerAdapter(options, requireContext(), currentUser, this, this)
 //        manager = LinearLayoutManager(requireContext())
 //        //reversing and stacking is actually counterintuitive as used in this scenario, the purpose
@@ -134,10 +147,6 @@ class PostsFragment : Fragment(),
 
     }
 
-    override fun onStart() {
-        super.onStart()
-
-    }
 
     override fun onStop() {
         super.onStop()
@@ -150,14 +159,14 @@ class PostsFragment : Fragment(),
         _binding = null
     }
 
-    override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<Post>) {
-        binding.noPostsProgressBar.visibility = View.GONE
-        if (snapshotArray.isEmpty()) {
-            binding.noPostsLayout.visibility = View.VISIBLE
-        } else {
-            binding.noPostsLayout.visibility = View.GONE
-        }
-    }
+//    override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<Post>) {
+//        binding.noPostsProgressBar.visibility = View.GONE
+//        if (snapshotArray.isEmpty()) {
+//            binding.noPostsLayout.visibility = View.VISIBLE
+//        } else {
+//            binding.noPostsLayout.visibility = View.GONE
+//        }
+//    }
 
     override fun onItemClick(postId: String, view: View) {
 
@@ -175,7 +184,7 @@ class PostsFragment : Fragment(),
     override fun onLoadingStateChanged(state: LoadingState) {
         when (state) {
             LoadingState.LOADING_INITIAL -> {
-
+                swipeRefreshLayout.isRefreshing = true
             }
             LoadingState.LOADING_MORE ->                         // Do your loading animation
             {
