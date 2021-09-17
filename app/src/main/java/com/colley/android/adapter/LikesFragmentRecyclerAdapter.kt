@@ -46,6 +46,7 @@ class LikesFragmentRecyclerAdapter(private val clickListener: ItemClickedListene
         return LikeViewHolder(viewBinding)
     }
 
+
     override fun onBindViewHolder(holder: LikeViewHolder, position: Int) {
         val like = listOfLikes[position]
         holder.bind(like, clickListener)

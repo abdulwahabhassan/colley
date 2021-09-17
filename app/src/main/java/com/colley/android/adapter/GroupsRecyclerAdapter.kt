@@ -43,7 +43,8 @@ class GroupsRecyclerAdapter (
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
-        val viewBinding = ItemGroupBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val viewBinding = ItemGroupBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return GroupViewHolder(viewBinding)
     }
 
@@ -61,17 +62,19 @@ class GroupsRecyclerAdapter (
         onDataChangedListener.onDataAvailable(snapshots)
     }
 
-    class GroupViewHolder (private val itemBinding : ItemGroupBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+    class GroupViewHolder (private val itemBinding : ItemGroupBinding)
+        : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(chatGroupId: String, clickListener: ItemClickedListener) = with(itemBinding) {
 
             //retrieve group's recent message and set it to recent message text view
-            Firebase.database.reference.child("group-messages").child("recent-message").child(chatGroupId).addListenerForSingleValueEvent(
+            Firebase.database.reference.child("group-messages")
+                .child("recent-message").child(chatGroupId).addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val recentMessage = snapshot.getValue<GroupMessage>()
                         if (recentMessage?.text != null) {
-//                            if recentMessage is a text, set to text and hide image indicator else
-//                                set to show image indicator and hide text view
+                        //if recentMessage is a text, set to text and hide image indicator else
+                        //set to show image indicator and hide text view
                             recentMessageImageView.visibility = GONE
                             recentMessageTextView.text = recentMessage.text
                             recentMessageTextView.visibility = VISIBLE
@@ -87,7 +90,8 @@ class GroupsRecyclerAdapter (
 
             //add listener to chat group reference on database using chatGroupId to locate the specific group
             //By this logic, only groups that a user belong to will be displayed to them
-            Firebase.database.reference.child("groups-id-name-photo").child(chatGroupId).addValueEventListener(
+            Firebase.database.reference.child("groups-id-name-photo").child(chatGroupId)
+                .addValueEventListener(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val chatGroup = snapshot.getValue<GroupChat>()
@@ -96,9 +100,11 @@ class GroupsRecyclerAdapter (
 
                             when (chatGroup.groupPhoto) {
                                 null ->
-                                    Glide.with(root.context).load(R.drawable.ic_group).into(groupImageView)
+                                    Glide.with(root.context).load(R.drawable.ic_group)
+                                        .into(groupImageView)
                                 else ->
-                                    Glide.with(root.context).load(chatGroup.groupPhoto).into(groupImageView)
+                                    Glide.with(root.context).load(chatGroup.groupPhoto)
+                                        .into(groupImageView)
                             }
 
                             root.setOnClickListener {
@@ -107,20 +113,9 @@ class GroupsRecyclerAdapter (
                         }
                     }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(
-                            TAG, "getChatGroup:OnCancelled", error.toException()
-                        )
-                    }
+                    override fun onCancelled(error: DatabaseError) {}
                 }
             )
         }
     }
-    
-
-    companion object {
-        const val TAG = "GroupsRecyclerAdapter"
-    }
-
-
 }

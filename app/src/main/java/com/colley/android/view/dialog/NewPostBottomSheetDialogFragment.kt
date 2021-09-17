@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
@@ -35,6 +37,7 @@ class NewPostBottomSheetDialogFragment(
     private var _binding: FragmentNewPostBottomShetDialogBinding? = null
     private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
+    private lateinit var fireStoreDb: FirebaseFirestore
     private lateinit var currentUser: FirebaseUser
     private var postImageUri: Uri? = null
     private var body: String? = null
@@ -61,6 +64,7 @@ class NewPostBottomSheetDialogFragment(
         super.onViewCreated(view, savedInstanceState)
 
         //initialize database and current user
+        fireStoreDb = Firebase.firestore
         dbRef = Firebase.database.reference
         currentUser = Firebase.auth.currentUser!!
 
@@ -133,10 +137,11 @@ class NewPostBottomSheetDialogFragment(
             }
 
             Snackbar.make(postsView, "Post created successfully!", Snackbar.LENGTH_LONG).show()
-
             //dismiss bottom sheet dialog
             this.dismiss()
         })
+
+
 
     }
 

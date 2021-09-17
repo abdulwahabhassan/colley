@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:context=".view.fragment.HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".view.fragment.HomeFragment">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/home_fragment_tabLayout"
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            app:tabRippleColor="@color/white"
-            android:layout_marginEnd="@dimen/margin_16dp"
-            android:layout_marginStart="@dimen/margin_16dp"
+            app:tabRippleColor="@color/lighter_pearl"
+            app:tabIndicator="@null"
             app:tabTextColor="@color/very_light_pearl"
             app:tabSelectedTextColor="@color/light_pearl"
-            app:tabIndicatorColor="@color/light_pearl"
+            app:tabUnboundedRipple="false"
             app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,5 +44,3 @@
             app:layout_constraintEnd_toEndOf="parent"
              />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.core.widget.NestedScrollView>

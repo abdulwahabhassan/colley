@@ -5,6 +5,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.view.View.*
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.colley.android.R
@@ -13,11 +14,11 @@ import com.colley.android.view.dialog.AddGroupBottomSheetDialogFragment
 import com.colley.android.view.dialog.NewPostBottomSheetDialogFragment
 import com.colley.android.view.dialog.RaiseIssueBottomSheetDialogFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 
 
-class HomeFragment : Fragment() {
+class HomeFragment:
+    Fragment(), RaiseIssueBottomSheetDialogFragment.NewIssueListener, RaiseIssueBottomSheetDialogFragment.HomeFabListener {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -27,7 +28,6 @@ class HomeFragment : Fragment() {
     private lateinit var addGroupBottomSheetDialog: AddGroupBottomSheetDialogFragment
     private lateinit var raiseIssueBottomSheetDialog: RaiseIssueBottomSheetDialogFragment
     private lateinit var newPostBottomSheetDialog: NewPostBottomSheetDialogFragment
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
         //set up viewpager
         viewPager = binding.homeFragmentViewPager
         viewPagerAdapter = object : FragmentStateAdapter(childFragmentManager, lifecycle) {
-            private val fragments = arrayOf<Fragment>(
+            private val fragments = arrayOf(
                     IssuesFragment(),
                     PostsFragment(),
                     GroupsFragment(),
@@ -104,9 +104,10 @@ class HomeFragment : Fragment() {
         }
 
         binding.homeFab.setOnClickListener {
+            disableFab()
             when (viewPager.currentItem) {
                 0 -> {
-                    raiseIssueBottomSheetDialog = RaiseIssueBottomSheetDialogFragment(requireContext(), requireView())
+                    raiseIssueBottomSheetDialog = RaiseIssueBottomSheetDialogFragment(requireContext(), requireView(), this, this)
                     raiseIssueBottomSheetDialog.show(parentFragmentManager, null)
                 }
                 1 -> {
@@ -126,5 +127,20 @@ class HomeFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
+
+    override fun navigateToIssue(issueId: String) {
+        val action = HomeFragmentDirections.actionHomeFragmentToViewIssueFragment(issueId)
+        findNavController().navigate(action)
+    }
+
+    override fun enableFab(enabled: Boolean) {
+        binding.homeFab.isEnabled = enabled
+    }
+
+    //disable fab to prevent double clicks
+    private fun disableFab() {
+        binding.homeFab.isEnabled = false
+    }
+
 
 }

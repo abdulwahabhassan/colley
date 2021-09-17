@@ -1,6 +1,6 @@
 package com.colley.android.model
 
-class Issue(
+data class Issue(
     val issueId: String? = null,
     val userId: String? = null,
     val title: String? = null,

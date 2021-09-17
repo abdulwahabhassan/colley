@@ -1,11 +1,10 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
+import android.util.Log
+import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -51,30 +50,6 @@ class ViewIssueFragment :
     private val uid: String
         get() = currentUser.uid
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setHasOptionsMenu(true)
-//    }
-//
-//    //since we have set hasOptionsMenu to true, our fragment can now override this call to allow us
-//    //modify the menu
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        super.onCreateOptionsMenu(menu, inflater)
-//        menu.clear()
-////        //this inflates a new menu
-////        inflater.inflate(R.menu.group_message_menu, menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-////        return when (item.itemId) {
-////            R.id.search_issues_menu_item -> {
-////                Toast.makeText(context, "Searching issues", Toast.LENGTH_LONG).show()
-////                true
-////            }
-////            else -> super.onOptionsItemSelected(item)
-////        }
-//        return true
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,6 +71,9 @@ class ViewIssueFragment :
         //initialize currentUser
         currentUser = auth.currentUser!!
 
+        //log item id
+        Log.d("Log itemId", args.issueId)
+
         //get a query reference to issue comments //order by time stamp
         val commentsRef = dbRef.child("issues").child(args.issueId)
             .child("comments").orderByChild("commentTimeStamp")
@@ -108,25 +86,30 @@ class ViewIssueFragment :
             .build()
 
         //initialize issue comments adapter
-        adapter = IssuesCommentsRecyclerAdapter(options, currentUser,this, this, requireContext(),)
+        adapter = IssuesCommentsRecyclerAdapter(
+            options,
+            currentUser,
+            this,
+            this,
+            requireContext())
+
         manager = LinearLayoutManager(requireContext())
-        //reversing and stacking is actually counterintuitive as used in this scenario, the purpose
-        //of the manipulation is such that most recent items appear at the top since firebase does
-        //not provide a method to sort queries in descending order
+        //reversing layout and stacking from end so that the most recent comments appear at the top
         manager?.reverseLayout = true
         manager?.stackFromEnd = true
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
-        adapter?.startListening()
 
-        dbRef.child("issues").child(args.issueId).addValueEventListener(
+
+        dbRef.child("issues").child(args.issueId).addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     issue = snapshot.getValue<Issue>()
                     if(issue != null) {
 
                         //listener for contrbutions count used to set count text
-                        dbRef.child("issues").child(args.issueId).child("contributionsCount").addListenerForSingleValueEvent(
+                        dbRef.child("issues").child(args.issueId)
+                            .child("contributionsCount").addListenerForSingleValueEvent(
                             object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     val count = snapshot.getValue<Int>()
@@ -140,7 +123,8 @@ class ViewIssueFragment :
                         )
 
                         //listener for endorsement counts used to set endorsement count text
-                        dbRef.child("issues").child(args.issueId).child("endorsementsCount").addListenerForSingleValueEvent(
+                        dbRef.child("issues").child(args.issueId)
+                            .child("endorsementsCount").addListenerForSingleValueEvent(
                             object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     val count = snapshot.getValue<Int>()
@@ -185,11 +169,16 @@ class ViewIssueFragment :
                         )
 
                         //listener for profile to set name and school
-                        dbRef.child("profiles").child(issue?.userId.toString()).addListenerForSingleValueEvent(
+                        dbRef.child("profiles").child(issue?.userId.toString())
+                            .addListenerForSingleValueEvent(
                             object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     val profile = snapshot.getValue<Profile>()
                                     if (profile != null) {
+
+                                        //log name details to console
+                                        profile.name?.let { Log.d("Log Details", it) }
+
                                         binding?.userNameTextView?.text = profile.name
                                         binding?.userSchoolTextView?.text = profile.school
                                     }
@@ -206,14 +195,17 @@ class ViewIssueFragment :
         )
 
         binding?.commentLinearLayout?.setOnClickListener {
-            commentSheetDialog = IssueCommentBottomSheetDialogFragment(requireContext(), requireView())
+            commentSheetDialog = IssueCommentBottomSheetDialogFragment(
+                requireContext(),
+                requireView())
             commentSheetDialog.arguments = bundleOf("issueIdKey" to args.issueId)
             commentSheetDialog.show(parentFragmentManager, null)
         }
 
         binding?.endorseLinearLayout?.setOnClickListener {
             //update contributions count
-            dbRef.child("issues").child(args.issueId).child("endorsementsCount").runTransaction(
+            dbRef.child("issues").child(args.issueId).child("endorsementsCount")
+                .runTransaction(
                 object : Transaction.Handler {
                     override fun doTransaction(currentData: MutableData): Transaction.Result {
                         //retrieve the current value of endorsement count at this location
@@ -234,7 +226,8 @@ class ViewIssueFragment :
                         currentData: DataSnapshot?
                     ) {
                         if (error == null && committed) {
-                            Toast.makeText(requireContext(), "Endorsed", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Endorsed", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
 
@@ -280,10 +273,11 @@ class ViewIssueFragment :
         parentFragment?.findNavController()?.navigate(action)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         adapter?.startListening()
     }
+
 
     override fun onStop() {
         super.onStop()
@@ -293,7 +287,6 @@ class ViewIssueFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        adapter?.stopListening()
         _binding = null
     }
 

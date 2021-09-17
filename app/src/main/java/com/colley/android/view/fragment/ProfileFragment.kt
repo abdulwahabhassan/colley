@@ -12,7 +12,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.colley.android.R
-import com.colley.android.listener.SaveButtonListener
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentProfileBinding
 import com.colley.android.model.Profile

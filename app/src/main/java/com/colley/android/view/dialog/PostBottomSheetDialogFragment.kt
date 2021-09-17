@@ -10,6 +10,7 @@ import com.colley.android.adapter.PostBottomSheetDialogFragmentViewPager
 import com.colley.android.databinding.BottomSheetDialogFragmentPostBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.firestore.FirebaseFirestore
 
 class PostBottomSheetDialogFragment () :
     BottomSheetDialogFragment() {

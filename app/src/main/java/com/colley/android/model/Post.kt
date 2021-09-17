@@ -1,6 +1,6 @@
 package com.colley.android.model
 
-class Post (
+data class Post (
     val postId: String? = null,
     val userId: String? = null,
     val timeStamp: String? = null,

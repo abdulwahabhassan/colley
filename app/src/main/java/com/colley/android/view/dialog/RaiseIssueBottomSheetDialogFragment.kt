@@ -1,14 +1,18 @@
 package com.colley.android.view.dialog
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.colley.android.databinding.FragmentRaiseIssueBottomSheetDialogBinding
 import com.colley.android.model.Issue
+import com.colley.android.view.fragment.HomeFragmentDirections
+import com.colley.android.view.fragment.IssuesFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -22,7 +26,9 @@ import java.util.*
 
 class RaiseIssueBottomSheetDialogFragment(
     private val parentContext: Context,
-    private val issuesView: View
+    private val issuesView: View,
+    private val newIssueListener: NewIssueListener,
+    private val homeFabListener: HomeFabListener
 ) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentRaiseIssueBottomSheetDialogBinding? = null
@@ -31,6 +37,15 @@ class RaiseIssueBottomSheetDialogFragment(
     private lateinit var currentUser: FirebaseUser
     private val uid: String
         get() = currentUser.uid
+
+    interface NewIssueListener {
+        fun navigateToIssue(issueId: String)
+    }
+
+    interface HomeFabListener {
+        fun enableFab(enabled: Boolean)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +56,11 @@ class RaiseIssueBottomSheetDialogFragment(
         return binding?.root
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        homeFabListener.enableFab(true)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -49,7 +69,6 @@ class RaiseIssueBottomSheetDialogFragment(
         currentUser = Firebase.auth.currentUser!!
 
         binding?.raiseIssueButton?.setOnClickListener {
-
 
             //Disable editing during creation
             setEditingEnabled(false)
@@ -77,18 +96,32 @@ class RaiseIssueBottomSheetDialogFragment(
             //create and push new issue to database, retrieve key and add it as issueId
             dbRef.child("issues").push()
                 .setValue(issue, DatabaseReference.CompletionListener { error, ref ->
+                    homeFabListener.enableFab(false)
                     if (error != null) {
-                        Toast.makeText(parentContext, "Unable to create issue", Toast.LENGTH_LONG).show()
-                        Log.w(AddGroupBottomSheetDialogFragment.TAG, "Unable to write issue to database. ${error.message}")
+                        Toast.makeText(
+                            parentContext,
+                            "Unable to create issue",
+                            Toast.LENGTH_LONG).show()
+
+                        Log.w(
+                            AddGroupBottomSheetDialogFragment.TAG,
+                            "Unable to write issue to database. ${error.message}"
+                        )
+
                         setEditingEnabled(true)
                         return@CompletionListener
                     }
                     //after creating group, retrieve its key on the database and set it as the issue id
                     val key = ref.key
-                    dbRef.child("issues").child(key!!).child("issueId").setValue(key)
+                    dbRef.child("issues").child(key!!).child("issueId").setValue(key).addOnCompleteListener {
+                        newIssueListener.navigateToIssue(key)
+                    }
                 })
-            Snackbar.make(issuesView, "Your issue has been raised successfully!", Snackbar.LENGTH_LONG).show()
-            //dismiss dialog
+
+            Toast.makeText(
+                parentContext,
+                "New issue raised",
+                Toast.LENGTH_LONG).show()
             this.dismiss()
         }
     }
@@ -104,4 +137,5 @@ class RaiseIssueBottomSheetDialogFragment(
         super.onDestroy()
         _binding = null
     }
+
 }
