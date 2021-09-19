@@ -28,7 +28,7 @@ class RaiseIssueBottomSheetDialogFragment(
     private val parentContext: Context,
     private val issuesView: View,
     private val newIssueListener: NewIssueListener,
-    private val homeFabListener: HomeFabListener
+    private val homeFabListener: RaiseIssueHomeFabListener
 ) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentRaiseIssueBottomSheetDialogBinding? = null
@@ -42,7 +42,7 @@ class RaiseIssueBottomSheetDialogFragment(
         fun navigateToIssue(issueId: String)
     }
 
-    interface HomeFabListener {
+    interface RaiseIssueHomeFabListener {
         fun enableFab(enabled: Boolean)
     }
 

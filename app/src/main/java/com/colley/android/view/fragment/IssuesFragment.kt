@@ -53,17 +53,17 @@ class IssuesFragment ():
             super.onItemRangeInserted(positionStart, itemCount)
             manager?.scrollToPosition(positionStart+itemCount)
 
-            Log.d("position", "$positionStart $itemCount")
+            Log.d("position", "$positionStart $itemCount ${adapter?.itemCount}")
             //if onItemRangeInserted is not due to initial load
             if(positionStart != 0) {
                 when {
                     itemCount > 1 -> {
                         //Toast.makeText(context, "$itemCount new issues, scroll up to see", Toast.LENGTH_SHORT).show()
-                        binding.newIssueNotificationTextView.text = "$itemCount new issues, scroll up"
+                        binding.newIssueNotificationTextView.text = "^ $itemCount new issues"
                     }
                     else -> {
                         //Toast.makeText(context, "$itemCount new issue, scroll up to see", Toast.LENGTH_SHORT).show()
-                        binding.newIssueNotificationTextView.text = "$itemCount new issue, scroll up"
+                        binding.newIssueNotificationTextView.text = "^ $itemCount new issue"
 
                     }
                 }
@@ -123,8 +123,8 @@ class IssuesFragment ():
 
         //configuration for how the FirebaseRecyclerPagingAdapter should load pages
         val config = PagingConfig(
-            pageSize = 30,
-            prefetchDistance = 15,
+            pageSize = 5,
+            prefetchDistance = 3,
             enablePlaceholders = false
         )
 
@@ -159,6 +159,7 @@ class IssuesFragment ():
 
         adapter?.registerAdapterDataObserver(observer)
 
+        //remove notification text view when recycler view is scrolled
         recyclerView.addOnScrollListener(
             object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

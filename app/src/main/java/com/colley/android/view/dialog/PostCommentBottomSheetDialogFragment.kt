@@ -2,19 +2,13 @@ package com.colley.android.view.dialog
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.colley.android.R
-import com.colley.android.databinding.FragmentIssueCommentDialogBinding
-import com.colley.android.databinding.FragmentRaiseIssueBottomSheetDialogBinding
+import com.colley.android.databinding.FragmentPostCommentDialogBinding
 import com.colley.android.model.Comment
-import com.colley.android.model.Issue
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -25,14 +19,14 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class IssueCommentBottomSheetDialogFragment (
+class PostCommentBottomSheetDialogFragment (
     private val parentContext: Context,
-    private val issueView: View,
+    private val postView: View,
     private val commentListener: CommentListener
-        ) : BottomSheetDialogFragment() {
+) : BottomSheetDialogFragment() {
 
-    private var issueId: String? = null
-    private var _binding: FragmentIssueCommentDialogBinding? = null
+    private var postId: String? = null
+    private var _binding: FragmentPostCommentDialogBinding? = null
     private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -45,8 +39,8 @@ class IssueCommentBottomSheetDialogFragment (
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            //retrieve issue id from issue fragment
-            issueId = it.getString(ISSUE_ID_KEY)
+            //retrieve post id from issue fragment
+            postId = it.getString(POST_ID_KEY)
         }
     }
 
@@ -54,7 +48,7 @@ class IssueCommentBottomSheetDialogFragment (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentIssueCommentDialogBinding.inflate(inflater, container, false)
+        _binding = FragmentPostCommentDialogBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -80,45 +74,50 @@ class IssueCommentBottomSheetDialogFragment (
                     commentTimeStamp = date,
                     commenterId = uid
                 )
-                issueId?.let { issueId ->
+                postId?.let { postId ->
                     //create and write new comment to database, retrieve key and add it as commentId
-                    dbRef.child("issues").child(issueId).child("comments").push().setValue(
+                    dbRef.child("posts").child(postId).child("comments").push().setValue(
                         comment, DatabaseReference.CompletionListener { error, ref ->
                             if (error != null) {
-                                Toast.makeText(parentContext, "Unable to write comment to database", Toast.LENGTH_SHORT).show()
-                                Log.w(AddGroupBottomSheetDialogFragment.TAG, "Unable to write comment to database. ${error.message}")
+                                Toast.makeText(
+                                    parentContext,
+                                    "Unable to write comment to database",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
                                 setEditingEnabled(true)
                                 return@CompletionListener
                             }
                             //after writing comment to database, retrieve its key on the database and set it as the comment id
                             val key = ref.key
-                            dbRef.child("issues").child(issueId).child("comments")
+                            dbRef.child("posts").child(postId).child("comments")
                                 .child(key!!).child("commentId").setValue(key)
 
-                            //update contributions count
-                            dbRef.child("issues").child(issueId).child("contributionsCount").runTransaction(
-                                object : Transaction.Handler {
-                                    override fun doTransaction(currentData: MutableData): Transaction.Result {
-                                        //retrieve the current contributions count value at this location
-                                        var contributionsCount = currentData.getValue<Int>()
-                                        if (contributionsCount != null) {
-                                            contributionsCount++
-                                            currentData.value = contributionsCount
+                            //update comments count
+                            dbRef.child("posts").child(postId).child("commentsCount")
+                                .runTransaction(
+                                    object : Transaction.Handler {
+                                        override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                            //retrieve the current value of count at this location
+                                            var count = currentData.getValue<Int>()
+                                            if (count != null) {
+                                                count++
+                                                currentData.value = count
+                                            }
+                                            //set database count value to the new update
+                                            return Transaction.success(currentData)
                                         }
-                                        //set database contributions count value to the new update
-                                        return Transaction.success(currentData)
-                                    }
 
-                                    override fun onComplete(
-                                        error: DatabaseError?,
-                                        committed: Boolean,
-                                        currentData: DataSnapshot?
-                                    ) {
-                                       commentListener.onComment(currentData)
-                                    }
+                                        override fun onComplete(
+                                            error: DatabaseError?,
+                                            committed: Boolean,
+                                            currentData: DataSnapshot?
+                                        ) {
+                                            commentListener.onComment(currentData)
+                                        }
 
-                                }
-                            )
+                                    }
+                                )
                         }
                     )
                     Toast.makeText(parentContext, "Commented", Toast.LENGTH_SHORT).show()
@@ -126,7 +125,8 @@ class IssueCommentBottomSheetDialogFragment (
                     this.dismiss()
                 }
             } else {
-                Toast.makeText(parentContext, "Can't send an empty comment", Toast.LENGTH_LONG).show()
+                Toast.makeText(parentContext, "Can't send an empty comment", Toast.LENGTH_LONG)
+                    .show()
                 setEditingEnabled(true)
             }
         }
@@ -139,6 +139,6 @@ class IssueCommentBottomSheetDialogFragment (
     }
 
     companion object {
-        private const val ISSUE_ID_KEY = "issueIdKey"
+        private const val POST_ID_KEY = "postIdKey"
     }
 }

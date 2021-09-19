@@ -22,7 +22,6 @@ class PostBottomSheetDialogFragment () :
     private lateinit var viewPagerAdapter: PostBottomSheetDialogFragmentViewPager
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

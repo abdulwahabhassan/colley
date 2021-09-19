@@ -7,8 +7,8 @@ data class Post (
     val location: String? = null,
     val text: String? = null,
     val image: String? = null,
-    val likes: Int = 0,
-    val comments: Int = 0,
-    val promotions: Int = 0) {
+    val likesCount: Int = 0,
+    val commentsCount: Int = 0,
+    val promotionsCount: Int = 0) {
 
 }

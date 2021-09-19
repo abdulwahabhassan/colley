@@ -47,7 +47,7 @@ class IssuesPagingAdapter(
         viewHolder.bind(currentUser, model, context, clickListener)
     }
 
-    //returns a new view for each item
+    //returns a unique view for each item
     override fun getItemViewType(position: Int): Int {
         return position
     }
@@ -67,48 +67,48 @@ class IssuePagingViewHolder (private val itemBinding : ItemIssueBinding) : Recyc
         issueTitleTextView.text = issue.title
         issueBodyTextView.text = issue.body
         issueTimeStampTextView.text = issue.timeStamp
-        contributionsTextView.text = issue.contributionsCount.toString()
-        endorsementTextView.text = issue.endorsementsCount.toString()
+
+        if(issue.endorsementsCount != 0) {
+            endorsementTextView.visibility = VISIBLE
+            endorsementTextView.text = issue.endorsementsCount.toString()
+        } else {
+            endorsementTextView.visibility = INVISIBLE
+        }
+
+        if(issue.contributionsCount != 0) {
+            contributionsTextView.visibility = VISIBLE
+            contributionsTextView.text = issue.contributionsCount.toString()
+        } else {
+            contributionsTextView.visibility = INVISIBLE
+        }
 
         //check if userId is not null
         issue.userId?.let { userId ->
             //retrieve user profile
-            Firebase.database.reference.child("profiles").child(userId)
-                .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val profile = snapshot.getValue<Profile>()
-                       if (profile != null) {
-                           //set the name of user who raised this issue
-                           userNameTextView.text = profile.name
-                           //set the school of the user who raised this issue
-                           userSchoolTextView.text = profile.school
-                       }
-
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
+            Firebase.database.reference.child("profiles").child(userId).get()
+                .addOnSuccessListener { snapShot ->
+                val profile = snapShot.getValue(Profile::class.java)
+                if (profile != null) {
+                    //set the name of user who raised this issue
+                    userNameTextView.text = profile.name
+                    //set the school of the user who raised this issue
+                    userSchoolTextView.text = profile.school
                 }
-            )
+            }
 
             //retrieve user photo
-            Firebase.database.reference.child("photos").child(userId)
-                .addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val photo = snapshot.getValue<String>()
-                        //set photo
-                        if (photo != null) {
-                            Glide.with(root.context).load(photo)
-                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(userImageView)
-                        } else {
-                            Glide.with(root.context).load(R.drawable.ic_profile).into(userImageView)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
+            Firebase.database.reference.child("photos").child(userId).get()
+                .addOnSuccessListener { snapShot ->
+                val photo = snapShot.getValue(String::class.java)
+                //set photo
+                if (photo != null) {
+                    Glide.with(root.context).load(photo)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(userImageView)
+                } else {
+                    Glide.with(root.context).load(R.drawable.ic_profile).into(userImageView)
                 }
-            )
+            }
+
         }
 
 

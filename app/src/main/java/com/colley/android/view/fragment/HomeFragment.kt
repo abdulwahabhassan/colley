@@ -18,7 +18,10 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 
 class HomeFragment:
-    Fragment(), RaiseIssueBottomSheetDialogFragment.NewIssueListener, RaiseIssueBottomSheetDialogFragment.HomeFabListener {
+    Fragment(),
+    RaiseIssueBottomSheetDialogFragment.NewIssueListener,
+    RaiseIssueBottomSheetDialogFragment.RaiseIssueHomeFabListener,
+    NewPostBottomSheetDialogFragment.NewPostHomeFabListener {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -111,7 +114,7 @@ class HomeFragment:
                     raiseIssueBottomSheetDialog.show(parentFragmentManager, null)
                 }
                 1 -> {
-                    newPostBottomSheetDialog = NewPostBottomSheetDialogFragment(requireContext(), requireView())
+                    newPostBottomSheetDialog = NewPostBottomSheetDialogFragment(requireContext(), requireView(),  this)
                     newPostBottomSheetDialog.show(parentFragmentManager, null)
                 }
                 2 -> {

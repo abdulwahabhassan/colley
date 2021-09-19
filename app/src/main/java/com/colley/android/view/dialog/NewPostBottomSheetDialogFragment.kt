@@ -1,6 +1,7 @@
 package com.colley.android.view.dialog
 
 import android.content.Context
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -31,7 +32,8 @@ import java.util.*
 
 class NewPostBottomSheetDialogFragment(
     private val parentContext: Context,
-    private val postsView: View
+    private val postsView: View,
+    private val homeFabListener: NewPostHomeFabListener
 ) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentNewPostBottomShetDialogBinding? = null
@@ -51,6 +53,14 @@ class NewPostBottomSheetDialogFragment(
         }
     }
 
+    interface NewPostListener {
+        fun refreshPosts()
+    }
+
+    interface NewPostHomeFabListener {
+        fun enableFab(enabled: Boolean)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,6 +68,11 @@ class NewPostBottomSheetDialogFragment(
     ): View? {
         _binding = FragmentNewPostBottomShetDialogBinding.inflate(inflater, container, false)
         return binding?.root
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        homeFabListener.enableFab(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,6 +130,7 @@ class NewPostBottomSheetDialogFragment(
         //create and push new post to database, retrieve key and add it as postId
         dbRef.child("posts").push().setValue(post, DatabaseReference.CompletionListener {
                 error, ref ->
+            homeFabListener.enableFab(false)
             //in case of error
             if (error != null) {
                 Toast.makeText(parentContext, "Unable to create post", Toast.LENGTH_LONG).show()
@@ -125,6 +141,8 @@ class NewPostBottomSheetDialogFragment(
             //after creating post, retrieve its key on the database and set it as its id
             val key = ref.key
             dbRef.child("posts").child(key!!).child("postId").setValue(key)
+                .addOnCompleteListener {
+            }
 
             //if a post image is selected, retrieve its uri and define a storage path for it
             if (postImageUri != null) {

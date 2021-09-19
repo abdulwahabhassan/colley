@@ -20,6 +20,7 @@ import com.colley.android.model.Comment
 import com.colley.android.model.Issue
 import com.colley.android.model.Profile
 import com.colley.android.view.dialog.IssueCommentBottomSheetDialogFragment
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseAuth
@@ -34,7 +35,8 @@ import com.google.firebase.ktx.Firebase
 class ViewIssueFragment :
     Fragment(),
     IssuesCommentsRecyclerAdapter.ItemClickedListener,
-    IssuesCommentsRecyclerAdapter.DataChangedListener {
+    IssuesCommentsRecyclerAdapter.DataChangedListener,
+    IssueCommentBottomSheetDialogFragment.CommentListener {
 
     private val args: ViewIssueFragmentArgs by navArgs()
     private var _binding: FragmentViewIssueBinding? = null
@@ -76,13 +78,14 @@ class ViewIssueFragment :
 
         //get a query reference to issue comments //order by time stamp
         val commentsRef = dbRef.child("issues").child(args.issueId)
-            .child("comments").orderByChild("commentTimeStamp")
+            .child("comments")
 
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         //build an options to configure adapter. setQuery takes firebase query to listen to and a
         //model class to which snapShots should be parsed
         val options = FirebaseRecyclerOptions.Builder<Comment>()
             .setQuery(commentsRef, Comment::class.java)
+            .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
         //initialize issue comments adapter
@@ -93,111 +96,107 @@ class ViewIssueFragment :
             this,
             requireContext())
 
-        manager = LinearLayoutManager(requireContext())
+        manager =
+            WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         //reversing layout and stacking from end so that the most recent comments appear at the top
         manager?.reverseLayout = true
         manager?.stackFromEnd = true
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
 
+        dbRef.child("issues").child(args.issueId).get().addOnSuccessListener { snapShot ->
 
-        dbRef.child("issues").child(args.issueId).addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    issue = snapshot.getValue<Issue>()
-                    if(issue != null) {
+           val issue = snapShot.getValue(Issue::class.java)
 
-                        //listener for contrbutions count used to set count text
-                        dbRef.child("issues").child(args.issueId)
-                            .child("contributionsCount").addListenerForSingleValueEvent(
-                            object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    val count = snapshot.getValue<Int>()
-                                    if(count != null) {
-                                        binding?.contributionsTextView?.text = count.toString()
-                                    }
-                                }
+            //set issue title, body and time stamp, these don't need to change
+            binding?.issueTitleTextView?.text = issue?.title
+            binding?.issueBodyTextView?.text = issue?.body
+            binding?.issueTimeStampTextView?.text = issue?.timeStamp.toString()
 
-                                override fun onCancelled(error: DatabaseError) {}
+            //listener for contributions count used to set count text
+            dbRef.child("issues").child(args.issueId)
+                .child("contributionsCount").addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val count = snapshot.getValue<Int>()
+                            if(count != null) {
+                                binding?.contributionsTextView?.text = count.toString()
                             }
-                        )
+                        }
 
-                        //listener for endorsement counts used to set endorsement count text
-                        dbRef.child("issues").child(args.issueId)
-                            .child("endorsementsCount").addListenerForSingleValueEvent(
-                            object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    val count = snapshot.getValue<Int>()
-                                    if(count != null) {
-                                        binding?.endorsementTextView?.text = count.toString()
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {} }
-                        )
-
-                        //set issue title, body and time stamp, these don't need to change
-                        binding?.issueTitleTextView?.text = issue?.title
-                        binding?.issueBodyTextView?.text = issue?.body
-                        binding?.issueTimeStampTextView?.text = issue?.timeStamp.toString()
-
-                        //listener for user photo
-                        dbRef.child("photos").child(issue?.userId.toString())
-                            .addListenerForSingleValueEvent(
-                            object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    val photo = snapshot.getValue<String>()
-                                    if(photo != null) {
-                                        context?.let { context -> binding?.userImageView?.let {
-                                                imageView ->
-                                            Glide.with(context).load(photo).into(
-                                                imageView
-                                            )
-                                        } }
-                                    } else {
-                                        context?.let { context -> binding?.userImageView?.let {
-                                                imageView ->
-                                            Glide.with(context).load(R.drawable.ic_profile).into(
-                                                imageView
-                                            )
-                                        } }
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {}
-                            }
-                        )
-
-                        //listener for profile to set name and school
-                        dbRef.child("profiles").child(issue?.userId.toString())
-                            .addListenerForSingleValueEvent(
-                            object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    val profile = snapshot.getValue<Profile>()
-                                    if (profile != null) {
-
-                                        //log name details to console
-                                        profile.name?.let { Log.d("Log Details", it) }
-
-                                        binding?.userNameTextView?.text = profile.name
-                                        binding?.userSchoolTextView?.text = profile.school
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {}
-                            }
-                        )
+                        override fun onCancelled(error: DatabaseError) {}
                     }
-                }
+                )
 
-                override fun onCancelled(error: DatabaseError) {}
-            }
-        )
+            //listener for endorsements count used to set endorsement count text
+            dbRef.child("issues").child(args.issueId)
+                .child("endorsementsCount").addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val count = snapshot.getValue<Int>()
+                            if(count != null) {
+                                binding?.endorsementTextView?.text = count.toString()
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {} }
+                )
+
+            //listener for user photo
+            dbRef.child("photos").child(issue?.userId.toString())
+                .addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val photo = snapshot.getValue<String>()
+                            if(photo != null) {
+                                context?.let { context -> binding?.userImageView?.let {
+                                        imageView ->
+                                    Glide.with(context).load(photo).into(
+                                        imageView
+                                    )
+                                } }
+                            } else {
+                                context?.let { context -> binding?.userImageView?.let {
+                                        imageView ->
+                                    Glide.with(context).load(R.drawable.ic_profile).into(
+                                        imageView
+                                    )
+                                } }
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    }
+                )
+
+            //listener for profile to set name and school
+            dbRef.child("profiles").child(issue?.userId.toString())
+                .addListenerForSingleValueEvent(
+                    object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val profile = snapshot.getValue<Profile>()
+                            if (profile != null) {
+
+                                //log name details to console
+                                profile.name?.let { Log.d("Log Details", it) }
+
+                                binding?.userNameTextView?.text = profile.name
+                                binding?.userSchoolTextView?.text = profile.school
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {}
+                    }
+                )
+
+        }
+
 
         binding?.commentLinearLayout?.setOnClickListener {
             commentSheetDialog = IssueCommentBottomSheetDialogFragment(
                 requireContext(),
-                requireView())
+                requireView(),
+                this)
             commentSheetDialog.arguments = bundleOf("issueIdKey" to args.issueId)
             commentSheetDialog.show(parentFragmentManager, null)
         }
@@ -229,6 +228,9 @@ class ViewIssueFragment :
                             Toast.makeText(requireContext(), "Endorsed", Toast.LENGTH_SHORT)
                                 .show()
                         }
+                        //after database update is completed, update ui
+                        binding?.endorsementTextView?.text =
+                            currentData?.getValue(Int::class.java).toString()
                     }
 
                 }
@@ -257,7 +259,6 @@ class ViewIssueFragment :
     }
 
 
-
     override fun onItemClick(comment: Comment, view: View) {
         //expand comment
     }
@@ -271,17 +272,6 @@ class ViewIssueFragment :
     override fun onUserClicked(userId: String, view: View) {
         val action = ViewIssueFragmentDirections.actionViewIssueFragmentToUserInfoFragment(userId)
         parentFragment?.findNavController()?.navigate(action)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        adapter?.startListening()
-    }
-
-
-    override fun onStop() {
-        super.onStop()
-        adapter?.stopListening()
     }
 
 
@@ -302,6 +292,11 @@ class ViewIssueFragment :
             binding?.noCommentsLayout?.visibility = GONE
             binding?.issuesCommentsRecyclerView?.visibility = VISIBLE
         }
+    }
+
+    //after database update is completed, update ui
+    override fun onComment(currentData: DataSnapshot?) {
+        binding?.contributionsTextView?.text = currentData?.getValue(Int::class.java).toString()
     }
 
 

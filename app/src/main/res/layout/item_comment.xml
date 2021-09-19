@@ -22,7 +22,7 @@
         android:layout_width="@dimen/width_40dp"
         android:layout_height="@dimen/height_40dp"
         android:scaleType="center"
-        android:background="@color/dark_grey"
+        android:background="@color/lightest_pearl"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/constraintLayout"
         app:shapeAppearance="@style/RoundShapeAppearance" />

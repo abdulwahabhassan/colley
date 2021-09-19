@@ -70,7 +70,7 @@ class IssuesCommentsRecyclerAdapter(
                     )
 
                     //load commenter's photo
-                    Firebase.database.reference.child("photos").child(comment.commenterId!!).addListenerForSingleValueEvent(
+                    Firebase.database.reference.child("photos").child(comment.commenterId).addListenerForSingleValueEvent(
                         object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 val photoUrl = snapshot.getValue<String>()

@@ -3,8 +3,6 @@
     <item>
         <shape>
             <corners
-                android:topRightRadius="@dimen/corner_radius_4dp"
-                android:topLeftRadius="@dimen/corner_radius_4dp"
                 android:bottomLeftRadius="@dimen/corner_radius_4dp"
                 android:bottomRightRadius="@dimen/corner_radius_4dp"/>
             <solid android:color="@color/lightest_pearl" />
