@@ -1,5 +1,6 @@
 package com.colley.android.view.dialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -17,7 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.text.DateFormat
@@ -61,6 +62,7 @@ class RaiseIssueBottomSheetDialogFragment(
         homeFabListener.enableFab(true)
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -111,10 +113,37 @@ class RaiseIssueBottomSheetDialogFragment(
                         setEditingEnabled(true)
                         return@CompletionListener
                     }
-                    //after creating group, retrieve its key on the database and set it as the issue id
+                    //after creating issue, retrieve its key on the database and set it as the issue id
                     val key = ref.key
                     dbRef.child("issues").child(key!!).child("issueId").setValue(key).addOnCompleteListener {
-                        newIssueListener.navigateToIssue(key)
+
+                        //update issues count
+                        dbRef.child("issuesCount").runTransaction(
+                            object : Transaction.Handler {
+                                override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                    var count = currentData.getValue(Int::class.java)
+                                    if (count != null){
+                                        currentData.value = count++
+                                    } else {
+                                        count = 1
+                                    }
+                                    currentData.value =count
+                                    //set database count value to the new update
+                                    return Transaction.success(currentData)
+                                }
+
+                                override fun onComplete(
+                                    error: DatabaseError?,
+                                    committed: Boolean,
+                                    currentData: DataSnapshot?
+                                ) {
+                                    if(error == null){
+                                        //navigate to issue
+                                        newIssueListener.navigateToIssue(key)
+                                    }
+                                }
+                            }
+                        )
                     }
                 })
 

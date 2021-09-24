@@ -1,5 +1,6 @@
 package com.colley.android.view.dialog
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,17 +11,27 @@ import com.colley.android.adapter.PostBottomSheetDialogFragmentViewPager
 import com.colley.android.databinding.BottomSheetDialogFragmentPostBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.firestore.FirebaseFirestore
 
-class PostBottomSheetDialogFragment () :
+class PostBottomSheetDialogFragment (
+    private val parentContext: Context,
+    private val postView: View,
+        ) :
     BottomSheetDialogFragment() {
 
+    private var postId: String? = null
     private var _binding: BottomSheetDialogFragmentPostBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPagerAdapter: PostBottomSheetDialogFragmentViewPager
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            //retrieve post id from bundle
+            postId = it.getString(POST_ID_KEY)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +46,12 @@ class PostBottomSheetDialogFragment () :
         super.onViewCreated(view, savedInstanceState)
         viewPager = binding.bottomSheetViewPager
         tabLayout = binding.bottomSheetTabLayout
-        viewPagerAdapter = PostBottomSheetDialogFragmentViewPager(childFragmentManager, lifecycle)
+        viewPagerAdapter = PostBottomSheetDialogFragmentViewPager(
+            childFragmentManager,
+            lifecycle, postId,
+            parentContext,
+            postView
+        )
         viewPager.adapter = viewPagerAdapter
 
         tabLayout.addTab( tabLayout.newTab().setText(getString(R.string.comments_tab_name)))
@@ -68,6 +84,8 @@ class PostBottomSheetDialogFragment () :
         _binding = null
     }
 
-
+    companion object {
+        private const val POST_ID_KEY = "postIdKey"
+    }
 
 }

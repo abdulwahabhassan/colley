@@ -1,5 +1,6 @@
 package com.colley.android.view.dialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -39,7 +40,7 @@ class PostCommentBottomSheetDialogFragment (
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            //retrieve post id from issue fragment
+            //retrieve post id from bundle
             postId = it.getString(POST_ID_KEY)
         }
     }
@@ -52,6 +53,7 @@ class PostCommentBottomSheetDialogFragment (
         return binding?.root
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -68,15 +70,19 @@ class PostCommentBottomSheetDialogFragment (
                 //get current time and format it
                 val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
                 val date: String = df.format(Calendar.getInstance().time)
+                val timeId = SimpleDateFormat("dMMyyyyHHmmss").format(Calendar.getInstance().time).toLong() * -1
+
+                //timeId will be used for sorting posts from the most recent
 
                 val comment = Comment(
                     commentText = commentText!!,
+                    commenterId = uid,
                     commentTimeStamp = date,
-                    commenterId = uid
+                    timeId = timeId
                 )
                 postId?.let { postId ->
                     //create and write new comment to database, retrieve key and add it as commentId
-                    dbRef.child("posts").child(postId).child("comments").push().setValue(
+                    dbRef.child("post-comments").child(postId).push().setValue(
                         comment, DatabaseReference.CompletionListener { error, ref ->
                             if (error != null) {
                                 Toast.makeText(
@@ -90,8 +96,8 @@ class PostCommentBottomSheetDialogFragment (
                             }
                             //after writing comment to database, retrieve its key on the database and set it as the comment id
                             val key = ref.key
-                            dbRef.child("posts").child(postId).child("comments")
-                                .child(key!!).child("commentId").setValue(key)
+                            dbRef.child("post-comments").child(postId).child(key!!)
+                                .child("commentId").setValue(key)
 
                             //update comments count
                             dbRef.child("posts").child(postId).child("commentsCount")

@@ -4,6 +4,7 @@ data class Post (
     val postId: String? = null,
     val userId: String? = null,
     val timeStamp: String? = null,
+    val timeId: Long? = null,
     val location: String? = null,
     val text: String? = null,
     val image: String? = null,

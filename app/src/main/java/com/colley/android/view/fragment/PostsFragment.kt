@@ -9,22 +9,22 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.paging.PagingConfig
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.colley.android.R
-import com.colley.android.adapter.PostPagingViewHolder
-import com.colley.android.adapter.PostsPagingAdapter
+import com.colley.android.adapter.*
 import com.colley.android.databinding.FragmentPostsBinding
-import com.colley.android.model.Post
+import com.colley.android.repository.DatabaseRepository
 import com.colley.android.view.dialog.NewPostBottomSheetDialogFragment
 import com.colley.android.view.dialog.PostCommentBottomSheetDialogFragment
-import com.firebase.ui.database.paging.DatabasePagingOptions
+import com.colley.android.viewmodel.PostsViewModel
+import com.colley.android.factory.ViewModelFactory
+import com.colley.android.view.dialog.PostBottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -46,34 +46,53 @@ class PostsFragment : Fragment(),
     private lateinit var dbRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
-    private var adapter: PostsPagingAdapter? = null
+    private var postsAdapter: PostsPagingAdapter? = null
     private var manager: LinearLayoutManager? = null
     private lateinit var recyclerView: RecyclerView
-    private var postViewHolder: PostPagingViewHolder? = null
+    private var postViewHolder: PostViewHolder? = null
+    private var postsCount: Int = 0
+    private var differenceCount: Int = 0
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var postDialog: PostBottomSheetDialogFragment
     private lateinit var commentSheetDialog: PostCommentBottomSheetDialogFragment
     private val uid: String
         get() = currentUser.uid
-
-    private var observer = object : RecyclerView.AdapterDataObserver() {
+    private val postsCountValueEventListener = object : ValueEventListener {
         @SuppressLint("SetTextI18n")
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-            super.onItemRangeInserted(positionStart, itemCount)
-            manager?.scrollToPosition(positionStart+itemCount)
-
-            Log.d("position", "$positionStart $itemCount")
-            //if onItemRangeInserted is not due to initial load
-            if(positionStart != 0) {
-                when {
-                    itemCount > 1 -> {
-                        binding.newPostNotificationTextView.text = "^ $itemCount new issues"
-                    }
-                    else -> {
-                        binding.newPostNotificationTextView.text = "^ $itemCount new issue"
-
-                    }
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val count = snapshot.getValue(Int::class.java)
+            if(count != null) {
+                differenceCount = count - postsCount
+            }
+            if(differenceCount > 0 && count != differenceCount) {
+                if(differenceCount == 1) {
+                    binding.newPostNotificationTextView.text = "^ $differenceCount new post"
+                } else {
+                    binding.newPostNotificationTextView.text = "^ $differenceCount new posts"
                 }
                 binding.newPostNotificationTextView.visibility = VISIBLE
+            }
+        }
+
+
+        override fun onCancelled(error: DatabaseError) {}
+    }
+
+    //observer for adapter item changes
+    private val postsAdapterObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            manager?.scrollToPosition(0)
+            binding.newPostNotificationTextView.visibility = View.INVISIBLE
+        }
+    }
+
+    //listener for recycler view scroll events
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            if (dy != 0) {
+                binding.newPostNotificationTextView.visibility = View.INVISIBLE
             }
         }
     }
@@ -124,62 +143,50 @@ class PostsFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val postsQuery = dbRef.child("posts")
+        // get the view model
+        val viewModel = ViewModelProvider(this,
+            ViewModelFactory(owner = this, repository = DatabaseRepository()))
+            .get(PostsViewModel::class.java)
 
-        //configuration for how the FirebaseRecyclerPagingAdapter should load pages
-        val config = PagingConfig(
-            pageSize = 5,
-            prefetchDistance = 3,
-            enablePlaceholders = false
-        )
 
-        //Options to configure an FirebaseRecyclerPagingAdapter
-        val options = DatabasePagingOptions.Builder<Post>()
-            .setLifecycleOwner(viewLifecycleOwner)
-            .setQuery(postsQuery, config, Post::class.java)
-            .setDiffCallback(object : DiffUtil.ItemCallback<DataSnapshot>() {
-                override fun areItemsTheSame(
-                    oldItem: DataSnapshot,
-                    newItem: DataSnapshot
-                ): Boolean {
-                    return oldItem.getValue(Post::class.java)?.postId ==
-                            newItem.getValue(Post::class.java)?.postId
-                }
 
-                override fun areContentsTheSame(
-                    oldItem: DataSnapshot,
-                    newItem: DataSnapshot
-                ): Boolean {
-                    return oldItem.getValue(Post::class.java) == newItem.getValue(Post::class.java)
-                }
+        //get a query reference to posts
+        val postsQuery = dbRef.child("posts").orderByChild("timeId")
 
-            })
-            .build()
+        //initialize adapter
+        postsAdapter = PostsPagingAdapter(requireContext(), currentUser, this)
 
-        //instantiate adapter
-        adapter = PostsPagingAdapter(
-            options,
-            requireContext(),
-            currentUser,
-            this)
 
-        adapter?.registerAdapterDataObserver(observer)
+        //retrieve number of posts from database to be used for estimating the number of new posts
+        //added since the user last refreshed
+        getPostsCount()
 
-        //remove notification text view when recycler view is scrolled
-        recyclerView.addOnScrollListener(
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (dy != 0) {
-                        binding.newPostNotificationTextView.visibility = View.INVISIBLE
-                    }
-                }
+        //set recycler view layout manager
+        manager = LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = manager
+        //initialize adapter
+        recyclerView.adapter = postsAdapter
+
+        //refresh adapter everytime refresh action is called on swipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            postsAdapter?.refresh()
+            //reset posts count on refresh so that this fragment knows the correct database posts
+            //count
+            getPostsCount()
+
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.searchPosts(postsQuery).collectLatest {
+                    pagingData ->
+                postsAdapter?.submitData(pagingData)
+
             }
-        )
+        }
 
         //Perform some action every time data changes or when there is an error.
         viewLifecycleOwner.lifecycleScope.launch {
-            adapter?.loadStateFlow?.collectLatest { loadStates ->
+            postsAdapter?.loadStateFlow?.collectLatest { loadStates ->
 
                 when (loadStates.refresh) {
                     is LoadState.Error -> {
@@ -192,7 +199,7 @@ class PostsFragment : Fragment(),
                             Toast.LENGTH_SHORT).show()
                         //display no posts available at the moment
                         binding.noPostsLayout.visibility = VISIBLE
-                        adapter?.retry()
+                        postsAdapter?.retry()
                     }
                     is LoadState.Loading -> {
                         // The initial Load has begun
@@ -202,8 +209,11 @@ class PostsFragment : Fragment(),
                     is LoadState.NotLoading -> {
                         //The previous load (either initial or additional) completed
                         swipeRefreshLayout.isRefreshing = false
-                        //remove display no posts available at the moment
-                        binding.noPostsLayout.visibility = GONE
+                        if (postsAdapter?.itemCount == 0) {
+                            binding.noPostsLayout.visibility = VISIBLE
+                        } else {
+                            binding.noPostsLayout.visibility = GONE
+                        }
 
                     }
                 }
@@ -212,7 +222,7 @@ class PostsFragment : Fragment(),
                     is LoadState.Error -> {
                         // The additional load failed. Call the retry() method
                         // in order to retry the load operation.
-                        adapter?.retry()
+                        postsAdapter?.retry()
 
                     }
                     is LoadState.Loading -> {
@@ -229,24 +239,25 @@ class PostsFragment : Fragment(),
                 }
             }
         }
+    }
 
-        //set recycler view layout manager
-        manager = LinearLayoutManager(requireContext())
-        //reversing layout and stacking from end so that the most recent posts appear at the top
-        manager?.reverseLayout = true
-        manager?.stackFromEnd = true
-        recyclerView.layoutManager = manager
-
-        swipeRefreshLayout.setOnRefreshListener {
-            adapter?.refresh()
+    //retrieve database posts count
+    private fun getPostsCount() {
+        dbRef.child("postsCount").get().addOnSuccessListener {
+                snapShot ->
+            if(snapShot.getValue(Int::class.java) != null) {
+                postsCount = snapShot.getValue(Int::class.java)!!
+            }
         }
-
-        //initialize adapter
-        recyclerView.adapter = adapter
     }
 
     override fun onItemClick(postId: String, view: View) {
-
+        postDialog = PostBottomSheetDialogFragment(
+            requireContext(),
+            requireView()
+        )
+        postDialog.arguments = bundleOf("postIdKey" to postId)
+        postDialog.show(parentFragmentManager, null)
     }
 
     override fun onItemLongCLicked(postId: String, view: View) {
@@ -258,7 +269,7 @@ class PostsFragment : Fragment(),
         parentFragment?.findNavController()?.navigate(action)
     }
 
-    override fun onCommentClicked(postId: String, view: View, viewHolder: PostPagingViewHolder) {
+    override fun onCommentClicked(postId: String, view: View, viewHolder: PostViewHolder) {
         postViewHolder = viewHolder
         commentSheetDialog = PostCommentBottomSheetDialogFragment(
             requireContext(),
@@ -269,11 +280,11 @@ class PostsFragment : Fragment(),
         commentSheetDialog.show(parentFragmentManager, null)
     }
 
-    override fun onLikeClicked(postId: String, view: View, viewHolder: PostPagingViewHolder) {
+    override fun onLikeClicked(postId: String, view: View, viewHolder: PostViewHolder) {
 
         //Register like on database
-        dbRef.child("posts").child(postId).child("likes").child(uid).runTransaction(
-            object : Transaction.Handler {
+        dbRef.child("post-likes").child(postId).child(uid)
+            .runTransaction(object : Transaction.Handler {
                 override fun doTransaction(currentData: MutableData): Transaction.Result {
                     //retrieve the current value of like at this location
                     val liked = currentData.getValue<Boolean>()
@@ -317,7 +328,6 @@ class PostsFragment : Fragment(),
                                             count--
                                         }
                                             currentData.value = count
-
                                         //set database count value to the new update
                                         return Transaction.success(currentData)
                                     }
@@ -363,14 +373,34 @@ class PostsFragment : Fragment(),
         )
     }
 
+    override fun onStart() {
+        super.onStart()
+        //add value event listener for posts count
+        dbRef.child("postsCount").addValueEventListener(postsCountValueEventListener)
+
+        //register observer to adapter to scroll to  position when new items are added
+        postsAdapter?.registerAdapterDataObserver(postsAdapterObserver)
+
+        //add scroll listener to remove notification text view when recycler view is scrolled
+        recyclerView.addOnScrollListener(scrollListener)
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        //clear observers and listeners
+        dbRef.child("postsCount").removeEventListener(postsCountValueEventListener)
+        postsAdapter?.unregisterAdapterDataObserver(postsAdapterObserver)
+        recyclerView.removeOnScrollListener(scrollListener)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        adapter?.unregisterAdapterDataObserver(observer)
         _binding = null
     }
 
     override fun refreshPosts() {
-        adapter?.refresh()
+        postsAdapter?.refresh()
     }
 
     //update view holder ui to display updated comments count
@@ -383,7 +413,7 @@ class PostsFragment : Fragment(),
                 1 -> {
                     postViewHolder?.itemBinding?.commentCountTextView?.visibility = VISIBLE
                     postViewHolder?.itemBinding?.commentCountTextView?.text =
-                        "${currentData?.getValue(Int::class.java).toString()} comment"
+                        "${currentData.getValue(Int::class.java).toString()} comment"
                 }
                 else -> {
                     postViewHolder?.itemBinding?.commentCountTextView?.visibility = VISIBLE

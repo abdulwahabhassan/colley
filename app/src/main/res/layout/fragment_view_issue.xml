@@ -212,30 +212,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat" />
 
-    <ProgressBar
-        android:id="@+id/issuesCommentProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/margin_8dp"
-        android:elevation="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/second_divider" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/noCommentsLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/margin_8dp"
         android:elevation="1dp"
         android:visibility="gone"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/issueCommentsSwipeRefreshLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/issuesCommentProgressBar">
+        app:layout_constraintTop_toBottomOf="@+id/newCommentNotificationTextView">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -254,18 +243,36 @@
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/issuesCommentsRecyclerView"
+    <TextView
+        android:id="@+id/newCommentNotificationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/new_comment_notification_background"
+        android:drawableEnd="@drawable/ic_refresh"
+        android:drawablePadding="@dimen/padding_2dp"
+        android:elevation="@dimen/height_1dp"
+        android:padding="4dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/second_divider" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/issueCommentsSwipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_0dp"
-        android:overScrollMode="never"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/second_divider"
-        app:layout_constraintVertical_bias="0.0"
-        tools:listitem="@layout/item_comment" />
+        app:layout_constraintTop_toBottomOf="@+id/second_divider">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/issueCommentsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_comment" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

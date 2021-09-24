@@ -1,28 +1,32 @@
 package com.colley.android.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.colley.android.R
-import com.colley.android.adapter.IssuesCommentsRecyclerAdapter
+import com.colley.android.adapter.IssueCommentsPagingAdapter
 import com.colley.android.databinding.FragmentViewIssueBinding
 import com.colley.android.model.Comment
 import com.colley.android.model.Issue
 import com.colley.android.model.Profile
+import com.colley.android.repository.DatabaseRepository
 import com.colley.android.view.dialog.IssueCommentBottomSheetDialogFragment
-import com.colley.android.wrapper.WrapContentLinearLayoutManager
-import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.firebase.ui.database.ObservableSnapshotArray
+import com.colley.android.viewmodel.ViewIssueViewModel
+import com.colley.android.factory.ViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -30,12 +34,13 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 class ViewIssueFragment :
     Fragment(),
-    IssuesCommentsRecyclerAdapter.ItemClickedListener,
-    IssuesCommentsRecyclerAdapter.DataChangedListener,
+    IssueCommentsPagingAdapter.IssueCommentItemClickedListener,
     IssueCommentBottomSheetDialogFragment.CommentListener {
 
     private val args: ViewIssueFragmentArgs by navArgs()
@@ -45,20 +50,72 @@ class ViewIssueFragment :
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
     private lateinit var recyclerView: RecyclerView
+    private var commentsCount: Int = 0
+    private var differenceCount: Int = 0
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var commentSheetDialog: IssueCommentBottomSheetDialogFragment
-    private var issue: Issue? = null
-    private var adapter: IssuesCommentsRecyclerAdapter? = null
+    private var commentsAdapter: IssueCommentsPagingAdapter? = null
     private var manager: LinearLayoutManager? = null
     private val uid: String
         get() = currentUser.uid
+    private val commentsCountValueEventListener = object : ValueEventListener {
+        @SuppressLint("SetTextI18n")
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val count = snapshot.getValue(Int::class.java)
+            if(count != null) {
+                binding?.contributionsTextView?.text = count.toString()
+                differenceCount = count - commentsCount
+            }
+            if(differenceCount > 0 && count != differenceCount) {
+                if(differenceCount == 1) {
+                    binding?.newCommentNotificationTextView?.text = "^ $differenceCount new post"
+                } else {
+                    binding?.newCommentNotificationTextView?.text = "^ $differenceCount new posts"
+                }
+                binding?.newCommentNotificationTextView?.visibility = VISIBLE
+            }
+        }
 
+        override fun onCancelled(error: DatabaseError) {}
+    }
+
+    private val endorsementsCountValueEventListener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val count = snapshot.getValue<Int>()
+            if(count != null) {
+                //remove minus sign when displaying count
+                binding?.endorsementTextView?.text = count.toString().removePrefix("-")
+            }
+        }
+
+        override fun onCancelled(error: DatabaseError) {} }
+
+    //observer for adapter item changes
+    private val commentsAdapterObserver = object : RecyclerView.AdapterDataObserver() {
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            manager?.scrollToPosition(0)
+            binding?.newCommentNotificationTextView?.visibility = View.INVISIBLE
+        }
+    }
+
+    //listener for recycler view scroll events
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            if (dy != 0) {
+                binding?.newCommentNotificationTextView?.visibility = View.INVISIBLE
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentViewIssueBinding.inflate(inflater, container, false)
-        recyclerView = binding?.issuesCommentsRecyclerView!!
+        recyclerView = binding?.issueCommentsRecyclerView!!
+        swipeRefreshLayout = binding?.issueCommentsSwipeRefreshLayout!!
         return binding?.root
     }
 
@@ -73,124 +130,72 @@ class ViewIssueFragment :
         //initialize currentUser
         currentUser = auth.currentUser!!
 
-        //log item id
-        Log.d("Log itemId", args.issueId)
+        // get the view model
+        val viewModel = ViewModelProvider(this, ViewModelFactory(owner = this, repository = DatabaseRepository()))
+            .get(ViewIssueViewModel::class.java)
 
-        //get a query reference to issue comments //order by time stamp
-        val commentsRef = dbRef.child("issues").child(args.issueId)
-            .child("comments")
+        //get issue
+        dbRef.child("issues").child(args.issueId).get().addOnSuccessListener { issueSnapShot ->
 
-        //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
-        //build an options to configure adapter. setQuery takes firebase query to listen to and a
-        //model class to which snapShots should be parsed
-        val options = FirebaseRecyclerOptions.Builder<Comment>()
-            .setQuery(commentsRef, Comment::class.java)
-            .setLifecycleOwner(viewLifecycleOwner)
-            .build()
-
-        //initialize issue comments adapter
-        adapter = IssuesCommentsRecyclerAdapter(
-            options,
-            currentUser,
-            this,
-            this,
-            requireContext())
-
-        manager =
-            WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        //reversing layout and stacking from end so that the most recent comments appear at the top
-        manager?.reverseLayout = true
-        manager?.stackFromEnd = true
-        recyclerView.layoutManager = manager
-        recyclerView.adapter = adapter
-
-        dbRef.child("issues").child(args.issueId).get().addOnSuccessListener { snapShot ->
-
-           val issue = snapShot.getValue(Issue::class.java)
-
+            val issue = issueSnapShot.getValue(Issue::class.java)
             //set issue title, body and time stamp, these don't need to change
             binding?.issueTitleTextView?.text = issue?.title
             binding?.issueBodyTextView?.text = issue?.body
             binding?.issueTimeStampTextView?.text = issue?.timeStamp.toString()
 
-            //listener for contributions count used to set count text
-            dbRef.child("issues").child(args.issueId)
-                .child("contributionsCount").addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val count = snapshot.getValue<Int>()
-                            if(count != null) {
-                                binding?.contributionsTextView?.text = count.toString()
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {}
-                    }
-                )
-
-            //listener for endorsements count used to set endorsement count text
-            dbRef.child("issues").child(args.issueId)
-                .child("endorsementsCount").addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val count = snapshot.getValue<Int>()
-                            if(count != null) {
-                                binding?.endorsementTextView?.text = count.toString()
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {} }
-                )
-
             //listener for user photo
-            dbRef.child("photos").child(issue?.userId.toString())
-                .addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val photo = snapshot.getValue<String>()
-                            if(photo != null) {
-                                context?.let { context -> binding?.userImageView?.let {
-                                        imageView ->
-                                    Glide.with(context).load(photo).into(
-                                        imageView
-                                    )
-                                } }
-                            } else {
-                                context?.let { context -> binding?.userImageView?.let {
-                                        imageView ->
-                                    Glide.with(context).load(R.drawable.ic_profile).into(
-                                        imageView
-                                    )
-                                } }
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {}
+            dbRef.child("photos").child(issue?.userId.toString()).get()
+                .addOnSuccessListener { photoSnapShot ->
+                    val photo = photoSnapShot.getValue(String::class.java)
+                    if(photo != null) {
+                        context?.let { context -> binding?.userImageView?.let {
+                                imageView ->
+                            Glide.with(context).load(photo).into(
+                                imageView
+                            )
+                        } }
+                    } else {
+                        context?.let { context -> binding?.userImageView?.let {
+                                imageView ->
+                            Glide.with(context).load(R.drawable.ic_profile).into(
+                                imageView
+                            )
+                        } }
                     }
-                )
+
+                }
 
             //listener for profile to set name and school
-            dbRef.child("profiles").child(issue?.userId.toString())
-                .addListenerForSingleValueEvent(
-                    object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val profile = snapshot.getValue<Profile>()
-                            if (profile != null) {
-
-                                //log name details to console
-                                profile.name?.let { Log.d("Log Details", it) }
-
-                                binding?.userNameTextView?.text = profile.name
-                                binding?.userSchoolTextView?.text = profile.school
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {}
+            dbRef.child("profiles").child(issue?.userId.toString()).get()
+                .addOnSuccessListener { profileSnapShot ->
+                    val profile = profileSnapShot.getValue<Profile>()
+                    if (profile != null) {
+                        binding?.userNameTextView?.text = profile.name
+                        binding?.userSchoolTextView?.text = profile.school
                     }
-                )
+                }
+
+            //view profile when clicked
+            binding?.userImageView?.setOnClickListener {
+                val action = issue?.userId?.let { it1 ->
+                    ViewIssueFragmentDirections.actionViewIssueFragmentToUserInfoFragment(it1)
+                }
+                if (action != null) {
+                    parentFragment?.findNavController()?.navigate(action)
+                }
+            }
+
+            //view user profile when clicked
+            binding?.userNameTextView?.setOnClickListener {
+                val action = issue?.userId?.let { it1 ->
+                    ViewIssueFragmentDirections.actionViewIssueFragmentToUserInfoFragment(it1)
+                }
+                if (action != null) {
+                    parentFragment?.findNavController()?.navigate(action)
+                }
+            }
 
         }
-
 
         binding?.commentLinearLayout?.setOnClickListener {
             commentSheetDialog = IssueCommentBottomSheetDialogFragment(
@@ -205,57 +210,142 @@ class ViewIssueFragment :
             //update contributions count
             dbRef.child("issues").child(args.issueId).child("endorsementsCount")
                 .runTransaction(
-                object : Transaction.Handler {
-                    override fun doTransaction(currentData: MutableData): Transaction.Result {
-                        //retrieve the current value of endorsement count at this location
-                        var endorsementsCount = currentData.getValue<Int>()
-                        if (endorsementsCount != null) {
-                            //increase the count by 1
-                            endorsementsCount++
-                            //reassign the value to reflect the new update
-                            currentData.value = endorsementsCount
+                    object : Transaction.Handler {
+                        override fun doTransaction(currentData: MutableData): Transaction.Result {
+                            //retrieve the current value of endorsement count at this location
+                            var endorsementsCount = currentData.getValue<Int>()
+                            if (endorsementsCount != null) {
+                                //increase the count by 1
+                                //Actually, decrease count by 1, this is used for orderByChild when
+                                //returning issues query from firebase database
+                                endorsementsCount--
+                                //reassign the value to reflect the new update
+                                currentData.value = endorsementsCount
+                            }
+                            //set database issue value to the new update
+                            return Transaction.success(currentData)
                         }
-                        //set database issue value to the new update
-                        return Transaction.success(currentData)
-                    }
 
-                    override fun onComplete(
-                        error: DatabaseError?,
-                        committed: Boolean,
-                        currentData: DataSnapshot?
-                    ) {
-                        if (error == null && committed) {
-                            Toast.makeText(requireContext(), "Endorsed", Toast.LENGTH_SHORT)
-                                .show()
+                        override fun onComplete(
+                            error: DatabaseError?,
+                            committed: Boolean,
+                            currentData: DataSnapshot?
+                        ) {
+                            if (error == null && committed) {
+                                Toast.makeText(requireContext(), "Endorsed", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                            //after database update is completed, update ui
+                            binding?.endorsementTextView?.text =
+                                currentData?.getValue(Int::class.java).toString().removePrefix("-")
                         }
-                        //after database update is completed, update ui
-                        binding?.endorsementTextView?.text =
-                            currentData?.getValue(Int::class.java).toString()
-                    }
 
+                    }
+                )
+        }
+
+        //get a query reference to issue comments ordered by time code so that the most recent
+        //comments appear first
+        val commentsQuery = dbRef.child("issue-comments").child(args.issueId).orderByChild("timeId")
+
+        //initialize adapter
+        commentsAdapter = IssueCommentsPagingAdapter(requireContext(), currentUser, this)
+
+        //add scroll listener to remove notification text view when recycler view is scrolled
+        recyclerView.addOnScrollListener(scrollListener)
+
+        //retrieve number of comments from database to be used for estimating the number of new
+        //comments added since the user last refreshed
+        getCommentsCount()
+
+        //set recycler view layout manager
+        manager = LinearLayoutManager(requireContext())
+        recyclerView.layoutManager = manager
+        //initialize adapter
+        recyclerView.adapter = commentsAdapter
+
+        //refresh adapter everytime refresh action is called on swipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            commentsAdapter?.refresh()
+            //reset posts count on refresh so that this fragment knows the correct database posts count
+            getCommentsCount()
+
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.searchIssueComments(commentsQuery).collectLatest {
+                    pagingData ->
+                commentsAdapter?.submitData(pagingData)
+
+            }
+        }
+
+        //Perform some action every time data changes or when there is an error.
+        viewLifecycleOwner.lifecycleScope.launch {
+            commentsAdapter?.loadStateFlow?.collectLatest { loadStates ->
+
+                when (loadStates.refresh) {
+                    is LoadState.Error -> {
+
+                        // The initial load failed. Call the retry() method
+                        // in order to retry the load operation.
+                        Toast.makeText(
+                            context,
+                            "Error fetching posts! Retrying..",
+                            Toast.LENGTH_SHORT).show()
+                        //display no posts available at the moment
+                        binding?.noCommentsLayout?.visibility = VISIBLE
+                        commentsAdapter?.retry()
+                    }
+                    is LoadState.Loading -> {
+                        // The initial Load has begun
+                        // ...
+                        swipeRefreshLayout.isRefreshing = true
+                    }
+                    is LoadState.NotLoading -> {
+                        //The previous load (either initial or additional) completed
+                        swipeRefreshLayout.isRefreshing = false
+                        if (commentsAdapter?.itemCount == 0) {
+                            binding?.noCommentsLayout?.visibility = VISIBLE
+                        } else {
+                            binding?.noCommentsLayout?.visibility = GONE
+                        }
+
+                    }
                 }
-            )
+
+                when (loadStates.append) {
+                    is LoadState.Error -> {
+                        // The additional load failed. Call the retry() method
+                        // in order to retry the load operation.
+                        commentsAdapter?.retry()
+
+                    }
+                    is LoadState.Loading -> {
+                        // The adapter has started to load an additional page
+                        // ...
+                        swipeRefreshLayout.isRefreshing = true
+                    }
+                    is LoadState.NotLoading -> {
+                        if (loadStates.append.endOfPaginationReached) {
+                            // The adapter has finished loading all of the data set
+                            swipeRefreshLayout.isRefreshing = false
+                        }
+                    }
+                }
+            }
         }
 
-        //view profile when clicked
-        binding?.userImageView?.setOnClickListener {
-            val action = issue?.userId?.let { it1 ->
-                ViewIssueFragmentDirections.actionViewIssueFragmentToUserInfoFragment(it1)
+    }
+    //retrieve database comments count
+    private fun getCommentsCount() {
+        dbRef.child("issues").child(args.issueId).child("contributionsCount")
+                .get().addOnSuccessListener {
+                    snapShot ->
+                if(snapShot.getValue(Int::class.java) != null) {
+                    commentsCount = snapShot.getValue(Int::class.java)!!
+                }
             }
-            if (action != null) {
-                parentFragment?.findNavController()?.navigate(action)
-            }
-        }
-
-        //view user profile when clicked
-        binding?.userNameTextView?.setOnClickListener {
-            val action = issue?.userId?.let { it1 ->
-                ViewIssueFragmentDirections.actionViewIssueFragmentToUserInfoFragment(it1)
-            }
-            if (action != null) {
-                parentFragment?.findNavController()?.navigate(action)
-            }
-        }
     }
 
 
@@ -274,24 +364,39 @@ class ViewIssueFragment :
         parentFragment?.findNavController()?.navigate(action)
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        //register observer to adapter to scroll to  position when new items are added
+        commentsAdapter?.registerAdapterDataObserver(commentsAdapterObserver)
+
+        //listener for contributions count used to set count text
+        dbRef.child("issues").child(args.issueId)
+            .child("contributionsCount").addValueEventListener(commentsCountValueEventListener)
+
+        //listener for endorsements count used to set endorsement count text
+        dbRef.child("issues").child(args.issueId)
+            .child("endorsementsCount").addValueEventListener(endorsementsCountValueEventListener)
+
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        //clear observers and listeners
+        commentsAdapter?.unregisterAdapterDataObserver(commentsAdapterObserver)
+        recyclerView.removeOnScrollListener(scrollListener)
+
+        dbRef.child("issues").child(args.issueId)
+            .child("contributionsCount").removeEventListener(commentsCountValueEventListener)
+
+        dbRef.child("issues").child(args.issueId)
+            .child("endorsementsCount").removeEventListener(endorsementsCountValueEventListener)
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<Comment>) {
-        //dismiss progress bar once snapshot is available
-        binding?.issuesCommentProgressBar?.visibility = GONE
-
-        //show that there are no comments if snapshot is empty else hide view
-        //show recycler view if snapshot is not empty else hide
-        if (snapshotArray.isEmpty()) {
-            binding?.noCommentsLayout?.visibility = VISIBLE
-        } else {
-            binding?.noCommentsLayout?.visibility = GONE
-            binding?.issuesCommentsRecyclerView?.visibility = VISIBLE
-        }
     }
 
     //after database update is completed, update ui

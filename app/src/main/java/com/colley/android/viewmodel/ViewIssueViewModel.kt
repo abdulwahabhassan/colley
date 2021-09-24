@@ -10,12 +10,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.Query
 import kotlinx.coroutines.flow.Flow
 
-class PostsViewModel(
+class ViewIssueViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val repository: DatabaseRepository
 ) : ViewModel() {
-
-    fun searchPosts(query: Query): Flow<PagingData<DataSnapshot>> =
+    fun searchIssueComments(query: Query): Flow<PagingData<DataSnapshot>> =
         repository.getDataStream(query)
             .cachedIn(viewModelScope)
 }

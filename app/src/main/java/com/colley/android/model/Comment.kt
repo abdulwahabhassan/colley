@@ -1,9 +1,11 @@
 package com.colley.android.model
 
-class Comment(
+data class Comment(
     val commentText: String? = null,
     val commenterId: String? = null,
     val commentTimeStamp: String? = null,
-    val commentId: String? = null) {
+    val commentId: String? = null,
+    val timeId: Long? = null
+) {
 
 }

@@ -1,5 +1,6 @@
 package com.colley.android.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,11 @@ import com.colley.android.model.Comment
 import com.colley.android.model.CommentModel
 import com.colley.android.model.DummyData
 
-class CommentsFragment : Fragment(), CommentsFragmentRecyclerAdapter.ItemClickedListener {
+class CommentsFragment(
+    postId: String?,
+    parentContext: Context,
+    postView: View
+) : Fragment(), CommentsFragmentRecyclerAdapter.ItemClickedListener {
 
     private var _binding: FragmentCommentsBinding? = null
     private val binding get() = _binding!!

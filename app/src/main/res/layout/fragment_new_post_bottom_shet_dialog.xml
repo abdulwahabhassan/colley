@@ -105,11 +105,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16dp"
         android:layout_marginBottom="@dimen/margin_16dp"
-        android:layout_gravity="center"
+        android:layout_gravity="center_horizontal"
         android:drawableStart="@drawable/ic_save"
         android:paddingStart="@dimen/padding_12dp"
         android:background="@drawable/ripple_effect_curved_edges_8dp"
-        android:layout_marginEnd="@dimen/margin_16dp"
         android:textSize="@dimen/text_size_12sp"
         android:text="@string/post_text"/>
 

@@ -13,17 +13,17 @@
     </Transition>
 
     <ConstraintSet android:id="@+id/start" >
-        <Constraint android:id="@+id/issuesCommentProgressBar">
-            <PropertySet
-                app:applyMotionScene="false"
-                app:visibilityMode="ignore" />
-        </Constraint>
-        <Constraint android:id="@+id/issuesCommentsRecyclerView">
+        <Constraint android:id="@+id/issueCommentsSwipeRefreshLayout">
             <PropertySet
                 app:applyMotionScene="false"
                 app:visibilityMode="ignore" />
         </Constraint>
         <Constraint android:id="@+id/noCommentsLayout">
+            <PropertySet
+                app:applyMotionScene="false"
+                app:visibilityMode="ignore" />
+        </Constraint>
+        <Constraint android:id="@+id/newCommentNotificationTextView">
             <PropertySet
                 app:applyMotionScene="false"
                 app:visibilityMode="ignore" />
@@ -42,3 +42,8 @@
 
     </ConstraintSet>
 </MotionScene>
+
+<!--By default MotionLayout controls the visibility of all views within it. Hence any child view in
+motion layout ignores setVisibility. But you can opt out child view by using the
+app:visibilityMode="ignore" so that it is no longer under the control motion layout, setting
+app:applyMotionScene="false" ignores the visibility from the scene -->

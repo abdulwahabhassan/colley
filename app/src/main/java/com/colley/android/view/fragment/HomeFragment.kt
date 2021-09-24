@@ -110,15 +110,24 @@ class HomeFragment:
             disableFab()
             when (viewPager.currentItem) {
                 0 -> {
-                    raiseIssueBottomSheetDialog = RaiseIssueBottomSheetDialogFragment(requireContext(), requireView(), this, this)
+                    raiseIssueBottomSheetDialog = RaiseIssueBottomSheetDialogFragment(
+                        requireContext(),
+                        requireView(),
+                        this,
+                        this)
                     raiseIssueBottomSheetDialog.show(parentFragmentManager, null)
                 }
                 1 -> {
-                    newPostBottomSheetDialog = NewPostBottomSheetDialogFragment(requireContext(), requireView(),  this)
+                    newPostBottomSheetDialog = NewPostBottomSheetDialogFragment(
+                        requireContext(),
+                        requireView(),
+                        this)
                     newPostBottomSheetDialog.show(parentFragmentManager, null)
                 }
                 2 -> {
-                    addGroupBottomSheetDialog = AddGroupBottomSheetDialogFragment(requireContext(), requireView())
+                    addGroupBottomSheetDialog = AddGroupBottomSheetDialogFragment(
+                        requireContext(),
+                        requireView())
                     addGroupBottomSheetDialog.show(parentFragmentManager, null)
 
                 }

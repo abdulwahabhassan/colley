@@ -1,20 +1,16 @@
 package com.colley.android.view.dialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.colley.android.R
 import com.colley.android.databinding.FragmentIssueCommentDialogBinding
-import com.colley.android.databinding.FragmentRaiseIssueBottomSheetDialogBinding
 import com.colley.android.model.Comment
-import com.colley.android.model.Issue
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -58,6 +54,7 @@ class IssueCommentBottomSheetDialogFragment (
         return binding?.root
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -74,15 +71,18 @@ class IssueCommentBottomSheetDialogFragment (
                 //get current time and format it
                 val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
                 val date: String = df.format(Calendar.getInstance().time)
+                val timeId = SimpleDateFormat("dMMyyyyHHmmss").format(Calendar.getInstance().time).toLong() * -1
+                //timeId will be used for sorting comments from the most recent
 
                 val comment = Comment(
                     commentText = commentText!!,
                     commentTimeStamp = date,
-                    commenterId = uid
+                    commenterId = uid,
+                    timeId = timeId
                 )
                 issueId?.let { issueId ->
                     //create and write new comment to database, retrieve key and add it as commentId
-                    dbRef.child("issues").child(issueId).child("comments").push().setValue(
+                    dbRef.child("issue-comments").child(issueId).push().setValue(
                         comment, DatabaseReference.CompletionListener { error, ref ->
                             if (error != null) {
                                 Toast.makeText(parentContext, "Unable to write comment to database", Toast.LENGTH_SHORT).show()
@@ -92,10 +92,10 @@ class IssueCommentBottomSheetDialogFragment (
                             }
                             //after writing comment to database, retrieve its key on the database and set it as the comment id
                             val key = ref.key
-                            dbRef.child("issues").child(issueId).child("comments")
-                                .child(key!!).child("commentId").setValue(key)
+                            dbRef.child("issue-comments").child(issueId).child(key!!)
+                                .child("commentId").setValue(key)
 
-                            //update contributions count
+                            //update contributions count of issue
                             dbRef.child("issues").child(issueId).child("contributionsCount").runTransaction(
                                 object : Transaction.Handler {
                                     override fun doTransaction(currentData: MutableData): Transaction.Result {

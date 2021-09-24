@@ -102,8 +102,9 @@ class NewPostBottomSheetDialogFragment(
                 body = binding?.postBodyEditText?.text.toString().trim()
             }
 
-            val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
-            val date: String = df.format(Calendar.getInstance().time)
+            val date: String = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss").format(Calendar.getInstance().time)
+            //inverted timeId to be used for sorting in the order of most recent post to oldest
+            val timeId = SimpleDateFormat("dMMyyyyHHmmss").format(Calendar.getInstance().time).toLong() * -1
 
             //if fields are empty, do not upload issue to database
             if (body == null && postImageUri == null) {
@@ -116,6 +117,7 @@ class NewPostBottomSheetDialogFragment(
                 val post = Post(
                     userId = uid,
                     timeStamp = date,
+                    timeId = timeId,
                     location = location,
                     text = body
                 )
@@ -142,7 +144,29 @@ class NewPostBottomSheetDialogFragment(
             val key = ref.key
             dbRef.child("posts").child(key!!).child("postId").setValue(key)
                 .addOnCompleteListener {
-            }
+                    dbRef.child("postsCount").runTransaction(
+                        object : Transaction.Handler {
+                            override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                var count = currentData.getValue(Int::class.java)
+                                if (count != null){
+                                    currentData.value = count++
+                                } else {
+                                    count = 1
+                                }
+                                currentData.value =count
+                                //set database count value to the new update
+                                return Transaction.success(currentData)
+                            }
+
+                            override fun onComplete(
+                                error: DatabaseError?,
+                                committed: Boolean,
+                                currentData: DataSnapshot?
+                            ) {}
+
+                        }
+                    )
+                }
 
             //if a post image is selected, retrieve its uri and define a storage path for it
             if (postImageUri != null) {
@@ -158,8 +182,6 @@ class NewPostBottomSheetDialogFragment(
             //dismiss bottom sheet dialog
             this.dismiss()
         })
-
-
 
     }
 
