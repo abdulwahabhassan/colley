@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import com.colley.android.repository.DatabaseRepository
 import com.colley.android.viewmodel.IssuesViewModel
+import com.colley.android.viewmodel.PostCommentsViewModel
 import com.colley.android.viewmodel.PostsViewModel
 import com.colley.android.viewmodel.ViewIssueViewModel
 
@@ -31,6 +32,10 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(ViewIssueViewModel::class.java) -> {
                 @Suppress("UNCHECKED_CAST")
                 return ViewIssueViewModel(handle, repository) as T
+            }
+            modelClass.isAssignableFrom(PostCommentsViewModel::class.java) -> {
+                @Suppress("UNCHECKED_CAST")
+                return PostCommentsViewModel(handle, repository) as T
             }
         }
         throw IllegalArgumentException("Unknown ViewModel class")

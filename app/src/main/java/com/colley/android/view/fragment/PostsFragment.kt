@@ -39,7 +39,8 @@ import kotlinx.coroutines.launch
 class PostsFragment : Fragment(),
     PostsPagingAdapter.PostPagingItemClickedListener,
     NewPostBottomSheetDialogFragment.NewPostListener,
-    PostCommentBottomSheetDialogFragment.CommentListener {
+    PostCommentBottomSheetDialogFragment.CommentListener,
+    PostBottomSheetDialogFragment.PostDialogListener {
 
     private var _binding: FragmentPostsBinding? = null
     private val binding get() = _binding!!
@@ -251,16 +252,20 @@ class PostsFragment : Fragment(),
         }
     }
 
-    override fun onItemClick(postId: String, view: View) {
+    override fun onItemClick(postId: String, view: View, viewHolder: PostViewHolder) {
+        //reference to viewHolder clicked
+        postViewHolder = viewHolder
+        Log.w("clickoverride", "$postId")
         postDialog = PostBottomSheetDialogFragment(
             requireContext(),
-            requireView()
+            requireView(),
+            this
         )
         postDialog.arguments = bundleOf("postIdKey" to postId)
         postDialog.show(parentFragmentManager, null)
     }
 
-    override fun onItemLongCLicked(postId: String, view: View) {
+    override fun onItemLongCLicked(postId: String, view: View, viewHolder: PostViewHolder) {
 
     }
 
@@ -270,6 +275,7 @@ class PostsFragment : Fragment(),
     }
 
     override fun onCommentClicked(postId: String, view: View, viewHolder: PostViewHolder) {
+        //reference to viewHolder clicked
         postViewHolder = viewHolder
         commentSheetDialog = PostCommentBottomSheetDialogFragment(
             requireContext(),
@@ -404,23 +410,36 @@ class PostsFragment : Fragment(),
     }
 
     //update view holder ui to display updated comments count
-    @SuppressLint("SetTextI18n")
+    //interface from comment listener
     override fun onComment(currentData: DataSnapshot?) {
         if (postViewHolder != null) {
+            updateViewHolder(currentData)
+        }
+    }
 
-            when (currentData?.getValue(Int::class.java)) {
-                0 -> postViewHolder?.itemBinding?.commentCountTextView?.visibility = GONE
-                1 -> {
-                    postViewHolder?.itemBinding?.commentCountTextView?.visibility = VISIBLE
-                    postViewHolder?.itemBinding?.commentCountTextView?.text =
-                        "${currentData.getValue(Int::class.java).toString()} comment"
-                }
-                else -> {
-                    postViewHolder?.itemBinding?.commentCountTextView?.visibility = VISIBLE
-                    postViewHolder?.itemBinding?.commentCountTextView?.text =
-                        "${currentData?.getValue(Int::class.java).toString()} comments"
-                }
+    //update view holder ui to display updated comments count
+    //interface from post dialog listener
+    override fun onCommented(currentData: DataSnapshot?) {
+        if (postViewHolder != null) {
+            updateViewHolder(currentData)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateViewHolder(currentData: DataSnapshot?) {
+        when (currentData?.getValue(Int::class.java)) {
+            0 -> postViewHolder?.itemBinding?.commentCountTextView?.visibility = GONE
+            1 -> {
+                postViewHolder?.itemBinding?.commentCountTextView?.visibility = VISIBLE
+                postViewHolder?.itemBinding?.commentCountTextView?.text =
+                    "${currentData.getValue(Int::class.java).toString()} comment"
+            }
+            else -> {
+                postViewHolder?.itemBinding?.commentCountTextView?.visibility = VISIBLE
+                postViewHolder?.itemBinding?.commentCountTextView?.text =
+                    "${currentData?.getValue(Int::class.java).toString()} comments"
             }
         }
     }
+
 }

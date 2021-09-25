@@ -248,14 +248,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/new_comment_notification_background"
-        android:drawableEnd="@drawable/ic_refresh"
         android:drawablePadding="@dimen/padding_2dp"
         android:elevation="@dimen/height_1dp"
         android:padding="4dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/second_divider" />
+        app:layout_constraintTop_toBottomOf="@+id/second_divider"
+        app:drawableEndCompat="@drawable/ic_refresh" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/issueCommentsSwipeRefreshLayout"

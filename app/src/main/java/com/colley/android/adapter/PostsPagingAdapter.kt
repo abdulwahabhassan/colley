@@ -2,6 +2,7 @@ package com.colley.android.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,8 +27,8 @@ class PostsPagingAdapter (
 ) : PagingDataAdapter<DataSnapshot, PostViewHolder>(POST_COMPARATOR) {
 
     interface PostPagingItemClickedListener {
-        fun onItemClick(postId: String, view: View)
-        fun onItemLongCLicked(postId: String, view: View)
+        fun onItemClick(postId: String, view: View, viewHolder: PostViewHolder)
+        fun onItemLongCLicked(postId: String, view: View, viewHolder: PostViewHolder)
         fun onUserClicked(userId: String, view: View)
         fun onCommentClicked(postId: String, view: View, viewHolder: PostViewHolder)
         fun onLikeClicked(postId: String, view: View, viewHolder: PostViewHolder)
@@ -187,14 +188,16 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
         }
 
         root.setOnClickListener {
+            Log.w("clickListener", "${post?.postId}")
             if(post?.postId != null) {
-                clickListener.onItemClick(post.postId, it)
+                Log.w("clickListener", "${post?.postId}")
+                clickListener.onItemClick(post.postId, it, viewHolder)
             }
         }
 
         root.setOnLongClickListener {
             if(post?.postId != null) {
-                clickListener.onItemLongCLicked(post.postId, it)
+                clickListener.onItemLongCLicked(post.postId, it, viewHolder)
             }
             true
         }
