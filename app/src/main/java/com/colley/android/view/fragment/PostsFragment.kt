@@ -58,6 +58,7 @@ class PostsFragment : Fragment(),
     private lateinit var sheetDialogCommentOn: CommentOnPostBottomSheetDialogFragment
     private val uid: String
         get() = currentUser.uid
+
     private val postsCountValueEventListener = object : ValueEventListener {
         @SuppressLint("SetTextI18n")
         override fun onDataChange(snapshot: DataSnapshot) {
@@ -65,6 +66,9 @@ class PostsFragment : Fragment(),
             if(count != null) {
                 differenceCount = count - postsCount
             }
+            //ignore changes due to adding value event listener to database first time or
+            //initial paging load. we know this when current comments count is equal to the difference
+            //between the previous count (initial count will be zero) and the current count
             if(differenceCount > 0 && count != differenceCount) {
                 if(differenceCount == 1) {
                     binding.newPostNotificationTextView.text = "^ $differenceCount new post"
@@ -72,12 +76,18 @@ class PostsFragment : Fragment(),
                     binding.newPostNotificationTextView.text = "^ $differenceCount new posts"
                 }
                 binding.newPostNotificationTextView.visibility = VISIBLE
-            }
-        }
+                return
 
+            } else {
+                //if no change in likes count or comments count decreases, it's not important to show it
+                binding.newPostNotificationTextView.visibility = View.INVISIBLE
+            }
+
+        }
 
         override fun onCancelled(error: DatabaseError) {}
     }
+
 
     //observer for adapter item changes
     private val postsAdapterObserver = object : RecyclerView.AdapterDataObserver() {
@@ -88,15 +98,6 @@ class PostsFragment : Fragment(),
         }
     }
 
-    //listener for recycler view scroll events
-    private val scrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            if (dy != 0) {
-                binding.newPostNotificationTextView.visibility = View.INVISIBLE
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -417,9 +418,6 @@ class PostsFragment : Fragment(),
         //register observer to adapter to scroll to  position when new items are added
         postsAdapter?.registerAdapterDataObserver(postsAdapterObserver)
 
-        //add scroll listener to remove notification text view when recycler view is scrolled
-        recyclerView.addOnScrollListener(scrollListener)
-
     }
 
     override fun onStop() {
@@ -427,7 +425,6 @@ class PostsFragment : Fragment(),
         //clear observers and listeners
         dbRef.child("postsCount").removeEventListener(postsCountValueEventListener)
         postsAdapter?.unregisterAdapterDataObserver(postsAdapterObserver)
-        recyclerView.removeOnScrollListener(scrollListener)
     }
 
     override fun onDestroy() {
