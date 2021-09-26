@@ -20,7 +20,7 @@ class SchoolsFragment : Fragment(), SchoolsFragmentRecyclerAdapter.ItemClickedLi
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSchoolsBinding.inflate(inflater, container, false)
         return binding.root
     }

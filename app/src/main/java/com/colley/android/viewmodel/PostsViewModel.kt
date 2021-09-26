@@ -15,7 +15,7 @@ class PostsViewModel(
     private val repository: DatabaseRepository
 ) : ViewModel() {
 
-    fun searchPosts(query: Query): Flow<PagingData<DataSnapshot>> =
+    fun getPosts(query: Query): Flow<PagingData<DataSnapshot>> =
         repository.getDataStream(query)
             .cachedIn(viewModelScope)
 }

@@ -18,6 +18,7 @@ import com.colley.android.model.Profile
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class PostsPagingAdapter (
@@ -32,6 +33,7 @@ class PostsPagingAdapter (
         fun onUserClicked(userId: String, view: View)
         fun onCommentClicked(postId: String, view: View, viewHolder: PostViewHolder)
         fun onLikeClicked(postId: String, view: View, viewHolder: PostViewHolder)
+        fun onSaveClicked(postId: String, it: View, viewHolder: PostViewHolder)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -148,6 +150,16 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
 
         }
 
+        //update savePostTextView start drawable based on whether user has saved this post or not
+        post?.postId?.let { postId ->
+            Firebase.database.reference.child("user-saved_posts")
+                .child(currentUser?.uid!!).get().addOnSuccessListener { dataSnapshot ->
+                    savePostTextView.isActivated =
+                        dataSnapshot.getValue<ArrayList<String>>()?.contains(postId) == true
+
+                }
+        }
+
         //set likes count
         when (post?.likesCount) {
             0 -> likeCountTextView.visibility = View.GONE
@@ -174,19 +186,7 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
             }
         }
 
-        //set promotions count
-        when (post?.promotionsCount) {
-            0 -> promotionCountTextView.visibility = View.GONE
-            1 -> {
-                promotionCountTextView.visibility = View.VISIBLE
-                promotionCountTextView.text = "${post.promotionsCount} promotion"
-            }
-            else -> {
-                promotionCountTextView.visibility = View.VISIBLE
-                promotionCountTextView.text = "${post?.promotionsCount} promotions"
-            }
-        }
-
+        //click post to show post interactions (comments, likes and promotions)
         root.setOnClickListener {
             Log.w("clickListener", "${post?.postId}")
             if(post?.postId != null) {
@@ -195,6 +195,7 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
             }
         }
 
+
         root.setOnLongClickListener {
             if(post?.postId != null) {
                 clickListener.onItemLongCLicked(post.postId, it, viewHolder)
@@ -202,27 +203,38 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
             true
         }
 
+        //click user name to show profile
         nameTextView.setOnClickListener {
             if(post?.userId != null) {
                 clickListener.onUserClicked(post.userId, it)
             }
         }
 
+        //click user photo to show profile
         userPhotoImageView.setOnClickListener {
             if(post?.userId != null) {
                 clickListener.onUserClicked(post.userId, it)
             }
         }
 
+        //click comment to show comment dialog to comment on post
         commentLinearLayout.setOnClickListener {
             if(post?.postId != null) {
                 clickListener.onCommentClicked(post.postId, it, viewHolder)
             }
         }
 
+        //click like to show dialog to like post
         likeLinearLayout.setOnClickListener {
             if(post?.postId != null) {
                 clickListener.onLikeClicked(post.postId, it, viewHolder)
+            }
+        }
+
+        //click save to save post
+        savePostLinearLayout.setOnClickListener {
+            if(post?.postId != null) {
+                clickListener.onSaveClicked(post.postId, it, viewHolder)
             }
         }
     }

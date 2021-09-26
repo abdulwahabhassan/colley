@@ -83,5 +83,6 @@
     <string name="write_comment_text">Write comment..</string>
     <string name="location_text">Tag your location</string>
     <string name="post_text">Post</string>
+    <string name="no_likes_text">No Likes</string>
 
 </resources>

@@ -3,95 +3,93 @@ package com.colley.android.view.fragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.colley.android.adapter.PostCommentsPagingAdapter
-import com.colley.android.databinding.FragmentCommentsBinding
+import com.colley.android.adapter.PostLikesPagingAdapter
+import com.colley.android.databinding.FragmentLikesBinding
 import com.colley.android.factory.ViewModelFactory
-import com.colley.android.model.Comment
 import com.colley.android.repository.DatabaseRepository
-import com.colley.android.viewmodel.PostCommentsViewModel
+import com.colley.android.viewmodel.PostLikesViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class PostCommentsFragment(
+class PostLikesFragment(
     private val postId: String?,
     private val parentContext: Context,
-    private val postView: View
-) : Fragment(),
-    PostCommentsPagingAdapter.PostCommentItemClickedListener {
+    private val postView: View) : Fragment(), PostLikesPagingAdapter.PostLikeItemClickedListener {
 
-    private var _binding: FragmentCommentsBinding? = null
+    private var _binding: FragmentLikesBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: PostLikesViewModel
     private lateinit var dbRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
     private lateinit var recyclerView: RecyclerView
-    private var commentsCount: Int = 0
-    private var differenceCount: Int = 0
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private var commentsAdapter: PostCommentsPagingAdapter? = null
+    private var likesCount: Int = 0
+    private var differenceCount: Int = 0
+    private var likesQuery: Query? = null
+    private var likesAdapter: PostLikesPagingAdapter? = null
     private var manager: LinearLayoutManager? = null
     private val uid: String
         get() = currentUser.uid
 
-    //value event listener for commentsCount
-    private val commentsCountValueEventListener = object : ValueEventListener {
+    //value event listener for likes count
+    private val likesCountValueEventListener = object : ValueEventListener {
         @SuppressLint("SetTextI18n")
         override fun onDataChange(snapshot: DataSnapshot) {
             val count = snapshot.getValue(Int::class.java)
             if(count != null) {
-                differenceCount = count - commentsCount
+                differenceCount = count - likesCount
             }
             //ignore changes due to adding value event listener to database first time or
-            //initial paging load. we know this when current comments count is equal to the difference
+            //initial paging load. we know this when current likes count is equal to the difference
             //between the previous count (initial count will be zero) and the current count
             if(differenceCount > 0 && count != differenceCount) {
                 if(differenceCount == 1) {
-                    binding.newCommentNotificationTextView.text = "^ $differenceCount new comment"
+                    binding.newLikeNotificationTextView.text = "^ $differenceCount new like"
                 } else {
-                    binding.newCommentNotificationTextView.text = "^ $differenceCount new comments"
+                    binding.newLikeNotificationTextView.text = "^ $differenceCount new likes"
                 }
-                binding.newCommentNotificationTextView.visibility = View.VISIBLE
+                binding.newLikeNotificationTextView.visibility = View.VISIBLE
                 return
 
             } else if(differenceCount > 0) {
                 //acknowledge changes due to adding listener first time / initial paging load and
-                //only when comments count increases, so that if initially, comments count was zero
+                //only when likes count increases, so that if initially, likes count was zero
                 //and then increases, we also want to inform the user if they want to refresh,
                 //that a new like has occurred after initial page load and adding value event
                 //listener to database first time even though the difference between the current
-                //comments count and the previous comments count equals (suggesting either initial page
+                //like count and the previous likes count equals (suggesting either initial page
                 //load or adding value event listener to database first time, which in fact is not
                 //the case since both events have already occurred)
                 if(differenceCount == 1) {
-                    binding.newCommentNotificationTextView.text = "$differenceCount comment"
+                    binding.newLikeNotificationTextView.text = "$differenceCount like"
                 } else {
-                    binding.newCommentNotificationTextView.text = "$differenceCount comments"
+                    binding.newLikeNotificationTextView.text = "$differenceCount likes"
                 }
-                binding.newCommentNotificationTextView.visibility = View.VISIBLE
+                    binding.newLikeNotificationTextView.visibility = View.VISIBLE
                 return
+
             } else {
-                //if no change in likes count or comments count decreases, it's not important to show it
-                binding.newCommentNotificationTextView.visibility = View.INVISIBLE
+                //if no change in likes count or likes count decreases, it's not important to show it
+                binding.newLikeNotificationTextView.visibility = View.INVISIBLE
             }
 
         }
@@ -99,24 +97,23 @@ class PostCommentsFragment(
         override fun onCancelled(error: DatabaseError) {}
     }
 
-    //observer for adapter item changes
-    private val commentsAdapterObserver = object : RecyclerView.AdapterDataObserver() {
+    //observer for adapter item changes due to call on adapter refresh
+    private val likesAdapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             super.onItemRangeInserted(positionStart, itemCount)
             manager?.scrollToPosition(positionStart)
-            binding.newCommentNotificationTextView.visibility = View.INVISIBLE
+            //remove notification text after scrolling to position
+            binding.newLikeNotificationTextView.visibility = View.INVISIBLE
         }
     }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentCommentsBinding.inflate(inflater, container, false)
-        recyclerView = binding.commentsRecyclerView
-        swipeRefreshLayout = binding.postCommentsSwipeRefreshLayout
+    ): View {
+        _binding = FragmentLikesBinding.inflate(inflater, container, false)
+        recyclerView = binding.likesRecyclerView
+        swipeRefreshLayout = binding.postLikesSwipeRefreshLayout
         return binding.root
     }
 
@@ -132,44 +129,48 @@ class PostCommentsFragment(
         //initialize currentUser
         currentUser = auth.currentUser!!
 
-        //get the view model
-        val viewModel = ViewModelProvider(this, ViewModelFactory(owner = this, repository = DatabaseRepository()))
-            .get(PostCommentsViewModel::class.java)
+        // get the view model
+        viewModel = ViewModelProvider(this, ViewModelFactory(owner = this, repository = DatabaseRepository()))
+            .get(PostLikesViewModel::class.java)
 
-        //get a query reference to issue comments ordered by time code so that the most recent
-        //comments appear first
-        val commentsQuery = postId?.let { dbRef.child("post-comments").child(it).orderByChild("timeId") }
+        //initialize query reference to post likes whose value equals true
+        likesQuery = postId?.let { dbRef.child("post-likes").child(it)}
 
         //initialize adapter
-        commentsAdapter = PostCommentsPagingAdapter(requireContext(), currentUser, this)
+        likesAdapter = PostLikesPagingAdapter(requireContext(), currentUser, this)
 
         //retrieve number of comments from database to be used for estimating the number of new
         //comments added since the user last refreshed
-        getCommentsCount()
+        getLikesCount()
 
         //set recycler view layout manager
         manager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = manager
         //initialize adapter
-        recyclerView.adapter = commentsAdapter
+        recyclerView.adapter = likesAdapter
 
-        //refresh adapter everytime refresh action is called on swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
-            commentsAdapter?.refresh()
-            //reset posts count on refresh so that this fragment knows the correct database posts count
-            getCommentsCount()
+            likesAdapter?.refresh()
+            //every time we refresh, we get the current count of likes, so that when likes count
+            //changes(most importantly increases), the value event listener attached to likes count
+            //calculates the difference between current count and the previous count. If the
+            //difference is positive (indicating more likes), we display to user that new likes have
+            //been added to the post if they want to refresh the current ui state.
+            getLikesCount()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getPostComments(commentsQuery!!).collectLatest {
-                    pagingData ->
-                commentsAdapter?.submitData(pagingData)
+            likesQuery?.let {
+                viewModel.getPostLikes(it).collectLatest { pagingData ->
+                    likesAdapter?.submitData(pagingData)
+
+                }
             }
         }
 
         //Perform some action every time data changes or when there is an error.
         viewLifecycleOwner.lifecycleScope.launch {
-            commentsAdapter?.loadStateFlow?.collectLatest { loadStates ->
+            likesAdapter?.loadStateFlow?.collectLatest { loadStates ->
 
                 when (loadStates.refresh) {
                     is LoadState.Error -> {
@@ -181,8 +182,8 @@ class PostCommentsFragment(
                             "Error fetching comments! Retrying..",
                             Toast.LENGTH_SHORT).show()
                         //display no posts available at the moment
-                        binding.noCommentsLayout.visibility = View.VISIBLE
-                        commentsAdapter?.retry()
+                        binding.noLikesLayout.visibility = View.VISIBLE
+                        likesAdapter?.retry()
                     }
                     is LoadState.Loading -> {
                         // The initial Load has begun
@@ -192,11 +193,12 @@ class PostCommentsFragment(
                     is LoadState.NotLoading -> {
                         //The previous load (either initial or additional) completed
                         swipeRefreshLayout.isRefreshing = false
-                        if (commentsAdapter?.itemCount == 0) {
-                            binding.noCommentsLayout.visibility = View.VISIBLE
+                        if (likesAdapter?.itemCount == 0) {
+                            binding.noLikesLayout.visibility = View.VISIBLE
                         } else {
-                            binding.noCommentsLayout.visibility = View.GONE
+                            binding.noLikesLayout.visibility = View.GONE
                         }
+
                     }
                 }
 
@@ -204,7 +206,7 @@ class PostCommentsFragment(
                     is LoadState.Error -> {
                         // The additional load failed. Call the retry() method
                         // in order to retry the load operation.
-                        commentsAdapter?.retry()
+                        likesAdapter?.retry()
 
                     }
                     is LoadState.Loading -> {
@@ -221,16 +223,17 @@ class PostCommentsFragment(
                 }
             }
         }
+
     }
 
     //retrieve database comments count
-    private fun getCommentsCount() {
+    private fun getLikesCount() {
         if (postId != null) {
-            dbRef.child("posts").child(postId).child("commentsCount")
+            dbRef.child("posts").child(postId).child("likesCount")
                 .get().addOnSuccessListener {
                         snapShot ->
                     if(snapShot.getValue(Int::class.java) != null) {
-                        commentsCount = snapShot.getValue(Int::class.java)!!
+                        likesCount = snapShot.getValue(Int::class.java)!!
                     }
                 }
         }
@@ -238,42 +241,39 @@ class PostCommentsFragment(
 
     override fun onStart() {
         super.onStart()
-        //listener for contributions count used to set count text
+        //listener for likes count used to set count text
         if (postId != null) {
             dbRef.child("posts").child(postId)
-                .child("commentsCount").addValueEventListener(commentsCountValueEventListener)
+                .child("likesCount").addValueEventListener(likesCountValueEventListener)
         }
         //register observer to adapter to scroll to  position when new items are added
-        commentsAdapter?.registerAdapterDataObserver(commentsAdapterObserver)
+        likesAdapter?.registerAdapterDataObserver(likesAdapterObserver)
     }
 
     override fun onStop() {
         super.onStop()
         //clear observers and listeners
         if (postId != null) {
-            dbRef.child("posts").child(postId).child("commentsCount")
-                .removeEventListener(commentsCountValueEventListener)
+            dbRef.child("posts").child(postId).child("likesCount")
+                .removeEventListener(likesCountValueEventListener)
         }
-        //unregister adapter observer
-        commentsAdapter?.unregisterAdapterDataObserver(commentsAdapterObserver)
+        //clear observers and listeners
+        likesAdapter?.unregisterAdapterDataObserver(likesAdapterObserver)
+
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
 
-    override fun onItemClick(comment: Comment, view: View) {
 
-    }
-
-    override fun onItemLongCLicked(comment: Comment, view: View) {
+    override fun onItemClick(userId: String, view: View) {
 
     }
 
     override fun onUserClicked(userId: String, view: View) {
 
     }
-
-
 }

@@ -14,7 +14,7 @@ class PostCommentsViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val repository: DatabaseRepository
 ) : ViewModel() {
-    fun searchPostComments(query: Query): Flow<PagingData<DataSnapshot>> =
+    fun getPostComments(query: Query): Flow<PagingData<DataSnapshot>> =
         repository.getDataStream(query)
             .cachedIn(viewModelScope)
 }

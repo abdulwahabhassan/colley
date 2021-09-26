@@ -21,7 +21,7 @@ import com.colley.android.adapter.*
 import com.colley.android.databinding.FragmentPostsBinding
 import com.colley.android.repository.DatabaseRepository
 import com.colley.android.view.dialog.NewPostBottomSheetDialogFragment
-import com.colley.android.view.dialog.PostCommentBottomSheetDialogFragment
+import com.colley.android.view.dialog.CommentOnPostBottomSheetDialogFragment
 import com.colley.android.viewmodel.PostsViewModel
 import com.colley.android.factory.ViewModelFactory
 import com.colley.android.view.dialog.PostBottomSheetDialogFragment
@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 class PostsFragment : Fragment(),
     PostsPagingAdapter.PostPagingItemClickedListener,
     NewPostBottomSheetDialogFragment.NewPostListener,
-    PostCommentBottomSheetDialogFragment.CommentListener,
+    CommentOnPostBottomSheetDialogFragment.CommentListener,
     PostBottomSheetDialogFragment.PostDialogListener {
 
     private var _binding: FragmentPostsBinding? = null
@@ -55,7 +55,7 @@ class PostsFragment : Fragment(),
     private var differenceCount: Int = 0
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var postDialog: PostBottomSheetDialogFragment
-    private lateinit var commentSheetDialog: PostCommentBottomSheetDialogFragment
+    private lateinit var sheetDialogCommentOn: CommentOnPostBottomSheetDialogFragment
     private val uid: String
         get() = currentUser.uid
     private val postsCountValueEventListener = object : ValueEventListener {
@@ -178,7 +178,7 @@ class PostsFragment : Fragment(),
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.searchPosts(postsQuery).collectLatest {
+            viewModel.getPosts(postsQuery).collectLatest {
                     pagingData ->
                 postsAdapter?.submitData(pagingData)
 
@@ -277,24 +277,32 @@ class PostsFragment : Fragment(),
     override fun onCommentClicked(postId: String, view: View, viewHolder: PostViewHolder) {
         //reference to viewHolder clicked
         postViewHolder = viewHolder
-        commentSheetDialog = PostCommentBottomSheetDialogFragment(
+        sheetDialogCommentOn = CommentOnPostBottomSheetDialogFragment(
             requireContext(),
             requireView(),
             this
         )
-        commentSheetDialog.arguments = bundleOf("postIdKey" to postId)
-        commentSheetDialog.show(parentFragmentManager, null)
+        sheetDialogCommentOn.arguments = bundleOf("postIdKey" to postId)
+        sheetDialogCommentOn.show(parentFragmentManager, null)
     }
 
     override fun onLikeClicked(postId: String, view: View, viewHolder: PostViewHolder) {
-
+        //reference to viewHolder clicked
+        postViewHolder = viewHolder
         //Register like on database
         dbRef.child("post-likes").child(postId).child(uid)
             .runTransaction(object : Transaction.Handler {
                 override fun doTransaction(currentData: MutableData): Transaction.Result {
                     //retrieve the current value of like at this location
-                    val liked = currentData.getValue<Boolean>()
-                    currentData.value = liked == null || liked == false
+                    var liked = currentData.getValue<Boolean>()
+                    //compute new value of liked
+                    liked = liked == null || liked == false
+                    //if false set value at location to null else true
+                     if (liked == false) {
+                         currentData.value = null
+                     } else {
+                         currentData.value = true
+                     }
                     //set database liked value to the new update
                     return Transaction.success(currentData)
                 }
@@ -345,30 +353,7 @@ class PostsFragment : Fragment(),
                                         committed: Boolean,
                                         currentData: DataSnapshot?
                                     ) {
-                                        when (currentData?.getValue(Int::class.java)) {
-                                            0 -> viewHolder.itemBinding.likeCountTextView
-                                                .visibility = GONE
-                                            1 -> {
-                                                viewHolder.itemBinding.likeCountTextView
-                                                    .visibility = VISIBLE
-                                                viewHolder.itemBinding.likeCountTextView
-                                                    .text = "${currentData.getValue(Int::class.java)
-                                                        .toString()} like"
-                                            }
-                                            else -> {
-                                                viewHolder.itemBinding.likeCountTextView
-                                                    .visibility = VISIBLE
-                                                viewHolder.itemBinding.likeCountTextView
-                                                    .text = "${currentData?.getValue(Int::class.java)
-                                                        .toString()} likes"
-
-                                            }
-                                        }
-                                        //update likeTextView start drawable depending on the value
-                                        //of liked
-                                        if (liked != null) {
-                                            viewHolder.itemBinding.likeTextView.isActivated = liked
-                                        }
+                                        updateLikeCountTextView(currentData, liked)
                                     }
                                 }
                             )
@@ -377,6 +362,51 @@ class PostsFragment : Fragment(),
 
             }
         )
+    }
+
+    override fun onSaveClicked(postId: String, it: View, viewHolder: PostViewHolder) {
+        //reference to viewHolder clicked
+        postViewHolder = viewHolder
+        //Register like on database
+        dbRef.child("user-saved_posts").child(uid)
+            .runTransaction(object : Transaction.Handler {
+                override fun doTransaction(currentData: MutableData): Transaction.Result {
+                    //retrieve the current list of saved posts at this location
+                    val savedPosts = currentData.getValue<ArrayList<String>>()
+                    //if no list is found and null is returned, create a new list, add post id to it
+                    if (savedPosts == null) {
+                        //update database
+                        currentData.value = arrayListOf(postId)
+                        return Transaction.success(currentData)
+                    } else {
+                        //if list does not already contain post id, add it
+                        if (!savedPosts.contains(postId)) {
+                            savedPosts.add(postId)
+                            //update database
+                            currentData.value = savedPosts
+                            return Transaction.success(currentData)
+                        } else {
+                            //if list already contains post, return unchanged list
+                            return Transaction.success(currentData)
+                        }
+                    }
+                }
+
+                override fun onComplete(
+                    error: DatabaseError?,
+                    committed: Boolean,
+                    currentData: DataSnapshot?
+                ) {
+                    //on successful save, toast
+                    if (error == null) {
+                        Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show()
+                        //update savedPostTextView start drawable icon
+                        postViewHolder?.itemBinding?.savePostTextView?.isActivated = true
+                    }
+                }
+
+            }
+            )
     }
 
     override fun onStart() {
@@ -409,11 +439,11 @@ class PostsFragment : Fragment(),
         postsAdapter?.refresh()
     }
 
-    //update view holder ui to display updated comments count
+    //update view holder ui to display updated comment count
     //interface from comment listener
     override fun onComment(currentData: DataSnapshot?) {
         if (postViewHolder != null) {
-            updateViewHolder(currentData)
+            updateCommentCountTextView(currentData)
         }
     }
 
@@ -421,12 +451,40 @@ class PostsFragment : Fragment(),
     //interface from post dialog listener
     override fun onCommented(currentData: DataSnapshot?) {
         if (postViewHolder != null) {
-            updateViewHolder(currentData)
+            updateCommentCountTextView(currentData)
         }
     }
 
+    //update view holder ui to display updated like count
+    //interface from post dialog listener
+    override fun onLiked(currentData: DataSnapshot?, liked: Boolean?) {
+        updateLikeCountTextView(currentData, liked)
+    }
+
     @SuppressLint("SetTextI18n")
-    private fun updateViewHolder(currentData: DataSnapshot?) {
+    private fun updateLikeCountTextView(currentData: DataSnapshot?, liked: Boolean?) {
+        when (currentData?.getValue(Int::class.java)) {
+            0 -> postViewHolder?.itemBinding?.likeCountTextView?.visibility = GONE
+            1 -> {
+                postViewHolder?.itemBinding?.likeCountTextView?.visibility = VISIBLE
+                postViewHolder?.itemBinding?.likeCountTextView?.text =
+                    "${currentData.getValue(Int::class.java).toString()} like"
+            }
+            else -> {
+                postViewHolder?.itemBinding?.likeCountTextView?.visibility = VISIBLE
+                postViewHolder?.itemBinding?.likeCountTextView?.text =
+                    "${currentData?.getValue(Int::class.java).toString()} likes"
+
+            }
+        }
+        //update likeTextView start drawable depending on the value
+        //of liked
+        postViewHolder?.itemBinding?.likeTextView?.isActivated =
+            !(liked == null || liked == false)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateCommentCountTextView(currentData: DataSnapshot?) {
         when (currentData?.getValue(Int::class.java)) {
             0 -> postViewHolder?.itemBinding?.commentCountTextView?.visibility = GONE
             1 -> {

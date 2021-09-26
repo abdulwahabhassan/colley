@@ -4,10 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/margin_16dp"
-    android:layout_marginEnd="@dimen/margin_16dp"
-    android:layout_marginTop="@dimen/margin_8dp"
-    android:layout_marginBottom="@dimen/margin_8dp">
+    android:paddingStart="@dimen/padding_16dp"
+    android:paddingEnd="@dimen/padding_16dp"
+    android:paddingTop="@dimen/padding_8dp"
+    android:paddingBottom="@dimen/padding_8dp"
+    android:background="@drawable/ripple_effect_rectangular"
+    android:clickable="true"
+    android:focusable="true">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/userImageView"
@@ -15,7 +18,7 @@
         android:layout_height="@dimen/height_40dp"
         android:scaleType="center"
         android:background="@color/dark_grey"
-        android:src="@drawable/ic_group"
+        android:src="@drawable/ic_person_colored"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -32,7 +35,6 @@
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
         android:lines="1"
-        android:text="@string/name_placeholder"
         android:textAlignment="viewStart"
         android:textStyle="bold"
         android:textColor="@color/pearl"

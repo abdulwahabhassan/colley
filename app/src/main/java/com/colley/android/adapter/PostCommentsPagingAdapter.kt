@@ -58,7 +58,7 @@ class PostCommentsPagingAdapter (
                 oldItem: DataSnapshot,
                 newItem: DataSnapshot
             ): Boolean {
-                return oldItem.getValue(Comment::class.java)?.commentId == newItem.getValue(Comment::class.java)?.commentId
+                return oldItem.key == newItem.key
             }
 
             override fun areContentsTheSame(

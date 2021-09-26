@@ -190,7 +190,7 @@
                 android:focusable="true"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/promoteLinearLayout"
+                app:layout_constraintEnd_toStartOf="@+id/savePostLinearLayout"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/commentLinearLayout"
                 app:layout_constraintTop_toBottomOf="@+id/divider">
@@ -210,7 +210,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/promoteLinearLayout"
+                android:id="@+id/savePostLinearLayout"
                 android:layout_width="136dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ripple_effect_rectangular"
@@ -225,15 +225,15 @@
                 app:layout_constraintVertical_bias="0.0">
 
                 <TextView
-                    android:id="@+id/promoteTextView"
+                    android:id="@+id/savePostTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="@dimen/margin_12dp"
                     android:drawablePadding="@dimen/padding_4dp"
-                    android:text="@string/promote_text"
+                    android:text="@string/save_text"
                     android:textColor="@color/text_color_state_selector"
-                    app:drawableStartCompat="@drawable/ic_promote" />
+                    app:drawableStartCompat="@drawable/save_drawable_state_selector" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

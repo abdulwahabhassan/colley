@@ -3,8 +3,7 @@ package com.colley.android.view.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -24,7 +23,7 @@ import com.colley.android.model.Comment
 import com.colley.android.model.Issue
 import com.colley.android.model.Profile
 import com.colley.android.repository.DatabaseRepository
-import com.colley.android.view.dialog.IssueCommentBottomSheetDialogFragment
+import com.colley.android.view.dialog.CommentOnIssueBottomSheetDialogFragment
 import com.colley.android.viewmodel.ViewIssueViewModel
 import com.colley.android.factory.ViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
@@ -41,7 +40,7 @@ import kotlinx.coroutines.launch
 class ViewIssueFragment :
     Fragment(),
     IssueCommentsPagingAdapter.IssueCommentItemClickedListener,
-    IssueCommentBottomSheetDialogFragment.CommentListener {
+    CommentOnIssueBottomSheetDialogFragment.CommentListener {
 
     private val args: ViewIssueFragmentArgs by navArgs()
     private var _binding: FragmentViewIssueBinding? = null
@@ -53,31 +52,60 @@ class ViewIssueFragment :
     private var commentsCount: Int = 0
     private var differenceCount: Int = 0
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var commentSheetDialog: IssueCommentBottomSheetDialogFragment
+    private lateinit var commentOnIssueSheetDialog: CommentOnIssueBottomSheetDialogFragment
     private var commentsAdapter: IssueCommentsPagingAdapter? = null
     private var manager: LinearLayoutManager? = null
     private val uid: String
         get() = currentUser.uid
+
     private val commentsCountValueEventListener = object : ValueEventListener {
         @SuppressLint("SetTextI18n")
         override fun onDataChange(snapshot: DataSnapshot) {
             val count = snapshot.getValue(Int::class.java)
+
             if(count != null) {
+                //set contributions count text
                 binding?.contributionsTextView?.text = count.toString()
                 differenceCount = count - commentsCount
             }
+            //ignore changes due to adding value event listener to database first time or
+            //initial paging load. we know this when current comments count is equal to the difference
+            //between the previous count (initial count will be zero) and the current count
             if(differenceCount > 0 && count != differenceCount) {
                 if(differenceCount == 1) {
-                    binding?.newCommentNotificationTextView?.text = "^ $differenceCount new post"
+                    binding?.newCommentNotificationTextView?.text = "^ $differenceCount new comment"
                 } else {
-                    binding?.newCommentNotificationTextView?.text = "^ $differenceCount new posts"
+                    binding?.newCommentNotificationTextView?.text = "^ $differenceCount new comments"
                 }
                 binding?.newCommentNotificationTextView?.visibility = VISIBLE
+                return
+
+            } else if(differenceCount > 0) {
+                //acknowledge changes due to adding listener first time / initial paging load and
+                //only when comments count increases, so that if initially, comments count was zero
+                //and then increases, we also want to inform the user if they want to refresh,
+                //that a new like has occurred after initial page load and adding value event
+                //listener to database first time even though the difference between the current
+                //comments count and the previous comments count equals (suggesting either initial page
+                //load or adding value event listener to database first time, which in fact is not
+                //the case since both events have already occurred)
+                if(differenceCount == 1) {
+                    binding?.newCommentNotificationTextView?.text = "$differenceCount comment"
+                } else {
+                    binding?.newCommentNotificationTextView?.text = "$differenceCount comments"
+                }
+                binding?.newCommentNotificationTextView?.visibility = VISIBLE
+                return
+            } else {
+                //if no change in likes count or comments count decreases, it's not important to show it
+                binding?.newCommentNotificationTextView?.visibility = INVISIBLE
             }
+
         }
 
         override fun onCancelled(error: DatabaseError) {}
     }
+
 
     private val endorsementsCountValueEventListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
@@ -94,18 +122,8 @@ class ViewIssueFragment :
     private val commentsAdapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             super.onItemRangeInserted(positionStart, itemCount)
-            manager?.scrollToPosition(0)
-            binding?.newCommentNotificationTextView?.visibility = View.INVISIBLE
-        }
-    }
-
-    //listener for recycler view scroll events
-    private val scrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            if (dy != 0) {
-                binding?.newCommentNotificationTextView?.visibility = View.INVISIBLE
-            }
+            manager?.scrollToPosition(positionStart)
+            binding?.newCommentNotificationTextView?.visibility = INVISIBLE
         }
     }
 
@@ -131,8 +149,8 @@ class ViewIssueFragment :
         currentUser = auth.currentUser!!
 
         // get the view model
-        val viewModel = ViewModelProvider(this, ViewModelFactory(owner = this, repository = DatabaseRepository()))
-            .get(ViewIssueViewModel::class.java)
+        val viewModel = ViewModelProvider(this,
+            ViewModelFactory(owner = this, repository = DatabaseRepository())).get(ViewIssueViewModel::class.java)
 
         //get issue
         dbRef.child("issues").child(args.issueId).get().addOnSuccessListener { issueSnapShot ->
@@ -198,12 +216,12 @@ class ViewIssueFragment :
         }
 
         binding?.commentLinearLayout?.setOnClickListener {
-            commentSheetDialog = IssueCommentBottomSheetDialogFragment(
+            commentOnIssueSheetDialog = CommentOnIssueBottomSheetDialogFragment(
                 requireContext(),
                 requireView(),
                 this)
-            commentSheetDialog.arguments = bundleOf("issueIdKey" to args.issueId)
-            commentSheetDialog.show(parentFragmentManager, null)
+            commentOnIssueSheetDialog.arguments = bundleOf("issueIdKey" to args.issueId)
+            commentOnIssueSheetDialog.show(parentFragmentManager, null)
         }
 
         binding?.endorseLinearLayout?.setOnClickListener {
@@ -237,7 +255,8 @@ class ViewIssueFragment :
                             }
                             //after database update is completed, update ui
                             binding?.endorsementTextView?.text =
-                                currentData?.getValue(Int::class.java).toString().removePrefix("-")
+                                currentData?.getValue(Int::class.java).toString()
+                                    .removePrefix("-")
                         }
 
                     }
@@ -246,13 +265,11 @@ class ViewIssueFragment :
 
         //get a query reference to issue comments ordered by time code so that the most recent
         //comments appear first
-        val commentsQuery = dbRef.child("issue-comments").child(args.issueId).orderByChild("timeId")
+        val commentsQuery = dbRef.child("issue-comments").child(args.issueId)
+            .orderByChild("timeId")
 
         //initialize adapter
         commentsAdapter = IssueCommentsPagingAdapter(requireContext(), currentUser, this)
-
-        //add scroll listener to remove notification text view when recycler view is scrolled
-        recyclerView.addOnScrollListener(scrollListener)
 
         //retrieve number of comments from database to be used for estimating the number of new
         //comments added since the user last refreshed
@@ -273,7 +290,7 @@ class ViewIssueFragment :
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.searchIssueComments(commentsQuery).collectLatest {
+            viewModel.getIssueComments(commentsQuery).collectLatest {
                     pagingData ->
                 commentsAdapter?.submitData(pagingData)
 
@@ -291,7 +308,7 @@ class ViewIssueFragment :
                         // in order to retry the load operation.
                         Toast.makeText(
                             context,
-                            "Error fetching posts! Retrying..",
+                            "Error fetching comments! Retrying..",
                             Toast.LENGTH_SHORT).show()
                         //display no posts available at the moment
                         binding?.noCommentsLayout?.visibility = VISIBLE
@@ -371,12 +388,12 @@ class ViewIssueFragment :
         commentsAdapter?.registerAdapterDataObserver(commentsAdapterObserver)
 
         //listener for contributions count used to set count text
-        dbRef.child("issues").child(args.issueId)
-            .child("contributionsCount").addValueEventListener(commentsCountValueEventListener)
+        dbRef.child("issues").child(args.issueId).child("contributionsCount")
+            .addValueEventListener(commentsCountValueEventListener)
 
         //listener for endorsements count used to set endorsement count text
-        dbRef.child("issues").child(args.issueId)
-            .child("endorsementsCount").addValueEventListener(endorsementsCountValueEventListener)
+        dbRef.child("issues").child(args.issueId).child("endorsementsCount")
+            .addValueEventListener(endorsementsCountValueEventListener)
 
 
     }
@@ -385,13 +402,12 @@ class ViewIssueFragment :
         super.onStop()
         //clear observers and listeners
         commentsAdapter?.unregisterAdapterDataObserver(commentsAdapterObserver)
-        recyclerView.removeOnScrollListener(scrollListener)
 
-        dbRef.child("issues").child(args.issueId)
-            .child("contributionsCount").removeEventListener(commentsCountValueEventListener)
+        dbRef.child("issues").child(args.issueId).child("contributionsCount")
+            .removeEventListener(commentsCountValueEventListener)
 
-        dbRef.child("issues").child(args.issueId)
-            .child("endorsementsCount").removeEventListener(endorsementsCountValueEventListener)
+        dbRef.child("issues").child(args.issueId).child("endorsementsCount")
+            .removeEventListener(endorsementsCountValueEventListener)
     }
 
     override fun onDestroy() {
