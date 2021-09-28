@@ -34,7 +34,7 @@ class PostsPagingAdapter (
         fun onCommentClicked(postId: String, view: View, viewHolder: PostViewHolder)
         fun onLikeClicked(postId: String, view: View, viewHolder: PostViewHolder)
         fun onSaveClicked(postId: String, it: View, viewHolder: PostViewHolder)
-        fun onMoreClicked(postId: String, it: View?, viewHolder: PostViewHolder)
+        fun onMoreClicked(postId: String, userId: String?, it: View?, viewHolder: PostViewHolder)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -239,7 +239,7 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
 
         moreImageView.setOnClickListener {
             if(post?.postId != null) {
-                clickListener.onMoreClicked(post.postId, it, viewHolder)
+                clickListener.onMoreClicked(post.postId, post.userId, it, viewHolder)
             }
         }
     }

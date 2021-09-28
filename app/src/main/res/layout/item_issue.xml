@@ -79,7 +79,6 @@
         android:layout_width="@dimen/width_30dp"
         android:layout_height="@dimen/height_30dp"
         android:layout_marginEnd="@dimen/margin_16dp"
-        android:background="@color/lightest_pearl"
         android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="@+id/endorsementTextView"
         app:layout_constraintEnd_toEndOf="parent"

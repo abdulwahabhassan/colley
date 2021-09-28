@@ -6,6 +6,7 @@ import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +26,7 @@ import com.colley.android.viewmodel.PostsViewModel
 import com.colley.android.factory.ViewModelFactory
 import com.colley.android.view.dialog.MoreBottomSheetDialogFragment
 import com.colley.android.view.dialog.PostBottomSheetDialogFragment
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -38,7 +40,6 @@ import kotlinx.coroutines.launch
 
 class PostsFragment : Fragment(),
     PostsPagingAdapter.PostPagingItemClickedListener,
-    NewPostBottomSheetDialogFragment.NewPostListener,
     CommentOnPostBottomSheetDialogFragment.CommentListener,
     PostBottomSheetDialogFragment.ActionsDialogListener,
     MoreBottomSheetDialogFragment.MoreOptionsDialogListener{
@@ -92,12 +93,17 @@ class PostsFragment : Fragment(),
     }
 
 
-    //observer for adapter item changes
+    //observer for adapter item insertion
     private val postsAdapterObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             super.onItemRangeInserted(positionStart, itemCount)
             manager?.scrollToPosition(0)
             binding.newPostNotificationTextView.visibility = View.INVISIBLE
+        }
+        //observer for adapter item removal
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+            super.onItemRangeRemoved(positionStart, itemCount)
+            manager?.scrollToPosition(positionStart)
         }
     }
 
@@ -417,7 +423,7 @@ class PostsFragment : Fragment(),
     }
 
     //on more options clicked, open dialog
-    override fun onMoreClicked(postId: String, it: View?, viewHolder: PostViewHolder) {
+    override fun onMoreClicked(postId: String, userId: String?, it: View?, viewHolder: PostViewHolder) {
         //reference to viewHolder clicked
         postViewHolder = viewHolder
         moreOptionsDialog = MoreBottomSheetDialogFragment(
@@ -425,7 +431,7 @@ class PostsFragment : Fragment(),
             requireView(),
             this
         )
-        moreOptionsDialog.arguments = bundleOf("postIdKey" to postId)
+        moreOptionsDialog.arguments = bundleOf("postIdKey" to postId, "userIdKey" to userId)
         moreOptionsDialog.show(parentFragmentManager, null)
     }
 
@@ -449,10 +455,6 @@ class PostsFragment : Fragment(),
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    override fun refreshPosts() {
-        postsAdapter?.refresh()
     }
 
     //update view holder ui to display updated comment count
@@ -517,11 +519,19 @@ class PostsFragment : Fragment(),
     }
 
     override fun onDeletePost(postId: String?) {
-
+        postsAdapter?.refresh()
+        //update post count so that the fragment is aware of the current database value
+        getPostsCount()
+        Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+        postViewHolder?.oldPosition?.let { postsAdapter?.notifyItemRangeRemoved(it, 1) }
     }
 
     override fun onReportPost(postId: String?) {
-
+        AlertDialog.Builder(requireContext())
+            .setMessage("This post has been flagged and will be reviewed")
+            .setNegativeButton("Ok, dismiss") { dialog, _ ->
+                dialog.dismiss()
+            }.show()
     }
 
 }

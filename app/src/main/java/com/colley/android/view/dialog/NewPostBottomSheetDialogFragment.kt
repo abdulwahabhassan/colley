@@ -52,9 +52,6 @@ class NewPostBottomSheetDialogFragment(
         }
     }
 
-    interface NewPostListener {
-        fun refreshPosts()
-    }
 
     interface NewPostHomeFabListener {
         fun enableFab(enabled: Boolean)
@@ -101,13 +98,15 @@ class NewPostBottomSheetDialogFragment(
                 body = binding?.postBodyEditText?.text.toString().trim()
             }
 
-            val date: String = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss").format(Calendar.getInstance().time)
+            val date: String = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
+                .format(Calendar.getInstance().time)
             //inverted timeId to be used for sorting in the order of most recent post to oldest
-            val timeId = SimpleDateFormat("dMMyyyyHHmmss").format(Calendar.getInstance().time).toLong() * -1
+            val timeId = SimpleDateFormat("dMMyyyyHHmmss")
+                .format(Calendar.getInstance().time).toLong() * -1
 
             //if fields are empty, do not upload issue to database
             if (body == null && postImageUri == null) {
-                Toast.makeText(parentContext, "You cannot make an empty post",
+                Toast.makeText(parentContext, "Can't make an empty post",
                     Toast.LENGTH_SHORT).show()
                 setEditingEnabled(true)
                 return@setOnClickListener
@@ -135,7 +134,6 @@ class NewPostBottomSheetDialogFragment(
             //in case of error
             if (error != null) {
                 Toast.makeText(parentContext, "Unable to create post", Toast.LENGTH_LONG).show()
-                Log.w(TAG, "Unable to write post to database.", error.toException())
                 setEditingEnabled(true)
                 return@CompletionListener
             }
@@ -178,7 +176,7 @@ class NewPostBottomSheetDialogFragment(
                 putImageInStorage(storageReference, postImageUri, key)
             }
 
-            Snackbar.make(postsView, "Post created successfully!", Snackbar.LENGTH_LONG).show()
+            Toast.makeText(parentContext, "Posted", Toast.LENGTH_LONG).show()
             //dismiss bottom sheet dialog
             this.dismiss()
         })
