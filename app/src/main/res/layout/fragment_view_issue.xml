@@ -125,6 +125,21 @@
             app:layout_constraintStart_toEndOf="@+id/endorsementTextView"
             app:layout_constraintTop_toTopOf="@+id/endorsementTextView" />
 
+        <ImageView
+            android:id="@+id/moreImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ripple_effect_rectangular"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="2dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_more"
+            app:layout_constraintBottom_toBottomOf="@+id/pinImageView"
+            app:layout_constraintStart_toEndOf="@+id/pinImageView"
+            app:layout_constraintTop_toTopOf="@+id/pinImageView"
+            app:layout_constraintVertical_bias="0.444" />
+
         <TextView
             android:id="@+id/userSchoolTextView"
             android:layout_width="wrap_content"

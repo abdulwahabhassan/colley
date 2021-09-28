@@ -7,7 +7,7 @@
                 android:bottomRightRadius="@dimen/corner_radius_4dp"
                 android:topLeftRadius="@dimen/corner_radius_4dp"
                 android:topRightRadius="@dimen/corner_radius_4dp"/>
-            <solid android:color="@color/apricot" />
+            <solid android:color="@color/lightest_pearl" />
         </shape>
     </item>
 </layer-list>

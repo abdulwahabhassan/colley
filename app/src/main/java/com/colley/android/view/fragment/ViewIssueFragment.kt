@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.View.*
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +28,8 @@ import com.colley.android.repository.DatabaseRepository
 import com.colley.android.view.dialog.CommentOnIssueBottomSheetDialogFragment
 import com.colley.android.viewmodel.ViewIssueViewModel
 import com.colley.android.factory.ViewModelFactory
+import com.colley.android.view.dialog.IssueOptionsBottomSheetDialogFragment
+import com.colley.android.view.dialog.MoreBottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -41,10 +44,12 @@ import kotlinx.coroutines.launch
 class ViewIssueFragment :
     Fragment(),
     IssueCommentsPagingAdapter.IssueCommentItemClickedListener,
-    CommentOnIssueBottomSheetDialogFragment.CommentListener {
+    CommentOnIssueBottomSheetDialogFragment.CommentListener,
+    IssueOptionsBottomSheetDialogFragment.IssueOptionsDialogListener{
 
     private val args: ViewIssueFragmentArgs by navArgs()
     private var _binding: FragmentViewIssueBinding? = null
+    private var issueUserId: String? = null
     private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -58,6 +63,7 @@ class ViewIssueFragment :
     private var manager: LinearLayoutManager? = null
     private val uid: String
         get() = currentUser.uid
+    private lateinit var issueOptionsDialog: IssueOptionsBottomSheetDialogFragment
 
     private val commentsCountValueEventListener = object : ValueEventListener {
         @SuppressLint("SetTextI18n")
@@ -157,6 +163,8 @@ class ViewIssueFragment :
         dbRef.child("issues").child(args.issueId).get().addOnSuccessListener { issueSnapShot ->
 
             val issue = issueSnapShot.getValue(Issue::class.java)
+            //get the id of the user who raised the issue
+            issueUserId = issue?.userId
             //set issue title, body and time stamp, these don't need to change
             binding?.issueTitleTextView?.text = issue?.title
             binding?.issueBodyTextView?.text = issue?.body
@@ -261,6 +269,16 @@ class ViewIssueFragment :
 
                     }
                 )
+        }
+
+        binding?.moreImageView?.setOnClickListener {
+            issueOptionsDialog = IssueOptionsBottomSheetDialogFragment(
+                requireContext(),
+                requireView(),
+                this
+            )
+            issueOptionsDialog.arguments = bundleOf("issueIdKey" to args.issueId, "userIdKey" to issueUserId)
+            issueOptionsDialog.show(parentFragmentManager, null)
         }
 
         //get a query reference to issue comments ordered by time code so that the most recent
@@ -418,6 +436,19 @@ class ViewIssueFragment :
     //after database update is completed, update ui
     override fun onComment(currentData: DataSnapshot?) {
         binding?.contributionsTextView?.text = currentData?.getValue(Int::class.java).toString()
+    }
+
+    override fun onDeleteIssue(issueId: String?) {
+        findNavController().navigateUp()
+        Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onReportIssue(issueId: String?) {
+        AlertDialog.Builder(requireContext())
+            .setMessage("This issue has been flagged and will be reviewed")
+            .setNegativeButton("Ok, dismiss") { dialog, _ ->
+                dialog.dismiss()
+            }.show()
     }
 
 

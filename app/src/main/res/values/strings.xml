@@ -89,5 +89,7 @@
     <string name="send_message_text">Send Message</string>
     <string name="view_profile_text">View Profile</string>
     <string name="flag_post_text">Flag this post</string>
+    <string name="flag_issue_text">Flag this issue</string>
+    <string name="delete_issue_text">Delete issue</string>
 
 </resources>

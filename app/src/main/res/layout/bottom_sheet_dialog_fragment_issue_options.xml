@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:padding="@dimen/padding_16dp">
+
+    <TextView
+        android:id="@+id/deleteIssue"
+        android:layout_marginTop="@dimen/margin_8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_8dp"
+        android:visibility="gone"
+        android:text="@string/delete_issue_text"
+        android:textSize="@dimen/text_size_15sp"
+        android:textColor="@color/light_pearl"
+        android:drawablePadding="@dimen/margin_8dp"
+        android:background="@drawable/ripple_effect_curved_edges_8dp"
+        app:drawableStartCompat="@drawable/ic_delete_red_tint" />
+
+    <TextView
+        android:id="@+id/reportIssue"
+        android:layout_marginTop="@dimen/margin_8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_8dp"
+        android:text="@string/flag_issue_text"
+        android:textSize="@dimen/text_size_15sp"
+        android:textColor="@color/light_pearl"
+        android:drawablePadding="@dimen/margin_8dp"
+        android:background="@drawable/ripple_effect_curved_edges_8dp"
+        app:drawableStartCompat="@drawable/ic_report" />
+</androidx.appcompat.widget.LinearLayoutCompat>
