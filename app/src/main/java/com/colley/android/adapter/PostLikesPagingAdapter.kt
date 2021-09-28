@@ -8,6 +8,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
 import com.colley.android.databinding.ItemLikeBinding
 import com.colley.android.model.Profile
@@ -92,9 +93,10 @@ class PostLikeViewHolder(private val itemBinding: ItemLikeBinding)
                     val photoUrl = snapShot.getValue(String::class.java)
                     //load photoUrl to view
                     if (photoUrl != null) {
-                        Glide.with(context).load(photoUrl).into(userImageView)
+                        Glide.with(context).load(photoUrl)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(userImageView)
                     } else {
-                        Glide.with(context).load(R.drawable.ic_profile).into(userImageView)
+                        Glide.with(context).load(R.drawable.ic_person_light_pearl).into(userImageView)
                     }
                 }
 

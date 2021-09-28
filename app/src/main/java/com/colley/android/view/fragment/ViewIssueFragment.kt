@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
 import com.colley.android.adapter.IssueCommentsPagingAdapter
 import com.colley.android.databinding.FragmentViewIssueBinding
@@ -175,9 +176,8 @@ class ViewIssueFragment :
                     } else {
                         context?.let { context -> binding?.userImageView?.let {
                                 imageView ->
-                            Glide.with(context).load(R.drawable.ic_profile).into(
-                                imageView
-                            )
+                            Glide.with(context).load(R.drawable.ic_profile)
+                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView)
                         } }
                     }
 

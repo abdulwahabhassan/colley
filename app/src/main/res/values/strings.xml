@@ -88,5 +88,6 @@
     <string name="report_post_text">Report this post</string>
     <string name="send_message_text">Send Message</string>
     <string name="view_profile_text">View Profile</string>
+    <string name="flag_post_text">Flag this post</string>
 
 </resources>

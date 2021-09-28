@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
 import com.colley.android.databinding.ItemNewGroupMemberBinding
 import com.colley.android.model.Profile
@@ -77,14 +78,17 @@ class AddGroupMembersRecyclerAdapter(
             )
 
             //load photo
-            Firebase.database.reference.child("photos").child(user.userId!!).addListenerForSingleValueEvent(
-                object : ValueEventListener {
+            Firebase.database.reference.child("photos").child(user.userId!!)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String>()
                         if (photo != null) {
-                            Glide.with(context).load(photo).into(groupMemberImageView)
+                            Glide.with(context).load(photo)
+                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                                .into(groupMemberImageView)
                         } else {
-                            Glide.with(context).load(R.drawable.ic_person).into(groupMemberImageView)
+                            Glide.with(context).load(R.drawable.ic_person_light_pearl)
+                                .into(groupMemberImageView)
                         }
                     }
 

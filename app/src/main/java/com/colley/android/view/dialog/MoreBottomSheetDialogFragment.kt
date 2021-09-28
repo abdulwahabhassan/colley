@@ -30,8 +30,8 @@ class MoreBottomSheetDialogFragment (
     private val uid: String
         get() = currentUser.uid
     interface MoreOptionsDialogListener {
-        fun onDeletePost()
-        fun onReportPost()
+        fun onDeletePost(postId: String?)
+        fun onReportPost(postId: String?)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +61,19 @@ class MoreBottomSheetDialogFragment (
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        with(binding) {
+            deletePost.setOnClickListener {
+//                postId?.let { it1 -> dbRef.child("posts").child(it1).
+                //}
+
+                moreOptionsDialogListener.onDeletePost(postId)
+            }
+
+            reportPost.setOnClickListener {
+                moreOptionsDialogListener.onReportPost(postId)
+            }
+        }
 
 
     }

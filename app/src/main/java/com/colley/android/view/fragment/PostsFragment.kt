@@ -2,7 +2,6 @@ package com.colley.android.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -517,11 +516,11 @@ class PostsFragment : Fragment(),
         }
     }
 
-    override fun onDeletePost() {
+    override fun onDeletePost(postId: String?) {
 
     }
 
-    override fun onReportPost() {
+    override fun onReportPost(postId: String?) {
 
     }
 

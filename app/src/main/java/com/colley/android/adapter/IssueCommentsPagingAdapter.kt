@@ -104,9 +104,10 @@ class IssueCommentViewHolder(private val itemBinding: ItemCommentBinding)
                 val photoUrl = snapShot.getValue(String::class.java)
                 //load photoUrl to view
                 if (photoUrl != null) {
-                    Glide.with(context).load(photoUrl).into(commenterImageView)
+                    Glide.with(context).load(photoUrl).diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .into(commenterImageView)
                 } else {
-                    Glide.with(context).load(R.drawable.ic_profile).into(commenterImageView)
+                    Glide.with(context).load(R.drawable.ic_person_light_pearl).into(commenterImageView)
                 }
             }
 

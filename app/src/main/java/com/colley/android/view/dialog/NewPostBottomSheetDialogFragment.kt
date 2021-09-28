@@ -170,8 +170,9 @@ class NewPostBottomSheetDialogFragment(
             //if a post image is selected, retrieve its uri and define a storage path for it
             if (postImageUri != null) {
                 val storageReference = Firebase.storage
-                    .getReference(key)
-                    .child("$uid-post-photo")
+                    .getReference(uid)
+                    .child(key)
+                    .child(postImageUri?.lastPathSegment+"_post_image")
 
                 //upload the photo to storage
                 putImageInStorage(storageReference, postImageUri, key)

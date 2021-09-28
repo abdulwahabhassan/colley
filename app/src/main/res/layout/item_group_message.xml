@@ -74,7 +74,7 @@
         android:layout_height="@dimen/height_32dp"
         android:scaleType="center"
         android:visibility="invisible"
-        android:background="@color/grey"
+        android:background="@color/apricot"
         android:src="@drawable/ic_person"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/messengerNameTextView"

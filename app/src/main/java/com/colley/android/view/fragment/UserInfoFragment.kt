@@ -1,6 +1,5 @@
 package com.colley.android.view.fragment
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,17 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
-import com.colley.android.contract.OpenDocumentContract
-import com.colley.android.databinding.FragmentChateeInfoBinding
-import com.colley.android.databinding.FragmentProfileBinding
 import com.colley.android.databinding.FragmentUserInfoBinding
 import com.colley.android.model.Profile
-import com.colley.android.view.dialog.EditBioBottomSheetDialogFragment
-import com.colley.android.view.dialog.EditProfileBottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -29,8 +23,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
 
 class UserInfoFragment : Fragment() {
 
@@ -121,14 +113,13 @@ class UserInfoFragment : Fragment() {
                 if (photo == null) {
                     Log.e(TAG, "photo for user ${args.userId} is unexpectedly null")
                     binding?.profilePhotoImageView?.let {
-                        Glide.with(requireContext()).load(R.drawable.ic_person_colored).into(
-                            it
-                        )
+                        Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl).into(it)
                     }
                     binding?.photoProgressBar?.visibility = View.GONE
                 } else {
                     binding?.profilePhotoImageView?.let {
-                        Glide.with(requireContext()).load(photo).into(it)
+                        Glide.with(requireContext()).load(photo)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(it)
                     }
                     binding?.photoProgressBar?.visibility = View.GONE
                 }

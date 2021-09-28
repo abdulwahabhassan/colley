@@ -76,11 +76,12 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/userImageView"
-        android:layout_width="@dimen/width_25dp"
-        android:layout_height="@dimen/height_25dp"
+        android:layout_width="@dimen/width_30dp"
+        android:layout_height="@dimen/height_30dp"
         android:layout_marginEnd="@dimen/margin_16dp"
+        android:background="@color/lightest_pearl"
         android:scaleType="center"
-        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/endorsementTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/issueBodyTextView"
         app:shapeAppearance="@style/RoundShapeAppearance" />

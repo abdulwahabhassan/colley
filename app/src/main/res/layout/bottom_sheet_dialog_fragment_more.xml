@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/margin_8dp"
-        android:text="@string/report_post_text"
+        android:text="@string/flag_post_text"
         android:textSize="@dimen/text_size_15sp"
         android:textColor="@color/light_pearl"
         android:drawablePadding="@dimen/margin_8dp"

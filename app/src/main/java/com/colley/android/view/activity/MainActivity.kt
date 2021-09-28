@@ -19,6 +19,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
 import com.colley.android.databinding.ActivityMainBinding
 import com.colley.android.model.Profile
@@ -110,9 +111,10 @@ class MainActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val photo = snapshot.getValue<String>()
                 if (photo != null) {
-                    Glide.with(this@MainActivity).load(photo).into(imageView)
+                    Glide.with(this@MainActivity).load(photo)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView)
                 } else {
-                    Glide.with(this@MainActivity).load(R.drawable.ic_profile).into(imageView)
+                    Glide.with(this@MainActivity).load(R.drawable.ic_person_light_pearl).into(imageView)
                     Log.w(TAG, "photo is null")
                 }
             }

@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
 import com.colley.android.databinding.ItemGroupMessageBinding
 import com.colley.android.databinding.ItemGroupMessageCurrentUserBinding
@@ -189,7 +189,7 @@ class PrivateMessageRecyclerAdapter(
                             if (photo != null) {
                                 loadImageIntoView(binding.messengerImageView, photo)
                             } else {
-                                Glide.with(context).load(R.drawable.ic_person).into(binding.messengerImageView)
+                                Glide.with(context).load(R.drawable.ic_person_light_pearl).into(binding.messengerImageView)
                                 binding.messengerImageView.visibility = VISIBLE
                             }
                         }
@@ -253,6 +253,7 @@ class PrivateMessageRecyclerAdapter(
                     val downloadUrl = uri.toString()
                     Glide.with(imageView.context)
                         .load(downloadUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(imageView)
                     imageView.visibility = VISIBLE
                 }

@@ -117,7 +117,7 @@ class IssueViewHolder (private val itemBinding : ItemIssueBinding) : RecyclerVie
                         Glide.with(root.context).load(photo)
                             .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(userImageView)
                     } else {
-                        Glide.with(root.context).load(R.drawable.ic_profile).into(userImageView)
+                        Glide.with(root.context).load(R.drawable.ic_person_light_pearl).into(userImageView)
                     }
                 }
 

@@ -1,18 +1,17 @@
 package com.colley.android.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
 import com.colley.android.databinding.ItemGroupBinding
 import com.colley.android.model.GroupChat
 import com.colley.android.model.GroupMessage
-import com.colley.android.model.PrivateChat
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
@@ -43,7 +42,7 @@ class GroupsRecyclerAdapter (
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
-        val viewBinding = ItemGroupBinding
+        val viewBinding = com.colley.android.databinding.ItemGroupBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
         return GroupViewHolder(viewBinding)
     }
@@ -104,6 +103,7 @@ class GroupsRecyclerAdapter (
                                         .into(groupImageView)
                                 else ->
                                     Glide.with(root.context).load(chatGroup.groupPhoto)
+                                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                                         .into(groupImageView)
                             }
 

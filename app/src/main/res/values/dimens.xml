@@ -42,4 +42,6 @@
     <dimen name="corner_radius_4dp">4dp</dimen>
     <dimen name="width_25dp">25dp</dimen>
     <dimen name="height_25dp">25dp</dimen>
+    <dimen name="width_30dp">30dp</dimen>
+    <dimen name="height_30dp">30dp</dimen>
 </resources>

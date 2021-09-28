@@ -8,6 +8,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
 import com.colley.android.databinding.ItemChatBinding
 import com.colley.android.model.PrivateChat
@@ -105,7 +106,8 @@ class ChatsRecyclerAdapter(
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String>()
                         if (photo != null) {
-                            Glide.with(context).load(photo).into(this@with.personImageView)
+                            Glide.with(context).load(photo)
+                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(this@with.personImageView)
                         } else {
                             Glide.with(context).load(R.drawable.ic_person).into(this@with.personImageView)
                         }
@@ -123,7 +125,8 @@ class ChatsRecyclerAdapter(
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val chateePhoto = snapshot.getValue<String>()
                         if (chateePhoto != null) {
-                            Glide.with(context).load(chateePhoto).into(this@with.personImageView)
+                            Glide.with(context).load(chateePhoto).diskCacheStrategy(
+                                DiskCacheStrategy.RESOURCE).into(this@with.personImageView)
                         }
                     }
 

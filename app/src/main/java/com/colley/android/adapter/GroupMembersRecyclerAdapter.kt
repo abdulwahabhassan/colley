@@ -8,6 +8,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
 import com.colley.android.databinding.ItemGroupMemberBinding
 import com.colley.android.model.Profile
@@ -82,9 +83,11 @@ class GroupMembersRecyclerAdapter(
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 val photoUrl = snapshot.getValue<String>()
                                 if (photoUrl != null) {
-                                    Glide.with(context).load(photoUrl).into(groupMemberImageView)
+                                    Glide.with(context).load(photoUrl).diskCacheStrategy(
+                                        DiskCacheStrategy.RESOURCE).into(groupMemberImageView)
                                 } else {
-                                    Glide.with(context).load(R.drawable.ic_person).into(groupMemberImageView)
+                                    Glide.with(context).load(R.drawable.ic_person_light_pearl)
+                                        .into(groupMemberImageView)
                                 }
                             }
 

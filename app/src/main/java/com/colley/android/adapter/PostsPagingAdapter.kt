@@ -102,11 +102,9 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
                 //set photo
                 if (photo != null) {
                     Glide.with(root.context).load(photo)
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        .into(userPhotoImageView)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(userPhotoImageView)
                 } else {
-                    Glide.with(root.context).load(R.drawable.ic_person)
-                        .into(userPhotoImageView)
+                    Glide.with(root.context).load(R.drawable.ic_person).into(userPhotoImageView)
                 }
             }
         }

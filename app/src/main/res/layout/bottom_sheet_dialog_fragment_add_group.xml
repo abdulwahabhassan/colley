@@ -15,7 +15,7 @@
         android:src="@drawable/ic_group"
         android:scaleType="center"
         android:layout_marginTop="@dimen/margin_16dp"
-        android:background="@color/dark_grey"
+        android:background="@color/lightest_pearl"
         app:shapeAppearance="@style/RoundShapeAppearance"/>
 
     <androidx.appcompat.widget.AppCompatButton

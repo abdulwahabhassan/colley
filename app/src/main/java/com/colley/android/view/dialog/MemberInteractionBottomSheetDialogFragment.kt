@@ -87,7 +87,7 @@ class MemberInteractionBottomSheetDialogFragment(
                             }
                         } else {
                             binding?.groupMemberImageView?.let {
-                                Glide.with(parentContext).load(R.drawable.ic_person_colored).into(it)
+                                Glide.with(parentContext).load(R.drawable.ic_person_light_pearl).into(it)
                             }
                         }
                     }
