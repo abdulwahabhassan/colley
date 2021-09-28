@@ -21,7 +21,8 @@ class HomeFragment:
     Fragment(),
     RaiseIssueBottomSheetDialogFragment.NewIssueListener,
     RaiseIssueBottomSheetDialogFragment.RaiseIssueHomeFabListener,
-    NewPostBottomSheetDialogFragment.NewPostHomeFabListener {
+    NewPostBottomSheetDialogFragment.NewPostHomeFabListener,
+    AddGroupBottomSheetDialogFragment.AddGroupFabListener{
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -127,7 +128,8 @@ class HomeFragment:
                 2 -> {
                     addGroupBottomSheetDialog = AddGroupBottomSheetDialogFragment(
                         requireContext(),
-                        requireView())
+                        requireView(),
+                        this)
                     addGroupBottomSheetDialog.show(parentFragmentManager, null)
 
                 }

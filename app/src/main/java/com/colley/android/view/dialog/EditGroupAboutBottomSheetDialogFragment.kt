@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.colley.android.R
-import com.colley.android.databinding.FragmentEditAboutBottomSheetDialogBinding
+import com.colley.android.databinding.BottomSheetDialogFragmentEditGroupAboutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -17,7 +17,7 @@ import com.google.firebase.ktx.Firebase
 
 class EditGroupAboutBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
-    private var _binding: FragmentEditAboutBottomSheetDialogBinding? = null
+    private var _binding: BottomSheetDialogFragmentEditGroupAboutBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -29,7 +29,7 @@ class EditGroupAboutBottomSheetDialogFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentEditAboutBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentEditGroupAboutBinding.inflate(inflater, container, false)
         return binding.root
     }
 

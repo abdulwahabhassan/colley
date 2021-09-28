@@ -6,27 +6,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".view.dialog.MemberInteractionBottomSheetDialogFragment">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_8dp"
-        android:layout_marginEnd="@dimen/margin_8dp"
-        android:contentDescription="@string/drag_handler_text"
-        android:src="@drawable/ic_drag"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/groupMemberImageView"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="@dimen/margin_16dp"
         android:background="@color/dark_grey"
         android:scaleType="center"
+        android:layout_marginTop="@dimen/padding_16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearance="@style/RoundShapeAppearance" />
 
     <TextView
@@ -54,7 +44,7 @@
         android:drawablePadding="@dimen/padding_8dp"
         android:focusable="true"
         android:padding="@dimen/padding_8dp"
-        android:text="View Profile"
+        android:text="@string/view_profile_text"
         android:textColor="@color/light_pearl"
         android:textSize="@dimen/text_size_15sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +65,7 @@
         android:drawablePadding="@dimen/padding_8dp"
         android:focusable="true"
         android:padding="@dimen/padding_8dp"
-        android:text="Send Message"
+        android:text="@string/send_message_text"
         android:textColor="@color/light_pearl"
         android:textSize="@dimen/text_size_15sp"
         app:layout_constraintBottom_toBottomOf="parent"

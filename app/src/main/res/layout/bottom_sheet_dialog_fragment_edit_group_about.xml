@@ -3,20 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".view.dialog.EditGroupNameBottomSheetDialogFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.dialog.EditGroupAboutBottomSheetDialogFragment">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/padding_8dp"
-        android:layout_marginEnd="@dimen/margin_8dp"
-        android:src="@drawable/ic_drag"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editGroupNameTextInputLayout"
+        android:id="@+id/editAboutTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16dp"
@@ -25,18 +18,16 @@
         app:boxCornerRadiusBottomStart="@dimen/corner_radius_8dp"
         app:boxCornerRadiusTopEnd="@dimen/corner_radius_8dp"
         app:boxCornerRadiusTopStart="@dimen/corner_radius_8dp"
-        app:counterEnabled="true"
-        app:counterMaxLength="36"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginHorizontal="@dimen/margin_16dp"
         app:boxBackgroundColor="@color/white"
         >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editGroupNameEditText"
+            android:id="@+id/editAboutEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Group Name"
+            android:hint="Group Description"
             android:padding="12dp"
             android:textSize="@dimen/text_size_14sp"
             android:maxLines="5"
@@ -44,15 +35,15 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/saveGroupNameButton"
+        android:id="@+id/saveAboutButton"
         android:textColor="@color/light_pearl"
+        android:background="@drawable/ripple_effect_curved_edges_8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16dp"
-        android:textSize="@dimen/text_size_12sp"
-        android:paddingStart="@dimen/padding_12dp"
         android:drawableStart="@drawable/ic_save"
-        android:background="@drawable/ripple_effect_curved_edges_8dp"
+        android:paddingStart="@dimen/padding_12dp"
+        android:textSize="@dimen/text_size_12sp"
         android:layout_marginBottom="@dimen/margin_16dp"
         android:layout_gravity="center"
         android:text="Save"/>

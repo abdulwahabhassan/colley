@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.colley.android.databinding.FragmentPostCommentDialogBinding
+import com.colley.android.databinding.PostCommentDialogFragmentBinding
 import com.colley.android.model.Comment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseUser
@@ -27,7 +27,7 @@ class CommentOnPostBottomSheetDialogFragment (
 ) : BottomSheetDialogFragment() {
 
     private var postId: String? = null
-    private var _binding: FragmentPostCommentDialogBinding? = null
+    private var _binding: PostCommentDialogFragmentBinding? = null
     private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -49,7 +49,7 @@ class CommentOnPostBottomSheetDialogFragment (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPostCommentDialogBinding.inflate(inflater, container, false)
+        _binding = PostCommentDialogFragmentBinding.inflate(inflater, container, false)
         return binding?.root
     }
 

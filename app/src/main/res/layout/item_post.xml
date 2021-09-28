@@ -116,8 +116,8 @@
 
             <TextView
                 android:id="@+id/likeCountTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="1dp"
+                android:layout_height="15dp"
                 android:layout_marginStart="@dimen/margin_16dp"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/light_pearl"
@@ -152,6 +152,20 @@
                 app:layout_constraintStart_toEndOf="@+id/commentCountTextView"
                 app:layout_constraintTop_toBottomOf="@+id/contentImageView"
                 app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/moreImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_more"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginEnd="@dimen/margin_8dp"
+                android:background="@drawable/ripple_effect_curved_edges_8dp"
+                android:padding="@dimen/padding_2dp"
+                app:layout_constraintBottom_toTopOf="@+id/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contentImageView" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/commentLinearLayout"

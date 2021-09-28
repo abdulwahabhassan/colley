@@ -27,7 +27,7 @@ import com.google.firebase.ktx.Firebase
 class PostBottomSheetDialogFragment (
     private val parentContext: Context,
     private val postView: View,
-    private val postDialogListener: PostDialogListener
+    private val actionsDialogListener: ActionsDialogListener
         ) :
     BottomSheetDialogFragment(),
     CommentOnPostBottomSheetDialogFragment.CommentListener{
@@ -44,7 +44,7 @@ class PostBottomSheetDialogFragment (
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPagerAdapter: FragmentStateAdapter
     private lateinit var sheetDialogCommentOn: CommentOnPostBottomSheetDialogFragment
-    interface PostDialogListener {
+    interface ActionsDialogListener {
         fun onCommented(currentData: DataSnapshot?)
         fun onLiked(currentData: DataSnapshot?, liked: Boolean?)
     }
@@ -194,7 +194,7 @@ class PostBottomSheetDialogFragment (
                                                 //value of liked
                                                 binding.likeImageView.isActivated =
                                                     !(liked == null || liked == false)
-                                                postDialogListener.onLiked(currentData, liked)
+                                                actionsDialogListener.onLiked(currentData, liked)
                                             }
                                         }
                                     )
@@ -219,7 +219,7 @@ class PostBottomSheetDialogFragment (
     }
 
     override fun onComment(currentData: DataSnapshot?) {
-        postDialogListener.onCommented(currentData)
+        actionsDialogListener.onCommented(currentData)
     }
 
 }

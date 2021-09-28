@@ -24,6 +24,7 @@ import com.colley.android.view.dialog.NewPostBottomSheetDialogFragment
 import com.colley.android.view.dialog.CommentOnPostBottomSheetDialogFragment
 import com.colley.android.viewmodel.PostsViewModel
 import com.colley.android.factory.ViewModelFactory
+import com.colley.android.view.dialog.MoreBottomSheetDialogFragment
 import com.colley.android.view.dialog.PostBottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -40,7 +41,9 @@ class PostsFragment : Fragment(),
     PostsPagingAdapter.PostPagingItemClickedListener,
     NewPostBottomSheetDialogFragment.NewPostListener,
     CommentOnPostBottomSheetDialogFragment.CommentListener,
-    PostBottomSheetDialogFragment.PostDialogListener {
+    PostBottomSheetDialogFragment.ActionsDialogListener,
+    MoreBottomSheetDialogFragment.MoreOptionsDialogListener{
+
 
     private var _binding: FragmentPostsBinding? = null
     private val binding get() = _binding!!
@@ -55,6 +58,7 @@ class PostsFragment : Fragment(),
     private var differenceCount: Int = 0
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var postDialog: PostBottomSheetDialogFragment
+    private lateinit var moreOptionsDialog: MoreBottomSheetDialogFragment
     private lateinit var sheetDialogCommentOn: CommentOnPostBottomSheetDialogFragment
     private val uid: String
         get() = currentUser.uid
@@ -256,7 +260,6 @@ class PostsFragment : Fragment(),
     override fun onItemClick(postId: String, view: View, viewHolder: PostViewHolder) {
         //reference to viewHolder clicked
         postViewHolder = viewHolder
-        Log.w("clickoverride", "$postId")
         postDialog = PostBottomSheetDialogFragment(
             requireContext(),
             requireView(),
@@ -373,24 +376,19 @@ class PostsFragment : Fragment(),
             .runTransaction(object : Transaction.Handler {
                 override fun doTransaction(currentData: MutableData): Transaction.Result {
                     //retrieve the current list of saved posts at this location
-                    val savedPosts = currentData.getValue<ArrayList<String>>()
-                    //if no list is found and null is returned, create a new list, add post id to it
+                    var savedPosts = currentData.getValue<ArrayList<String>>()
+                    //if no list is found and null is returned, create a new list
                     if (savedPosts == null) {
-                        //update database
-                        currentData.value = arrayListOf(postId)
-                        return Transaction.success(currentData)
-                    } else {
-                        //if list does not already contain post id, add it
+                        savedPosts = arrayListOf()
+                    }
+                        //if list does not already contain post id, add it else remove it
                         if (!savedPosts.contains(postId)) {
                             savedPosts.add(postId)
-                            //update database
-                            currentData.value = savedPosts
-                            return Transaction.success(currentData)
                         } else {
-                            //if list already contains post, return unchanged list
-                            return Transaction.success(currentData)
+                            savedPosts.remove(postId)
                         }
-                    }
+                    currentData.value = savedPosts
+                    return Transaction.success(currentData)
                 }
 
                 override fun onComplete(
@@ -398,16 +396,38 @@ class PostsFragment : Fragment(),
                     committed: Boolean,
                     currentData: DataSnapshot?
                 ) {
-                    //on successful save, toast
                     if (error == null) {
-                        Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show()
-                        //update savedPostTextView start drawable icon
-                        postViewHolder?.itemBinding?.savePostTextView?.isActivated = true
+                        //get the updated list
+                        val updatedList = currentData?.getValue<ArrayList<String>>()
+                        //if it contains postid, toast saved
+                        if (updatedList?.contains(postId) == true) {
+                            Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show()
+                            //update savedPostTextView start drawable icon
+                            postViewHolder?.itemBinding?.savePostTextView?.isActivated = true
+                        } else {
+                            //Toast unsaved
+                            Toast.makeText(requireContext(), "UnSaved", Toast.LENGTH_SHORT).show()
+                            //update savedPostTextView start drawable icon
+                            postViewHolder?.itemBinding?.savePostTextView?.isActivated = false
+                        }
                     }
                 }
 
             }
             )
+    }
+
+    //on more options clicked, open dialog
+    override fun onMoreClicked(postId: String, it: View?, viewHolder: PostViewHolder) {
+        //reference to viewHolder clicked
+        postViewHolder = viewHolder
+        moreOptionsDialog = MoreBottomSheetDialogFragment(
+            requireContext(),
+            requireView(),
+            this
+        )
+        moreOptionsDialog.arguments = bundleOf("postIdKey" to postId)
+        moreOptionsDialog.show(parentFragmentManager, null)
     }
 
     override fun onStart() {
@@ -495,6 +515,14 @@ class PostsFragment : Fragment(),
                     "${currentData?.getValue(Int::class.java).toString()} comments"
             }
         }
+    }
+
+    override fun onDeletePost() {
+
+    }
+
+    override fun onReportPost() {
+
     }
 
 }

@@ -9,13 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
-import com.colley.android.databinding.FragmentRaiseIssueBottomSheetDialogBinding
+import com.colley.android.databinding.BottomSheetDialogFragmentRaiseIssueBinding
 import com.colley.android.model.Issue
-import com.colley.android.view.fragment.HomeFragmentDirections
-import com.colley.android.view.fragment.IssuesFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -32,7 +28,7 @@ class RaiseIssueBottomSheetDialogFragment(
     private val homeFabListener: RaiseIssueHomeFabListener
 ) : BottomSheetDialogFragment() {
 
-    private var _binding: FragmentRaiseIssueBottomSheetDialogBinding? = null
+    private var _binding: BottomSheetDialogFragmentRaiseIssueBinding? = null
     private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -53,7 +49,7 @@ class RaiseIssueBottomSheetDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentRaiseIssueBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentRaiseIssueBinding.inflate(inflater, container, false)
         return binding?.root
     }
 

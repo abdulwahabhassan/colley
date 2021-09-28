@@ -84,5 +84,9 @@
     <string name="location_text">Tag your location</string>
     <string name="post_text">Post</string>
     <string name="no_likes_text">No Likes</string>
+    <string name="delete_post_text">Delete post</string>
+    <string name="report_post_text">Report this post</string>
+    <string name="send_message_text">Send Message</string>
+    <string name="view_profile_text">View Profile</string>
 
 </resources>

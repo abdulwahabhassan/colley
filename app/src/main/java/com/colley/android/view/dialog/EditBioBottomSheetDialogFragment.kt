@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.colley.android.R
-import com.colley.android.databinding.FragmentEditBioBottomSheetDialogBinding
+import com.colley.android.databinding.BottomSheetDialogFragmentEditBioBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -18,7 +18,7 @@ import com.google.firebase.ktx.Firebase
 
 class EditBioBottomSheetDialogFragment: BottomSheetDialogFragment() {
 
-    private var _binding: FragmentEditBioBottomSheetDialogBinding? = null
+    private var _binding: BottomSheetDialogFragmentEditBioBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -30,7 +30,7 @@ class EditBioBottomSheetDialogFragment: BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentEditBioBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentEditBioBinding.inflate(inflater, container, false)
         return binding.root
     }
 

@@ -7,15 +7,13 @@ import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.colley.android.R
-import com.colley.android.databinding.FragmentMemberInteractionBottomSheetDialogBinding
+import com.colley.android.databinding.BottomSheetDialogFragmentMemberInteractionBinding
 import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
 import com.colley.android.view.fragment.GroupInfoFragmentDirections
-import com.colley.android.view.fragment.ViewIssueFragmentDirections
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -31,7 +29,7 @@ class MemberInteractionBottomSheetDialogFragment(
     private val parentContext: Context
 ) : BottomSheetDialogFragment() {
 
-    private var _binding: FragmentMemberInteractionBottomSheetDialogBinding? = null
+    private var _binding: BottomSheetDialogFragmentMemberInteractionBinding? = null
     private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -44,7 +42,7 @@ class MemberInteractionBottomSheetDialogFragment(
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentMemberInteractionBottomSheetDialogBinding
+        _binding = BottomSheetDialogFragmentMemberInteractionBinding
             .inflate(inflater, container, false)
         return binding?.root
     }

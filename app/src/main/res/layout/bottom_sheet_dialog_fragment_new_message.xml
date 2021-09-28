@@ -8,19 +8,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.dialog.NewMessageBottomSheetDialogFragment">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/padding_8dp"
-        android:layout_marginEnd="@dimen/margin_8dp"
-        android:src="@drawable/ic_drag"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/select_who_to_message_text"
             android:textColor="@color/light_pearl"
+            android:layout_marginTop="@dimen/padding_16dp"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"
             android:textSize="@dimen/text_size_15sp" />

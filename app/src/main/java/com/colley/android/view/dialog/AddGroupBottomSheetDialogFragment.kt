@@ -1,6 +1,7 @@
 package com.colley.android.view.dialog
 
 import android.content.Context
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -14,14 +15,14 @@ import android.widget.CheckBox
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.colley.android.view.fragment.GroupInfoFragment
 import com.colley.android.adapter.AddGroupMembersRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
-import com.colley.android.databinding.FragmentAddGroupBottomSheetDialogBinding
+import com.colley.android.databinding.BottomSheetDialogFragmentAddGroupBinding
 import com.colley.android.model.GroupChat
+import com.colley.android.model.GroupMessage
 import com.colley.android.model.NewGroup
 import com.colley.android.model.User
-import com.colley.android.model.GroupMessage
+import com.colley.android.view.fragment.GroupInfoFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -35,10 +36,11 @@ import com.google.firebase.storage.ktx.storage
 
 class AddGroupBottomSheetDialogFragment (
     private val groupContext: Context,
-    private val groupView: View
+    private val groupView: View,
+    private val homeFabListener: AddGroupFabListener
         ) : BottomSheetDialogFragment(), AddGroupMembersRecyclerAdapter.ItemClickedListener {
 
-    private var _binding: FragmentAddGroupBottomSheetDialogBinding? = null
+    private var _binding: BottomSheetDialogFragmentAddGroupBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -55,12 +57,21 @@ class AddGroupBottomSheetDialogFragment (
             displaySelectedPhoto(groupImageUri!!)
         }
     }
+    interface AddGroupFabListener {
+        fun enableFab(enabled: Boolean)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        //on dismiss of dialog, re-enable fab button
+        homeFabListener.enableFab(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentAddGroupBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentAddGroupBinding.inflate(inflater, container, false)
         recyclerView = binding.addGroupMembersRecyclerView
         return binding.root
     }
@@ -130,6 +141,8 @@ class AddGroupBottomSheetDialogFragment (
 
         //create and push new group to database, retrieve key and add it as groupId
         dbRef.child("groups").push().setValue(newGroup, DatabaseReference.CompletionListener { error, ref ->
+            //disable home fab button while writing to database
+            homeFabListener.enableFab(false)
         //in case of error
             if (error != null) {
                 Toast.makeText(context, "Unable to create group", Toast.LENGTH_LONG).show()

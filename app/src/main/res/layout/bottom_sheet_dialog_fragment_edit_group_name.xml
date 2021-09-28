@@ -3,20 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".view.dialog.EditBioBottomSheetDialogFragment">
+    android:orientation="vertical"
+    tools:context=".view.dialog.EditGroupNameBottomSheetDialogFragment">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/padding_8dp"
-        android:layout_marginEnd="@dimen/margin_8dp"
-        android:src="@drawable/ic_drag"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editBioTextInputLayout"
+        android:id="@+id/editGroupNameTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_16dp"
@@ -26,17 +19,17 @@
         app:boxCornerRadiusTopEnd="@dimen/corner_radius_8dp"
         app:boxCornerRadiusTopStart="@dimen/corner_radius_8dp"
         app:counterEnabled="true"
-        app:counterMaxLength="350"
+        app:counterMaxLength="36"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginHorizontal="@dimen/margin_16dp"
         app:boxBackgroundColor="@color/white"
         >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editBioEditText"
+            android:id="@+id/editGroupNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Bio"
+            android:hint="Group Name"
             android:padding="12dp"
             android:textSize="@dimen/text_size_14sp"
             android:maxLines="5"
@@ -44,7 +37,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/saveBioButton"
+        android:id="@+id/saveGroupNameButton"
         android:textColor="@color/light_pearl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

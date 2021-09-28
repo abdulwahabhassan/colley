@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.colley.android.contract.OpenDocumentContract
-import com.colley.android.databinding.FragmentNewPostBottomShetDialogBinding
+import com.colley.android.databinding.BottomSheetDialogFragmentNewPostBinding
 import com.colley.android.model.Post
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
@@ -35,7 +35,7 @@ class NewPostBottomSheetDialogFragment(
     private val homeFabListener: NewPostHomeFabListener
 ) : BottomSheetDialogFragment() {
 
-    private var _binding: FragmentNewPostBottomShetDialogBinding? = null
+    private var _binding: BottomSheetDialogFragmentNewPostBinding? = null
     private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
     private lateinit var fireStoreDb: FirebaseFirestore
@@ -65,7 +65,7 @@ class NewPostBottomSheetDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentNewPostBottomShetDialogBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentNewPostBinding.inflate(inflater, container, false)
         return binding?.root
     }
 

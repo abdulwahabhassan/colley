@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.colley.android.R
-import com.colley.android.databinding.FragmentEditGroupNameBottomSheetDialogBinding
+import com.colley.android.databinding.BottomSheetDialogFragmentEditGroupNameBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -27,7 +27,7 @@ class EditGroupNameBottomSheetDialogFragment(
 ) : BottomSheetDialogFragment() {
 
 
-    private var _binding: FragmentEditGroupNameBottomSheetDialogBinding? = null
+    private var _binding: BottomSheetDialogFragmentEditGroupNameBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -39,7 +39,7 @@ class EditGroupNameBottomSheetDialogFragment(
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentEditGroupNameBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentEditGroupNameBinding.inflate(inflater, container, false)
         return binding.root
     }
 

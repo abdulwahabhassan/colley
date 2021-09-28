@@ -7,6 +7,8 @@ import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat.getColor
 import com.colley.android.R
 import com.colley.android.databinding.ActivitySignInBinding
 import com.colley.android.model.Profile
@@ -42,6 +44,7 @@ class SignInActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.continueButton.setOnClickListener {
+            it.isEnabled = false
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
@@ -89,7 +92,9 @@ class SignInActivity : AppCompatActivity() {
             Snackbar.make(
                 binding.root,
                 "Signed in as ${auth.currentUser?.email}",
-                Snackbar.LENGTH_LONG).show()
+                Snackbar.LENGTH_LONG)
+                .setBackgroundTint(getColor(this, R.color.pearl))
+                .show()
             addUserToDataBase()
         } else {
             //otherwise, we  inform user that there was an error

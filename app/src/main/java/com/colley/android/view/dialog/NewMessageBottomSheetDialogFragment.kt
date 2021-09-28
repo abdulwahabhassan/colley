@@ -1,41 +1,24 @@
 package com.colley.android.view.dialog
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.colley.android.view.fragment.GroupInfoFragment
-import com.colley.android.adapter.AddGroupMembersRecyclerAdapter
 import com.colley.android.adapter.WhoToMessageRecyclerAdapter
-import com.colley.android.contract.OpenDocumentContract
-import com.colley.android.databinding.FragmentAddGroupBottomSheetDialogBinding
-import com.colley.android.databinding.FragmentNewMessageBottomSheetDialogBinding
-import com.colley.android.model.GroupChat
-import com.colley.android.model.NewGroup
+import com.colley.android.databinding.BottomSheetDialogFragmentNewMessageBinding
 import com.colley.android.model.User
-import com.colley.android.model.GroupMessage
 import com.colley.android.view.fragment.ChatsFragmentDirections
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
 
 class NewMessageBottomSheetDialogFragment (
     private val parentContext: Context
@@ -43,7 +26,7 @@ class NewMessageBottomSheetDialogFragment (
     BottomSheetDialogFragment(),
     WhoToMessageRecyclerAdapter.ItemClickedListener {
 
-    private var _binding: FragmentNewMessageBottomSheetDialogBinding? = null
+    private var _binding: BottomSheetDialogFragmentNewMessageBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -58,7 +41,7 @@ class NewMessageBottomSheetDialogFragment (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentNewMessageBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentNewMessageBinding.inflate(inflater, container, false)
         recyclerView = binding.addGroupMembersRecyclerView
         return binding.root
     }

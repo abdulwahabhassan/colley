@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.colley.android.R
-import com.colley.android.databinding.FragmentEditProfileBottomSheetDialogBinding
+import com.colley.android.databinding.BottomSheetDialogFragmentEditProfileBinding
 import com.colley.android.model.Profile
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -21,7 +21,7 @@ import com.google.firebase.ktx.Firebase
 class EditProfileBottomSheetDialogFragment
     : BottomSheetDialogFragment() {
 
-    private var _binding: FragmentEditProfileBottomSheetDialogBinding? = null
+    private var _binding: BottomSheetDialogFragmentEditProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
@@ -33,7 +33,7 @@ class EditProfileBottomSheetDialogFragment
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentEditProfileBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentEditProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
 

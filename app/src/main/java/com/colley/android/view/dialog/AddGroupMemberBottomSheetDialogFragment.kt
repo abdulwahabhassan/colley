@@ -114,10 +114,12 @@ class AddGroupMemberBottomSheetDialogFragment (
                 dbRef.child("groups").child(bundledGroupId!!).child("members").runTransaction(
                     object : Transaction.Handler {
                         override fun doTransaction(currentData: MutableData): Transaction.Result {
-                            //retrieve the database list which is a mutable data and store in list else
-                            //return the same data back to database if null
-                            val list = currentData.getValue<ArrayList<String>>()
-                                ?: return Transaction.success(currentData)
+                            //retrieve the database list which is a mutable data and store in list
+                            //if null, create new list
+                            var list = currentData.getValue<ArrayList<String>>()
+                            if(list == null) {
+                                list = arrayListOf()
+                            }
                             //update the list by adding all newly selected members
                             list.addAll(selectedMembersList)
                             //change the value of mutable live data to reflect updated list

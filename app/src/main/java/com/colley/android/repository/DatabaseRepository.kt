@@ -25,7 +25,7 @@ class DatabaseRepository {
 
 
     companion object {
-        const val DATABASE_PAGE_SIZE = 10
-        const val DATABASE_PREFETCH_DISTANCE = 5
+        const val DATABASE_PAGE_SIZE = 20
+        const val DATABASE_PREFETCH_DISTANCE = 10
     }
 }
