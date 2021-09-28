@@ -14,10 +14,11 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/margin_8dp"
         android:text="@string/delete_post_text"
+        android:textSize="@dimen/text_size_15sp"
         android:textColor="@color/light_pearl"
         android:drawablePadding="@dimen/margin_8dp"
         android:background="@drawable/ripple_effect_curved_edges_8dp"
-        app:drawableStartCompat="@drawable/ic_delete" />
+        app:drawableStartCompat="@drawable/ic_delete_red_tint" />
 
     <TextView
         android:id="@+id/reportPost"
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/margin_8dp"
         android:text="@string/report_post_text"
+        android:textSize="@dimen/text_size_15sp"
         android:textColor="@color/light_pearl"
         android:drawablePadding="@dimen/margin_8dp"
         android:background="@drawable/ripple_effect_curved_edges_8dp"

@@ -33,14 +33,13 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/viewProfileTextView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="@dimen/margin_16dp"
         android:layout_marginTop="@dimen/margin_16dp"
+        android:layout_marginEnd="@dimen/margin_16dp"
         android:background="@drawable/ripple_effect_curved_edges_8dp"
         android:clickable="true"
-        android:drawableStart="@drawable/ic_profile"
         android:drawablePadding="@dimen/padding_8dp"
         android:focusable="true"
         android:padding="@dimen/padding_8dp"
@@ -48,20 +47,19 @@
         android:textColor="@color/light_pearl"
         android:textSize="@dimen/text_size_15sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.052"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/groupMemberName" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sendMessageTextView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="@dimen/margin_16dp"
-        android:layout_marginBottom="@dimen/margin_8dp"
+        android:layout_marginTop="@dimen/padding_8dp"
+        android:layout_marginBottom="@dimen/margin_16dp"
         android:background="@drawable/ripple_effect_curved_edges_8dp"
         android:clickable="true"
-        android:drawableStart="@drawable/ic_messages"
         android:drawablePadding="@dimen/padding_8dp"
         android:focusable="true"
         android:padding="@dimen/padding_8dp"
@@ -70,7 +68,6 @@
         android:textSize="@dimen/text_size_15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewProfileTextView"
         app:layout_constraintVertical_bias="0.0" />
