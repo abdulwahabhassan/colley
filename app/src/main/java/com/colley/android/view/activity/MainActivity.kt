@@ -2,9 +2,9 @@ package com.colley.android.view.activity
 
 import android.os.Bundle
 import android.util.Log
-import android.view.ActionMode
 import android.view.MenuItem
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -12,20 +12,19 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
+import com.colley.android.glide.GlideImageLoader
 import com.colley.android.databinding.ActivityMainBinding
 import com.colley.android.model.Profile
 import com.firebase.ui.auth.AuthUI
 import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -105,17 +104,24 @@ class MainActivity : AppCompatActivity() {
     private fun setUpUserHome() {
 
         val imageView = header.findViewById<ShapeableImageView>(R.id.profileImageView)
+        val photoProgressBar = header.findViewById<ProgressBar>(R.id.headerPhotoProgressBar)
 
         //event listener for profile photo on drawer header
         photoEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val photo = snapshot.getValue<String>()
-                if (photo != null) {
-                    Glide.with(this@MainActivity).load(photo)
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView)
-                } else {
+
+                if (photo == null) {
                     Glide.with(this@MainActivity).load(R.drawable.ic_person_light_pearl).into(imageView)
-                    Log.w(TAG, "photo is null")
+                    photoProgressBar?.visibility = View.GONE
+                } else {
+                    val options = RequestOptions()
+                        .error(R.drawable.ic_downloading)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+
+                    imageView.visibility = View.VISIBLE
+                    //using custom glide image loader to indicate progress in time
+                    GlideImageLoader(imageView, photoProgressBar).load(photo, options);
                 }
             }
 

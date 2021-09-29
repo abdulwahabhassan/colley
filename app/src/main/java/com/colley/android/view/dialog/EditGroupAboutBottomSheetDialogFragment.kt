@@ -1,9 +1,11 @@
 package com.colley.android.view.dialog
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.colley.android.R
 import com.colley.android.databinding.BottomSheetDialogFragmentEditGroupAboutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -15,7 +17,10 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class EditGroupAboutBottomSheetDialogFragment : BottomSheetDialogFragment() {
+class EditGroupAboutBottomSheetDialogFragment (
+    val parentContext: Context,
+    val editGroupAboutListener: EditGroupAboutListener
+        ) : BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetDialogFragmentEditGroupAboutBinding? = null
     private val binding get() = _binding!!
@@ -31,6 +36,10 @@ class EditGroupAboutBottomSheetDialogFragment : BottomSheetDialogFragment() {
     ): View? {
         _binding = BottomSheetDialogFragmentEditGroupAboutBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    interface EditGroupAboutListener {
+        fun onGroupAboutChanged()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,13 +64,13 @@ class EditGroupAboutBottomSheetDialogFragment : BottomSheetDialogFragment() {
         arguments?.getString("groupIdKey")?.let {
             dbRef.child("groups").child(it).child("description").setValue(description).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    parentFragment?.requireView()?.let { view -> Snackbar.make(view, "Update successful", Snackbar.LENGTH_LONG)
-                        .show() }
+                    Toast.makeText(parentContext, "Updated", Toast.LENGTH_SHORT).show()
                     //dismiss dialog
+                    editGroupAboutListener.onGroupAboutChanged()
                     this.dismiss()
                 } else {
-                    parentFragment?.requireView()?.let { view -> Snackbar.make(view, "Failed to update!", Snackbar.LENGTH_LONG)
-                        .show() }
+                    Toast.makeText(parentContext, "Unsuccessful", Toast.LENGTH_LONG).show()
+                    //re-enable button for interaction
                     setEditingEnabled(true)
                     binding.saveAboutButton.text = getString(R.string.retry_text)
                 }

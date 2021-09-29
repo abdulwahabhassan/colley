@@ -12,7 +12,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
+import com.colley.android.glide.GlideImageLoader
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentProfileBinding
 import com.colley.android.model.Profile
@@ -121,15 +123,21 @@ class ProfileFragment : Fragment() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val photo = snapshot.getValue<String>()
-                if (photo == null) {
-                    Log.e(TAG, "photo for user $uid is unexpectedly null")
-                    Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl)
-                        .into(binding.profilePhotoImageView)
-                    binding.photoProgressBar.visibility = GONE
-                } else {
-                    Glide.with(requireContext()).load(photo)
-                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(binding.profilePhotoImageView)
-                    binding.photoProgressBar.visibility = GONE
+
+                with(binding) {
+                    if (photo == null) {
+                        Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl)
+                            .into(profilePhotoImageView)
+                        photoProgressBar.visibility = GONE
+                    } else {
+                        val options = RequestOptions()
+                            .error(R.drawable.ic_downloading)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+
+                        profilePhotoImageView.visibility = VISIBLE
+                        //using custom glide image loader to indicate progress in time
+                        GlideImageLoader(profilePhotoImageView, photoProgressBar).load(photo, options);
+                    }
                 }
 
             }

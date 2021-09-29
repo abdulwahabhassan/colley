@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
 import com.colley.android.databinding.ItemPostBinding
 import com.colley.android.model.Post
@@ -20,6 +21,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import com.colley.android.glide.GlideImageLoader
+
 
 class PostsPagingAdapter (
     private val context: Context,
@@ -110,14 +116,18 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
         }
 
         if(post?.image != null) {
-            contentImageView.visibility = View.VISIBLE
-            Glide.with(root.context).load(post.image)
-                .placeholder(R.drawable.ic_downloading)
+
+            val options = RequestOptions()
+                .error(R.drawable.ic_downloading)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .into(contentImageView)
+
+            contentImageView.visibility = VISIBLE
+            //using custom glide image loader to indicate progress in time
+            GlideImageLoader(contentImageView, progressBar).load(post.image, options);
 
         } else {
-            contentImageView.visibility = View.GONE
+            contentImageView.visibility = GONE
+            progressBar.visibility = GONE
         }
 
         //set time stamp
@@ -125,7 +135,7 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
 
         //dismiss post text view if null else set it
         if(post?.text == null) {
-            contentTextView.visibility = View.GONE
+            contentTextView.visibility = GONE
         } else {
             contentTextView.visibility = View.VISIBLE
             contentTextView.text = post.text
@@ -133,7 +143,7 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
 
         //dismiss post location view if null else set it
         if(post?.location == null) {
-            locationTextView.visibility = View.GONE
+            locationTextView.visibility = GONE
         } else {
             locationTextView.visibility = View.VISIBLE
             locationTextView.text = post.location
@@ -244,6 +254,5 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
         }
     }
 }
-
 
 

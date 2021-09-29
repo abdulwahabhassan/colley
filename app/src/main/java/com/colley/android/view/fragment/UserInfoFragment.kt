@@ -5,12 +5,16 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
+import com.colley.android.glide.GlideImageLoader
 import com.colley.android.databinding.FragmentUserInfoBinding
 import com.colley.android.model.Profile
 import com.google.android.material.snackbar.Snackbar
@@ -110,20 +114,21 @@ class UserInfoFragment : Fragment() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val photo = snapshot.getValue<String>()
-                if (photo == null) {
-                    Log.e(TAG, "photo for user ${args.userId} is unexpectedly null")
-                    binding?.profilePhotoImageView?.let {
-                        Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl).into(it)
-                    }
-                    binding?.photoProgressBar?.visibility = View.GONE
-                } else {
-                    binding?.profilePhotoImageView?.let {
-                        Glide.with(requireContext()).load(photo)
-                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(it)
-                    }
-                    binding?.photoProgressBar?.visibility = View.GONE
-                }
+                    if (photo == null) {
+                        Log.e(TAG, "photo for user ${args.userId} is unexpectedly null")
+                        binding?.profilePhotoImageView?.let {
+                            Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl).into(it)
+                        }
+                        binding?.photoProgressBar?.visibility = GONE
+                    } else {
+                        val options = RequestOptions()
+                            .error(R.drawable.ic_downloading)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 
+                        binding?.profilePhotoImageView?.visibility = VISIBLE
+                        //using custom glide image loader to indicate progress in time
+                        GlideImageLoader(binding?.profilePhotoImageView, binding?.photoProgressBar).load(photo, options);
+                    }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -131,7 +136,7 @@ class UserInfoFragment : Fragment() {
                 Snackbar.make(requireView(),
                     "Error in fetching photo",
                     Snackbar.LENGTH_LONG).show()
-                binding?.photoProgressBar?.visibility = View.GONE
+                binding?.photoProgressBar?.visibility = GONE
             }
         }
 

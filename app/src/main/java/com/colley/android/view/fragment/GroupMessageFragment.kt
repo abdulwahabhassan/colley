@@ -42,7 +42,7 @@ class GroupMessageFragment :
     private lateinit var dbRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
-    private lateinit var adapter: GroupMessageRecyclerAdapter
+    private var adapter: GroupMessageRecyclerAdapter? = null
     private lateinit var manager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
     private val openDocument = registerForActivityResult(OpenDocumentContract()) { uri ->
@@ -133,8 +133,8 @@ class GroupMessageFragment :
         recyclerView.adapter = adapter
 
         //scroll down when a new message arrives
-        adapter.registerAdapterDataObserver(
-            GroupMessageScrollToBottomObserver(binding.messageRecyclerView, adapter, manager)
+        adapter?.registerAdapterDataObserver(
+            GroupMessageScrollToBottomObserver(binding.messageRecyclerView, adapter!!, manager)
         )
         //disable the send button when there's no text in the input field
         binding.messageEditText.addTextChangedListener(SendButtonObserver(binding.sendButton))
@@ -213,26 +213,24 @@ class GroupMessageFragment :
                         dbRef.child("group-messages").child("recent-message").child(args.groupId).setValue(groupMessage)
                     }
             }
-            .addOnFailureListener(requireActivity()) { e ->
-                Log.w(TAG, "Image upload task was unsuccessful.", e)
-            }
+            .addOnFailureListener(requireActivity()) {}
     }
 
 
     override fun onResume() {
         super.onResume()
-        adapter.startListening()
+        adapter?.startListening()
     }
 
     override fun onStop() {
         super.onStop()
-        adapter.stopListening()
+        adapter?.stopListening()
         binding.linearLayout.visibility = VISIBLE
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        adapter.stopListening()
+        adapter?.stopListening()
         _binding = null
     }
 

@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:longClickable="true"
     android:padding="@dimen/margin_8dp"
     android:layout_marginTop="@dimen/margin_2dp"
     android:layout_marginBottom="@dimen/margin_2dp"
-    android:background="@drawable/ripple_effect_curved_edges_16dp"
-    >
+    android:background="@drawable/ripple_effect_curved_edges_16dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/groupMemberImageView"

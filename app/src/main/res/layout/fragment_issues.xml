@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_8dp"
             android:textSize="@dimen/text_size_15sp"
-            android:text="No issues currently"
+            android:text="@string/no_issues_currently"
             android:textColor="@color/light_pearl" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -45,7 +45,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
 
 
         <androidx.recyclerview.widget.RecyclerView

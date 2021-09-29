@@ -1,5 +1,6 @@
 package com.colley.android.view.dialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +11,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
+import com.colley.android.glide.GlideImageLoader
 import com.colley.android.databinding.BottomSheetDialogFragmentMemberInteractionBinding
 import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
@@ -63,16 +67,16 @@ class MemberInteractionBottomSheetDialogFragment(
             //load member name
             dbRef.child("profiles").child(bundledMemberId).addListenerForSingleValueEvent(
                 object : ValueEventListener {
+                    @SuppressLint("SetTextI18n")
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val memberProfile = snapshot.getValue<Profile>()
                         if (memberProfile != null) {
-                            binding?.groupMemberName?.text = "${memberProfile.name}, ${memberProfile.school}"
+                            binding?.groupMemberName?.text =
+                                "${memberProfile.name}, ${memberProfile.school}"
                         }
                     }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(parentContext, "Failed to load member name", Toast.LENGTH_SHORT).show()
-                    }
+                    override fun onCancelled(error: DatabaseError) {}
                 }
             )
 
@@ -81,24 +85,29 @@ class MemberInteractionBottomSheetDialogFragment(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val memberPhoto = snapshot.getValue<String>()
-                        if (memberPhoto != null) {
+
+                        if (memberPhoto == null) {
                             binding?.groupMemberImageView?.let {
-                                Glide.with(parentContext).load(memberPhoto).into(it)
+                                Glide.with(parentContext).load(R.drawable.ic_person_light_pearl)
+                                    .into(it)
+                                binding?.photoProgressBar?.visibility = GONE
                             }
                         } else {
-                            binding?.groupMemberImageView?.let {
-                                Glide.with(parentContext).load(R.drawable.ic_person_light_pearl).into(it)
-                            }
+                            val options = RequestOptions()
+                                .error(R.drawable.ic_downloading)
+                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+
+                            binding?.groupMemberImageView?.visibility = View.VISIBLE
+                            //using custom glide image loader to indicate progress in time
+                            GlideImageLoader(binding?.groupMemberImageView, binding
+                                ?.photoProgressBar).load(memberPhoto, options);
                         }
                     }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Toast.makeText(parentContext, "Failed to load member photo", Toast.LENGTH_SHORT).show()
-                    }
+                    override fun onCancelled(error: DatabaseError) {}
                 }
             )
         }
-
 
         //show message text box when user click "send message"
         binding?.sendMessageTextView?.setOnClickListener {
@@ -131,7 +140,8 @@ class MemberInteractionBottomSheetDialogFragment(
 
                     //create a reference for the message on user's messages location and retrieve its
                     //key with which to update other locations that should have a ref to the message
-                    val key = dbRef.child("user-messages").child(uid).child(bundledMemberId).push().key
+                    val key = dbRef.child("user-messages").child(uid).child(bundledMemberId)
+                        .push().key
 
                     //used to update multiple paths in the database
                     //here we save a copy of the message to both the sender and receiver's path
@@ -152,7 +162,8 @@ class MemberInteractionBottomSheetDialogFragment(
 
                     binding?.editMMessageEditText?.setText("")
                 } else {
-                    Toast.makeText(parentContext, "Empty message not sent", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(parentContext, "Can't send empty message", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 

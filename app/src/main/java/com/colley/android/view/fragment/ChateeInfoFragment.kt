@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
+import com.colley.android.glide.GlideImageLoader
 import com.colley.android.databinding.FragmentChateeInfoBinding
 import com.colley.android.model.Profile
 import com.google.android.material.snackbar.Snackbar
@@ -108,20 +110,20 @@ class ChateeInfoFragment : Fragment() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val photo = snapshot.getValue<String>()
+
                 if (photo == null) {
-                    Log.e(TAG, "photo for user ${args.chateeId} is unexpectedly null")
                     binding?.profilePhotoImageView?.let {
-                        Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl).into(
-                            it
-                        )
+                        Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl).into(it)
                     }
                     binding?.photoProgressBar?.visibility = View.GONE
                 } else {
-                    binding?.profilePhotoImageView?.let {
-                        Glide.with(requireContext()).load(photo)
-                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(it)
-                    }
-                    binding?.photoProgressBar?.visibility = View.GONE
+                    val options = RequestOptions()
+                        .error(R.drawable.ic_downloading)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+
+                    binding?.profilePhotoImageView?.visibility = View.VISIBLE
+                    //using custom glide image loader to indicate progress in time
+                    GlideImageLoader(binding?.profilePhotoImageView, binding?.photoProgressBar).load(photo, options);
                 }
 
             }

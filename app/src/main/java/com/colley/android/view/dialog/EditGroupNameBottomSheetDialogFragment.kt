@@ -23,7 +23,8 @@ import com.google.firebase.ktx.Firebase
 
 
 class EditGroupNameBottomSheetDialogFragment(
-    private val requiredContext: Context
+    private val parentContext: Context,
+    val editGroupNameListener: EditGroupNameListener
 ) : BottomSheetDialogFragment() {
 
 
@@ -34,6 +35,9 @@ class EditGroupNameBottomSheetDialogFragment(
     private val uid: String
         get() = currentUser.uid
 
+    interface EditGroupNameListener {
+        fun onGroupNameChanged()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,7 +64,7 @@ class EditGroupNameBottomSheetDialogFragment(
             if (newGroupName.length <= 36) {
                 verifyIfAdmin(it, newGroupName)
             } else {
-                Toast.makeText(requiredContext, "Group name is too long", Toast.LENGTH_LONG).show()
+                Toast.makeText(parentContext, "Group name is too long", Toast.LENGTH_LONG).show()
             }
 
         }
@@ -78,7 +82,7 @@ class EditGroupNameBottomSheetDialogFragment(
                         if (admins != null && admins.contains(uid)) {
                             saveGroupName(newGroupName, button)
                         } else {
-                            Toast.makeText(requiredContext, "Only admins can change group name", Toast.LENGTH_LONG).show()
+                            Toast.makeText(parentContext, "Only admins can change group name", Toast.LENGTH_LONG).show()
                             //re-enable button to allow for interaction
                             button.isEnabled = true
                         }
@@ -97,23 +101,21 @@ class EditGroupNameBottomSheetDialogFragment(
 
         //retrieve group id from bundle arguments and update group name on database
         arguments?.getString("groupIdKey")?.let{ groupId ->
-            dbRef.child("groups").child(groupId).child("name").setValue(newGroupName).addOnCompleteListener { task ->
+
+            //update multiple paths in the database at once
+                val childUpdates = hashMapOf<String, Any>(
+                "/groups/$groupId/name" to newGroupName,
+                "/groups-id-name-photo/$groupId/name" to newGroupName
+            )
+            //update the specified paths defined in the hashMap
+            dbRef.updateChildren(childUpdates).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    dbRef.child("groups-id-name-photo").child(groupId).child("name").setValue(newGroupName).addOnCompleteListener {
-                        if (task.isSuccessful) {
-                            parentFragment?.requireView()?.let { view -> Snackbar.make(view, "Successfully updated group name", Snackbar.LENGTH_LONG)
-                                .show() }
-                            //dismiss dialog
-                            this.dismiss()
-                        } else{
-                            Toast.makeText(requiredContext, "Failed to complete updating group name", Toast.LENGTH_LONG).show()
-                            //re-enable button for interaction
-                            button.isEnabled = true
-                            binding.saveGroupNameButton.text = getString(R.string.retry_text)
-                        }
-                    }
+                    Toast.makeText(parentContext, "Updated", Toast.LENGTH_LONG).show()
+                    editGroupNameListener.onGroupNameChanged()
+                    //dismiss dialog
+                    this.dismiss()
                 } else {
-                    Toast.makeText(requiredContext, "Failed to update group name", Toast.LENGTH_LONG).show()
+                    Toast.makeText(parentContext, "Unsuccessful", Toast.LENGTH_LONG).show()
                     //re-enable button for interaction
                     button.isEnabled = true
                     binding.saveGroupNameButton.text = getString(R.string.retry_text)

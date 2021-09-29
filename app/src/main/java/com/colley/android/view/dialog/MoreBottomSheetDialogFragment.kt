@@ -81,6 +81,8 @@ class MoreBottomSheetDialogFragment (
             }
 
             deletePost.setOnClickListener {
+                //prevent multiple clicks
+                deletePost.isEnabled = false
                 postId?.let { postId ->
                     //get post image url if any exists
                     dbRef.child("posts").child(postId).child("image").get()
@@ -150,6 +152,8 @@ class MoreBottomSheetDialogFragment (
             }
 
             reportPost.setOnClickListener {
+                //prevent multiple clicks
+                reportPost.isEnabled = false
                 moreOptionsDialogListener.onReportPost(postId)
                 this@MoreBottomSheetDialogFragment.dismiss()
             }
