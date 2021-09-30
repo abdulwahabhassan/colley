@@ -1,5 +1,6 @@
 package com.colley.android.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,13 +23,14 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
-class AddGroupMembersRecyclerAdapter(
+class AddMoreGroupMembersRecyclerAdapter(
     private val options: FirebaseRecyclerOptions<User>,
+    private val listOfExistingMembers: ArrayList<String>,
     private val currentUser: FirebaseUser?,
     private val clickListener: ItemClickedListener,
     private val context: Context
 ) :
-    FirebaseRecyclerAdapter<User, AddGroupMembersRecyclerAdapter.GroupMemberViewHolder>(options) {
+    FirebaseRecyclerAdapter<User, AddMoreGroupMembersRecyclerAdapter.GroupMemberViewHolder>(options) {
 
     //list to keep tracked of selected members to add to group
     private var memberSelectedList = arrayListOf<String>()
@@ -37,7 +39,6 @@ class AddGroupMembersRecyclerAdapter(
         fun onItemClick(user: User)
         fun onItemSelected(userId: String, view: CheckBox)
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupMemberViewHolder {
         val viewBinding = ItemNewGroupMemberBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -53,18 +54,20 @@ class AddGroupMembersRecyclerAdapter(
         return position
     }
 
-
     inner class GroupMemberViewHolder (private val itemBinding : ItemNewGroupMemberBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(user: User, clickListener: ItemClickedListener, context: Context) = with(itemBinding) {
 
-            //check is user is the current user
-            if(user.userId == currentUser?.uid) {
-                //if yes, check by default and disable checkbox
+            Log.w("listi", "$listOfExistingMembers")
+            //check if user is the current user or if user is already a member of the group
+            //if yes, check them, disable check box and add them to tracking list if they haven't
+            //already been added to keep them always checked
+            if(user.userId == currentUser?.uid || listOfExistingMembers.contains(user.userId)) {
+                //check by default and disable checkbox
                 addGroupMemberCheckBox.isChecked = true
                 addGroupMemberCheckBox.isEnabled = false
                 //add user to tracking list if they haven't already been added
                 if (!memberSelectedList.contains(user.userId)) {
-                    //add current user to check tracking list
+                    //add current user to tracking list
                     user.userId?.let { memberSelectedList.add(it) }
                 }
             } else {
@@ -96,6 +99,7 @@ class AddGroupMembersRecyclerAdapter(
             //set name
             Firebase.database.reference.child("profiles").child(user.userId!!).addListenerForSingleValueEvent(
                 object : ValueEventListener {
+                    @SuppressLint("SetTextI18n")
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val name = snapshot.getValue<Profile>()?.name
 
@@ -105,6 +109,7 @@ class AddGroupMembersRecyclerAdapter(
                         } else {
                             groupMemberNameTextView.text = name
                         }
+
 
                     }
 

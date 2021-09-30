@@ -9,12 +9,14 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.colley.android.adapter.AddGroupMembersRecyclerAdapter
+import com.colley.android.adapter.AddMoreGroupMembersRecyclerAdapter
 import com.colley.android.databinding.FragmentAddGroupMemberBottomSheetDialogBinding
 import com.colley.android.model.User
 import com.colley.android.view.fragment.GroupInfoFragment
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -24,21 +26,21 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
-class AddGroupMemberBottomSheetDialogFragment (
+class AddMoreGroupMemberBottomSheetDialogFragment (
     private val groupContext: Context,
     private val homeView: View
-        ) : BottomSheetDialogFragment(), AddGroupMembersRecyclerAdapter.ItemClickedListener {
+        ) : BottomSheetDialogFragment(), AddMoreGroupMembersRecyclerAdapter.ItemClickedListener {
 
     private var _binding: FragmentAddGroupMemberBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
     private lateinit var recyclerView: RecyclerView
+    private var adapter: AddMoreGroupMembersRecyclerAdapter? = null
     private var selectedMembersCount = 0
     private val selectedMembersList = arrayListOf<String>()
-    private val listOfUsers = arrayListOf<User>()
     private var listOfExistingMembers: ArrayList<String>? = null
-    private lateinit var membersValueEventListener: ValueEventListener
+    //private lateinit var membersValueEventListener: ValueEventListener
     private var bundledGroupId: String? = null
     private val uid: String
         get() = currentUser.uid
@@ -64,49 +66,42 @@ class AddGroupMemberBottomSheetDialogFragment (
         //retrieve passed group id
         bundledGroupId = arguments?.getString("groupIdKey")
 
-        //value event listener for existing members list
-        membersValueEventListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val membersList = snapshot.getValue<ArrayList<String>>()
-                if (membersList != null) {
-                    listOfExistingMembers = membersList
+
+        //retrieve list of already existing members
+        dbRef.child("groups").child(bundledGroupId!!).child("members").get()
+            .addOnSuccessListener { dataSnapshot ->
+                val membersList = dataSnapshot.getValue<ArrayList<String>>()
+                if (membersList == null || membersList.isEmpty()) {
+                    //create a new list and add current user
+                    listOfExistingMembers = arrayListOf()
+                    selectedMembersList.add(uid)
                 } else {
-                    Toast.makeText(groupContext, "No members in this group", Toast.LENGTH_LONG).show()
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG, "getListOfMembers:OnCancelled", error.toException())
-            }
-        }
-
-        //if groupId isn't null, retrieve existing group members via a single event listener
-        if (bundledGroupId != null) {
-            dbRef.child("groups").child(bundledGroupId!!).child("members").addListenerForSingleValueEvent(membersValueEventListener)
-        }
-
-        //add listener to retrieve all users and pass them to AddGroupMembersRecyclerAdapter as a list
-        dbRef.child("users").addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach {
-                        //filter list of all users for users that do not already exist as members in the group
-                        if (listOfExistingMembers?.contains(it.getValue<User>()!!.userId) == false) {
-                            listOfUsers.add(it.getValue<User>()!!)
-                        }
-                        //pass filtered list to recycler adapter
-
-                        val adapter = AddGroupMembersRecyclerAdapter(currentUser, this@AddGroupMemberBottomSheetDialogFragment, groupContext, listOfUsers)
-                        adapter.notifyDataSetChanged()
-                        recyclerView.adapter = adapter
-                    }
+                    listOfExistingMembers = membersList
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.w(TAG, "getUsers:OnCancelled", error.toException() )
-                }
+                //get a query reference to group members
+                val usersRef =  dbRef.child("users")
+
+                //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
+                //build an options to configure adapter. setQuery takes firebase query to listen to and a
+                //model class to which snapShots should be parsed
+                val options = FirebaseRecyclerOptions.Builder<User>()
+                    .setQuery(usersRef, User::class.java)
+                    .setLifecycleOwner(viewLifecycleOwner)
+                    .build()
+
+                //provide list of already existing members for adapter to be able to tell apart
+                    //existing members from non-members
+                adapter = AddMoreGroupMembersRecyclerAdapter(
+                    options,
+                    listOfExistingMembers!!,
+                    currentUser,
+                    this,
+                    groupContext)
+
+                recyclerView.layoutManager = WrapContentLinearLayoutManager(groupContext, LinearLayoutManager.VERTICAL, false)
+                recyclerView.adapter = adapter
             }
-        )
 
 
             binding.addMemberButton.setOnClickListener {
@@ -188,7 +183,7 @@ class AddGroupMemberBottomSheetDialogFragment (
                                 Log.d(TAG, "addMemberTransaction:onComplete:$error")
                             }
                             //dismiss dialog
-                            this@AddGroupMemberBottomSheetDialogFragment.dismiss()
+                            this@AddMoreGroupMemberBottomSheetDialogFragment.dismiss()
                         }
 
                     }
@@ -224,7 +219,6 @@ class AddGroupMemberBottomSheetDialogFragment (
     override fun onDestroy() {
         super.onDestroy()
         //remove event listener
-        bundledGroupId?.let { dbRef.child("groups").child(it).child("members").removeEventListener(membersValueEventListener) }
         _binding = null
     }
 

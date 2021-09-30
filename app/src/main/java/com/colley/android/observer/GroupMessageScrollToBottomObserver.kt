@@ -15,6 +15,10 @@
  */
 package com.colley.android.observer
 
+import android.annotation.SuppressLint
+import android.util.Log
+import android.view.View
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
@@ -25,6 +29,8 @@ class GroupMessageScrollToBottomObserver(
     private val adapter: GroupMessageRecyclerAdapter,
     private val manager: LinearLayoutManager
 ) : AdapterDataObserver() {
+
+    @SuppressLint("SetTextI18n")
     override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
         super.onItemRangeInserted(positionStart, itemCount)
         val count = adapter.itemCount

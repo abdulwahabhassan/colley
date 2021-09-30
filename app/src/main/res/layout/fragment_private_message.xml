@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_group_message" />
+        tools:listitem="@layout/item_group_message_other_user" />
 
     <TextView
         android:id="@+id/startChattingTextView"

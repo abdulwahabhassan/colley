@@ -14,6 +14,7 @@ import com.colley.android.R
 import com.colley.android.adapter.GroupsRecyclerAdapter
 import com.colley.android.databinding.FragmentGroupsBinding
 import com.colley.android.model.PrivateChat
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseUser
@@ -38,7 +39,6 @@ class GroupsFragment :
     lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
     private var adapter: GroupsRecyclerAdapter? = null
-    private var manager: LinearLayoutManager? = null
     private val uid: String
         get() = currentUser.uid
 
@@ -91,25 +91,13 @@ class GroupsFragment :
         //model class to which snapShots should be parsed
         val options = FirebaseRecyclerOptions.Builder<String>()
             .setQuery(groupsRef, String::class.java)
+            .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
         adapter = GroupsRecyclerAdapter(options, requireContext(), currentUser, this@GroupsFragment, this@GroupsFragment)
-        manager = LinearLayoutManager(requireContext())
-        recyclerView.layoutManager = manager
+        recyclerView.layoutManager = WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
-        adapter?.startListening()
 
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        adapter?.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        adapter?.stopListening()
     }
 
     //open group chat fragment, passing group id as argument
@@ -117,7 +105,6 @@ class GroupsFragment :
         val action = HomeFragmentDirections.actionHomeFragmentToGroupMessageFragment(chatGroupId)
         parentFragment?.findNavController()?.navigate(action)
     }
-
 
     //hide progress bar when groups are displayed
     override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<String>) {

@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_group_message" />
+        tools:listitem="@layout/item_group_message_other_user" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -39,44 +39,44 @@
         app:layout_constraintStart_toStartOf="parent">
 
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/messageEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="start"
-            android:layout_margin="@dimen/margin_8dp"
-            android:layout_weight="1"
-            android:textSize="@dimen/text_size_14sp"
-            android:inputType="textMultiLine"
-            android:maxLines="3"
-            android:textColor="@color/light_pearl"
-            android:background="@drawable/edit_text_background"
-            android:hint="@string/say_something_text"
-            android:padding="@dimen/padding_10dp" />
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/messageEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="start"
+                android:layout_margin="@dimen/margin_8dp"
+                android:layout_weight="1"
+                android:textSize="@dimen/text_size_14sp"
+                android:inputType="textMultiLine"
+                android:maxLines="3"
+                android:textColor="@color/light_pearl"
+                android:background="@drawable/edit_text_background"
+                android:hint="@string/say_something_text"
+                android:padding="@dimen/padding_10dp" />
 
-        <ImageView
-            android:id="@+id/addMessageImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_4dp"
-            android:layout_gravity="center"
-            android:padding="@dimen/padding_4dp"
-            android:background="@drawable/ripple_effect_curved_edges_8dp"
-            app:srcCompat="@drawable/ic_add_new_photo" />
+            <ImageView
+                android:id="@+id/addMessageImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_4dp"
+                android:layout_gravity="center"
+                android:padding="@dimen/padding_4dp"
+                android:background="@drawable/ripple_effect_curved_edges_8dp"
+                app:srcCompat="@drawable/ic_add_new_photo" />
 
-        <ImageView
-            android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/margin_8dp"
-            android:enabled="false"
-            android:padding="@dimen/padding_4dp"
-            android:background="@drawable/ripple_effect_curved_edges_8dp"
-            android:src="@drawable/ic_send_button_inactive" />
-
+            <ImageView
+                android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_8dp"
+                android:enabled="false"
+                android:padding="@dimen/padding_4dp"
+                android:background="@drawable/ripple_effect_curved_edges_8dp"
+                android:src="@drawable/ic_send_button_inactive" />
 
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

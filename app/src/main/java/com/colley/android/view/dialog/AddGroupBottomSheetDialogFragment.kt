@@ -13,6 +13,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.adapter.AddGroupMembersRecyclerAdapter
@@ -23,6 +24,8 @@ import com.colley.android.model.GroupMessage
 import com.colley.android.model.NewGroup
 import com.colley.android.model.User
 import com.colley.android.view.fragment.GroupInfoFragment
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
@@ -45,9 +48,9 @@ class AddGroupBottomSheetDialogFragment (
     private lateinit var dbRef: DatabaseReference
     private lateinit var currentUser: FirebaseUser
     private lateinit var recyclerView: RecyclerView
+    private var adapter: AddGroupMembersRecyclerAdapter? = null
     private var selectedMembersCount = 0
     private val selectedMembersList = arrayListOf<String>()
-    private val listOfUsers = arrayListOf<User>()
     private val uid: String
         get() = currentUser.uid
     private var groupImageUri: Uri? = null
@@ -86,23 +89,25 @@ class AddGroupBottomSheetDialogFragment (
         //automatically add user to the list of members by default
         selectedMembersList.add(uid)
 
-        //add listener to retrieve users and pass them to AddGroupMembersRecyclerAdapter as a list
-        dbRef.child("users").addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach {
-                       listOfUsers.add(it.getValue<User>()!!)
-                        val adapter = AddGroupMembersRecyclerAdapter(currentUser, this@AddGroupBottomSheetDialogFragment, groupContext, listOfUsers)
-                        adapter.notifyDataSetChanged()
-                        recyclerView.adapter = adapter
-                    }
-                }
+        //get a query reference to group members
+        val usersRef =  dbRef.child("users")
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.w(TAG, "getUsers:OnCancelled", error.toException() )
-                }
-            }
-        )
+        //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
+        //build an options to configure adapter. setQuery takes firebase query to listen to and a
+        //model class to which snapShots should be parsed
+        val options = FirebaseRecyclerOptions.Builder<User>()
+            .setQuery(usersRef, User::class.java)
+            .setLifecycleOwner(viewLifecycleOwner)
+            .build()
+
+        adapter = AddGroupMembersRecyclerAdapter(
+            options,
+            currentUser,
+            this,
+            groupContext)
+
+        recyclerView.layoutManager = WrapContentLinearLayoutManager(groupContext, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = adapter
 
 
         with(binding) {

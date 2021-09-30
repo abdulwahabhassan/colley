@@ -24,7 +24,7 @@ import com.colley.android.glide.GlideImageLoader
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupInfoBinding
 import com.colley.android.model.Profile
-import com.colley.android.view.dialog.AddGroupMemberBottomSheetDialogFragment
+import com.colley.android.view.dialog.AddMoreGroupMemberBottomSheetDialogFragment
 import com.colley.android.view.dialog.EditGroupAboutBottomSheetDialogFragment
 import com.colley.android.view.dialog.EditGroupNameBottomSheetDialogFragment
 import com.colley.android.view.dialog.MemberInteractionBottomSheetDialogFragment
@@ -57,7 +57,7 @@ class GroupInfoFragment :
     private lateinit var currentUser: FirebaseUser
     private var adapter: GroupMembersRecyclerAdapter? = null
     private var editGroupAboutBottomSheetDialog: EditGroupAboutBottomSheetDialogFragment? = null
-    private var addGroupMemberSheetDialog: AddGroupMemberBottomSheetDialogFragment? = null
+    private var addMoreGroupMemberSheetDialog: AddMoreGroupMemberBottomSheetDialogFragment? = null
     private var memberInteractionSheetDialog: MemberInteractionBottomSheetDialogFragment? = null
     private var editGroupNameBottomSheetDialog: EditGroupNameBottomSheetDialogFragment? = null
     val uid: String
@@ -90,11 +90,13 @@ class GroupInfoFragment :
         //initialize currentUser
         currentUser = auth.currentUser!!
 
-
+        //get and set group name to textview
         getGroupName()
 
+        //get and load group photo to imageview
         getGroupPhoto()
 
+        //get and set group description to textview
         getGroupDescription()
 
         //get a query reference to group members
@@ -106,6 +108,7 @@ class GroupInfoFragment :
         //model class to which snapShots should be parsed
         val options = FirebaseRecyclerOptions.Builder<String>()
             .setQuery(messagesRef, String::class.java)
+            .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
         adapter = GroupMembersRecyclerAdapter(
@@ -146,12 +149,12 @@ class GroupInfoFragment :
 
         binding.addGroupMemberTextView.setOnClickListener {
         //show dialog to add group member
-                addGroupMemberSheetDialog = AddGroupMemberBottomSheetDialogFragment(
+                addMoreGroupMemberSheetDialog = AddMoreGroupMemberBottomSheetDialogFragment(
                     requireContext(),
                     requireView())
 
-                addGroupMemberSheetDialog?.arguments = bundleOf("groupIdKey" to args.groupId)
-                addGroupMemberSheetDialog?.show(childFragmentManager, null)
+                addMoreGroupMemberSheetDialog?.arguments = bundleOf("groupIdKey" to args.groupId)
+                addMoreGroupMemberSheetDialog?.show(childFragmentManager, null)
         }
 
         //to leave a group
@@ -284,17 +287,6 @@ class GroupInfoFragment :
             .addOnFailureListener(requireActivity()) { e ->
                 Toast.makeText(requireContext(), "Unsuccessful", Toast.LENGTH_LONG).show()
             }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        //add listeners
-        adapter?.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        adapter?.stopListening()
     }
 
     override fun onDestroy() {

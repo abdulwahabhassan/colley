@@ -4,12 +4,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
@@ -19,6 +19,7 @@ import com.colley.android.databinding.FragmentGroupMessageBinding
 import com.colley.android.model.GroupMessage
 import com.colley.android.model.SendButtonObserver
 import com.colley.android.observer.GroupMessageScrollToBottomObserver
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -124,18 +125,24 @@ class GroupMessageFragment :
         //model class to which snapShots should be parsed
         val options = FirebaseRecyclerOptions.Builder<GroupMessage>()
             .setQuery(messagesRef, GroupMessage::class.java)
+            .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
         adapter = GroupMessageRecyclerAdapter(options, currentUser, this, this, requireContext())
-        manager = LinearLayoutManager(requireContext())
+        manager =  WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         manager.stackFromEnd = true
+        recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
 
         //scroll down when a new message arrives
         adapter?.registerAdapterDataObserver(
-            GroupMessageScrollToBottomObserver(binding.messageRecyclerView, adapter!!, manager)
+            GroupMessageScrollToBottomObserver(
+                binding.messageRecyclerView,
+                adapter!!,
+                manager)
         )
+
         //disable the send button when there's no text in the input field
         binding.messageEditText.addTextChangedListener(SendButtonObserver(binding.sendButton))
 
@@ -217,20 +224,13 @@ class GroupMessageFragment :
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        adapter?.startListening()
-    }
-
     override fun onStop() {
         super.onStop()
-        adapter?.stopListening()
         binding.linearLayout.visibility = VISIBLE
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        adapter?.stopListening()
         _binding = null
     }
 

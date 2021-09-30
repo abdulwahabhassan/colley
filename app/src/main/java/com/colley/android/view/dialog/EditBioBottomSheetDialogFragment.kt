@@ -1,5 +1,6 @@
 package com.colley.android.view.dialog
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,10 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class EditBioBottomSheetDialogFragment: BottomSheetDialogFragment() {
+class EditBioBottomSheetDialogFragment(
+    private val parentContext: Context,
+    private val editBioListener: EditBioListener
+): BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetDialogFragmentEditBioBinding? = null
     private val binding get() = _binding!!
@@ -24,7 +28,9 @@ class EditBioBottomSheetDialogFragment: BottomSheetDialogFragment() {
     private lateinit var currentUser: FirebaseUser
     private val uid: String
         get() = currentUser.uid
-
+    interface EditBioListener {
+        fun onEditBio()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +55,7 @@ class EditBioBottomSheetDialogFragment: BottomSheetDialogFragment() {
             if (bio.length <= 350) {
                 saveBio(bio)
             } else {
-                Toast.makeText(requireContext(), "Bio is too long, keep it short", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Keep bio brief", Toast.LENGTH_LONG).show()
             }
 
         }
@@ -60,15 +66,12 @@ class EditBioBottomSheetDialogFragment: BottomSheetDialogFragment() {
 
         dbRef.child("bios").child(uid).setValue(bio).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                parentFragment?.requireView()?.let {
-                        view -> Snackbar.make(view, "Bio updated successfully", Snackbar.LENGTH_LONG)
-                    .show() }
+                Toast.makeText(parentContext, "Updated", Toast.LENGTH_LONG).show()
+                editBioListener.onEditBio()
                 //dismiss dialog
                 this.dismiss()
             } else {
-                parentFragment?.requireView()?.let {
-                        view -> Snackbar.make(view, "Failed to update Bio!", Snackbar.LENGTH_LONG)
-                    .show() }
+                Toast.makeText(parentContext, "Unsuccessful", Toast.LENGTH_LONG).show()
                 setEditingEnabled(true)
                 binding.saveBioButton.text = getString(R.string.retry_text)
             }

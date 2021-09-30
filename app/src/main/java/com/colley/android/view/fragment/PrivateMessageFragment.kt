@@ -1,5 +1,6 @@
 package com.colley.android.view.fragment
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
@@ -20,6 +22,7 @@ import com.colley.android.model.PrivateChat
 import com.colley.android.model.Profile
 import com.colley.android.model.SendButtonObserver
 import com.colley.android.observer.PrivateMessageScrollToBottomObserver
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseAuth
@@ -125,17 +128,21 @@ class PrivateMessageFragment :
         //model class to which snapShots should be parsed
         val options = FirebaseRecyclerOptions.Builder<PrivateChat>()
             .setQuery(messagesRef, PrivateChat::class.java)
+            .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
         adapter = PrivateMessageRecyclerAdapter(options, currentUser, this, this, requireContext())
-        manager = LinearLayoutManager(requireContext())
+        manager =  WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         manager.stackFromEnd = true
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
 
         //scroll down when a new message arrives
         adapter.registerAdapterDataObserver(
-            PrivateMessageScrollToBottomObserver(binding.messageRecyclerView, adapter, manager)
+            PrivateMessageScrollToBottomObserver(
+                binding.messageRecyclerView,
+                adapter,
+                manager)
         )
         //disable the send button when there's no text in the input field
         binding.messageEditText.addTextChangedListener(SendButtonObserver(binding.sendButton))
@@ -256,27 +263,19 @@ class PrivateMessageFragment :
             }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>) {
 
         binding.progressBar.visibility = View.GONE
         binding.linearLayout.visibility = View.VISIBLE
 
         if (snapshotArray.isEmpty()) {
-            binding.startChattingTextView.text = "Start a conversation with ${(activity as AppCompatActivity?)!!.supportActionBar!!.title}"
+            binding.startChattingTextView.text =
+                "Start a conversation with ${(activity as AppCompatActivity?)!!.supportActionBar!!.title}"
         } else {
             binding.startChattingTextView.visibility = View.GONE
         }
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        adapter.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        adapter.stopListening()
     }
 
     override fun onDestroy() {

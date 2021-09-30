@@ -1,5 +1,6 @@
 package com.colley.android.view.dialog
 
+import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -18,7 +19,10 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
-class EditProfileBottomSheetDialogFragment
+class EditProfileBottomSheetDialogFragment (
+    private val parentContext: Context,
+    private val editProfileListener: EditProfileListener
+        )
     : BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetDialogFragmentEditProfileBinding? = null
@@ -28,6 +32,9 @@ class EditProfileBottomSheetDialogFragment
     private val uid: String
         get() = currentUser.uid
 
+    interface EditProfileListener {
+        fun onEditProfile()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +76,8 @@ class EditProfileBottomSheetDialogFragment
                     TextUtils.isEmpty(school.trim()) ||
                     TextUtils.isEmpty(course.trim()) ||
                     TextUtils.isEmpty(status.trim())) {
-                    Toast.makeText(requireContext(), "Fields cannot be empty", Toast.LENGTH_LONG).show()
+                    Toast.makeText(parentContext, "Fields cannot be empty", Toast.LENGTH_LONG)
+                        .show()
                 } else {
                     val profile = Profile(name, school, course, status)
                     saveProfile(profile)
@@ -85,15 +93,12 @@ class EditProfileBottomSheetDialogFragment
 
         dbRef.child("profiles").child(uid).setValue(profile).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                parentFragment?.requireView()?.let {
-                        view -> Snackbar.make(view, "Profile updated successfully", Snackbar.LENGTH_LONG)
-                    .show() }
+                Toast.makeText(parentContext, "Updated", Toast.LENGTH_LONG).show()
+                editProfileListener.onEditProfile()
                 //dismiss dialog
                 this.dismiss()
             } else {
-                parentFragment?.requireView()?.let {
-                        view -> Snackbar.make(view, "Failed to update Profile!", Snackbar.LENGTH_LONG)
-                    .show() }
+                Toast.makeText(parentContext, "Unsuccessful", Toast.LENGTH_LONG).show()
                 setEditingEnabled(true)
                 binding.saveProfileButton.text = getString(R.string.retry_text)
             }
@@ -114,10 +119,6 @@ class EditProfileBottomSheetDialogFragment
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    companion object {
-        private const val TAG = "EditProfile"
     }
 
 }

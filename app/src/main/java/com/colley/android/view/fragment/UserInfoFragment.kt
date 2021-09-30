@@ -37,9 +37,6 @@ class UserInfoFragment : Fragment() {
     private lateinit var dbRef: DatabaseReference
     val uid: String
         get() = Firebase.auth.currentUser!!.uid
-    private lateinit var profileValueEventListener: ValueEventListener
-    private lateinit var bioValueEventListener: ValueEventListener
-    private lateinit var photoValueEventListener: ValueEventListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,98 +58,55 @@ class UserInfoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        profileValueEventListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val profile = snapshot.getValue<Profile>()
-                if (profile == null) {
-                    Log.e(TAG, "profile for user ${args.userId} is unexpectedly null")
-
-                } else {
-                    (activity as AppCompatActivity?)?.supportActionBar?.title = profile.name
-                    binding?.nameTextView?.text = profile.name
-                    binding?.schoolNameTextView?.text = profile.school
-                    binding?.courseOfStudyTextView?.text = profile.course
-                    binding?.statusTitleTextView?.text = profile.role
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG, "getProfile:onCancelled", error.toException())
-                Snackbar.make(requireView(),
-                    "Error in fetching profile",
-                    Snackbar.LENGTH_LONG).show()
-            }
-        }
-
-        //add event listener to chatee profile
-        dbRef.child("profiles").child(args.userId).addListenerForSingleValueEvent(profileValueEventListener)
-
-        bioValueEventListener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val bio = snapshot.getValue<String>()
-                if (bio == null || bio == "") {
-                    Log.e(TAG, "bio for user ${args.userId} is unexpectedly null")
-                    binding?.bioTextView?.hint = "Talk about yourself"
-                    binding?.bioTextView?.text = bio
-                } else {
-                    binding?.bioTextView?.text = bio
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG, "getBio:onCancelled", error.toException())
-                Snackbar.make(requireView(),
-                    "Error in fetching bio",
-                    Snackbar.LENGTH_LONG).show()
+        //add event listener to user profile
+        dbRef.child("profiles").child(args.userId).get().addOnSuccessListener {
+            dataSnapshot ->
+            val profile = dataSnapshot.getValue<Profile>()
+            if (profile != null) {
+                (activity as AppCompatActivity?)?.supportActionBar?.title = profile.name
+                binding?.nameTextView?.text = profile.name
+                binding?.schoolNameTextView?.text = profile.school
+                binding?.courseOfStudyTextView?.text = profile.course
+                binding?.statusTitleTextView?.text = profile.role
             }
         }
 
         //add event listener to chatee bio
-        dbRef.child("bios").child(args.userId).addListenerForSingleValueEvent(bioValueEventListener)
-
-        photoValueEventListener = object : ValueEventListener {
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val photo = snapshot.getValue<String>()
-                    if (photo == null) {
-                        Log.e(TAG, "photo for user ${args.userId} is unexpectedly null")
-                        binding?.profilePhotoImageView?.let {
-                            Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl).into(it)
-                        }
-                        binding?.photoProgressBar?.visibility = GONE
-                    } else {
-                        val options = RequestOptions()
-                            .error(R.drawable.ic_downloading)
-                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-
-                        binding?.profilePhotoImageView?.visibility = VISIBLE
-                        //using custom glide image loader to indicate progress in time
-                        GlideImageLoader(binding?.profilePhotoImageView, binding?.photoProgressBar).load(photo, options);
-                    }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG, "getPhoto:onCancelled", error.toException())
-                Snackbar.make(requireView(),
-                    "Error in fetching photo",
-                    Snackbar.LENGTH_LONG).show()
-                binding?.photoProgressBar?.visibility = GONE
+        dbRef.child("bios").child(args.userId).get().addOnSuccessListener {
+            dataSnapShot ->
+            val bio = dataSnapShot.getValue<String>()
+            if (bio == null || bio == "") {
+                binding?.bioTextView?.hint = "User hasn't written about themself yet"
+                binding?.bioTextView?.text = bio
+            } else {
+                binding?.bioTextView?.text = bio
             }
         }
 
-        //add event listener to chatee photo
-        dbRef.child("photos").child(args.userId).addListenerForSingleValueEvent(photoValueEventListener)
+        //add event listener to user photo
+        dbRef.child("photos").child(args.userId).get().addOnSuccessListener {
+                dataSnapshot ->
+            val photo = dataSnapshot.getValue<String>()
+            if (photo == null) {
+                binding?.profilePhotoImageView?.let {
+                    Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl).into(it)
+                }
+                binding?.photoProgressBar?.visibility = GONE
+            } else {
+                val options = RequestOptions()
+                    .error(R.drawable.ic_downloading)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 
+                binding?.profilePhotoImageView?.visibility = VISIBLE
+                //using custom glide image loader to indicate progress in time
+                GlideImageLoader(binding?.profilePhotoImageView, binding?.photoProgressBar).load(photo, options);
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-
-    companion object {
-        private const val TAG = "ProfileFragment"
     }
 
 }
