@@ -17,6 +17,7 @@ import com.colley.android.R
 import com.colley.android.glide.GlideImageLoader
 import com.colley.android.databinding.BottomSheetDialogFragmentMemberInteractionBinding
 import com.colley.android.model.PrivateChat
+import com.colley.android.model.PrivateMessage
 import com.colley.android.model.Profile
 import com.colley.android.view.fragment.GroupInfoFragmentDirections
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -52,6 +53,7 @@ class MemberInteractionBottomSheetDialogFragment(
         return binding?.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,49 +66,38 @@ class MemberInteractionBottomSheetDialogFragment(
 
         if (bundledMemberId != null) {
 
-            //load member name
-            dbRef.child("profiles").child(bundledMemberId).addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    @SuppressLint("SetTextI18n")
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val memberProfile = snapshot.getValue<Profile>()
-                        if (memberProfile != null) {
-                            binding?.groupMemberName?.text =
-                                "${memberProfile.name}, ${memberProfile.school}"
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
+            //get and set member name
+            dbRef.child("profiles").child(bundledMemberId).get().addOnSuccessListener {
+                dataSnapshot ->
+                val memberProfile = dataSnapshot.getValue<Profile>()
+                if (memberProfile != null) {
+                    binding?.groupMemberName?.text =
+                        "${memberProfile.name}, ${memberProfile.school}"
                 }
-            )
+            }
 
-            //load member photo
-            dbRef.child("photos").child(bundledMemberId).addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val memberPhoto = snapshot.getValue<String>()
-
-                        if (memberPhoto == null) {
-                            binding?.groupMemberImageView?.let {
-                                Glide.with(parentContext).load(R.drawable.ic_person_light_pearl)
-                                    .into(it)
-                                binding?.photoProgressBar?.visibility = GONE
-                            }
-                        } else {
-                            val options = RequestOptions()
-                                .error(R.drawable.ic_downloading)
-                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-
-                            binding?.groupMemberImageView?.visibility = View.VISIBLE
-                            //using custom glide image loader to indicate progress in time
-                            GlideImageLoader(binding?.groupMemberImageView, binding
-                                ?.photoProgressBar).load(memberPhoto, options);
-                        }
+            //get and load member photo
+            dbRef.child("photos").child(bundledMemberId).get().addOnSuccessListener {
+                dataSnapshot ->
+                val memberPhoto = dataSnapshot.getValue<String>()
+                if (memberPhoto == null) {
+                    binding?.groupMemberImageView?.let {
+                        Glide.with(parentContext).load(R.drawable.ic_person_light_pearl)
+                            .into(it)
+                        binding?.photoProgressBar?.visibility = GONE
                     }
+                } else {
+                    val options = RequestOptions()
+                        .error(R.drawable.ic_downloading)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 
-                    override fun onCancelled(error: DatabaseError) {}
+                    binding?.groupMemberImageView?.visibility = View.VISIBLE
+                    //using custom glide image loader to indicate progress in time
+                    GlideImageLoader(binding?.groupMemberImageView, binding
+                        ?.photoProgressBar).load(memberPhoto, options);
                 }
-            )
+            }
+
         }
 
         //show message text box when user click "send message"
@@ -130,37 +121,42 @@ class MemberInteractionBottomSheetDialogFragment(
         binding?.sendButton?.setOnClickListener {
 
             if (bundledMemberId != null) {
-
                 if (binding?.editMMessageEditText?.text?.trim()?.toString() != "") {
-                    val privateMessage = PrivateChat(
-                        fromUserId = uid,
-                        toUserId = bundledMemberId,
-                        text = binding?.editMMessageEditText?.text.toString()
-                    )
-
                     //create a reference for the message on user's messages location and retrieve its
                     //key with which to update other locations that should have a ref to the message
                     val key = dbRef.child("user-messages").child(uid).child(bundledMemberId)
                         .push().key
 
-                    //used to update multiple paths in the database
-                    //here we save a copy of the message to both the sender and receiver's path
-                    val childUpdates = hashMapOf<String, Any>(
-                        "/user-messages/$uid/$bundledMemberId/$key" to privateMessage,
-                        "/user-messages/recent-message/$uid/$bundledMemberId" to privateMessage,
-                        "/user-messages/$bundledMemberId/$uid/$key" to privateMessage,
-                        "/user-messages/recent-message/$bundledMemberId/$uid" to privateMessage
-                    )
+                    if (key != null) {
+                        val privateMessage = PrivateMessage(
+                            fromUserId = uid,
+                            toUserId = bundledMemberId,
+                            text = binding?.editMMessageEditText?.text.toString(),
+                            messageId = key
+                        )
 
-                    //the value of the recent message is used when displaying a user's private
-                    //messages from different colleagues, so we make a reference for this to
-                    //make it easier to retrieve from the database
+                        //used to update multiple paths in the database
+                        //here we save a copy of the message to both the sender and receiver's path
+                        val childUpdates = hashMapOf<String, Any>(
+                            "/user-messages/$uid/$bundledMemberId/$key" to privateMessage,
+                            "/user-messages/recent-message/$uid/$bundledMemberId" to privateMessage,
+                            "/user-messages/$bundledMemberId/$uid/$key" to privateMessage,
+                            "/user-messages/recent-message/$bundledMemberId/$uid" to privateMessage
+                        )
 
-                    dbRef.updateChildren(childUpdates).addOnSuccessListener {
-                        Toast.makeText(parentContext, "Message sent", Toast.LENGTH_SHORT).show()
+                        //the value of the recent message is used when displaying a user's private
+                        //messages from different colleagues, so we make a reference for this to
+                        //make it easier to retrieve from the database
+
+                        dbRef.updateChildren(childUpdates).addOnSuccessListener {
+                            Toast.makeText(parentContext, "Message sent", Toast.LENGTH_SHORT).show()
+                        }
+
+                        binding?.editMMessageEditText?.setText("")
+                    } else {
+                        Toast.makeText(parentContext, "Unsuccessful", Toast.LENGTH_SHORT)
+                            .show()
                     }
-
-                    binding?.editMMessageEditText?.setText("")
                 } else {
                     Toast.makeText(parentContext, "Can't send empty message", Toast.LENGTH_SHORT)
                         .show()

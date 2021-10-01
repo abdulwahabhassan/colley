@@ -84,13 +84,14 @@ class ChatsFragment :
         //model class to which snapShots should be parsed
         val options = FirebaseRecyclerOptions.Builder<PrivateChat>()
             .setQuery(chatsRef, PrivateChat::class.java)
+            .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
         adapter = ChatsRecyclerAdapter(options, requireContext(), currentUser, this@ChatsFragment, this@ChatsFragment)
         manager = LinearLayoutManager(requireContext())
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
-        adapter?.startListening()
+
 
         binding.newChatFab.setOnClickListener {
             newMessageBottomSheetDialog = NewMessageBottomSheetDialogFragment(requireContext())
@@ -99,20 +100,9 @@ class ChatsFragment :
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        adapter?.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        adapter?.stopListening()
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()
-        adapter?.stopListening()
         _binding = null
     }
 
@@ -126,6 +116,17 @@ class ChatsFragment :
         } else {
             binding.noChatsLayout.visibility = GONE
         }
+    }
+
+    override fun onItemLongCLicked(chateeId: String, view: View) {
+        if (actionMode == null) {
+            actionMode = (activity as AppCompatActivity?)!!.startSupportActionMode(actionModeCallBack)
+        }
+        //else clause is not used since we want the action mode to be initialized first if null
+        //on a first time long click and function should proceed to update selection
+        //if we mistakenly add an else clause, an unexpected behaviour will occur, action mode will
+        //be initialized the first time on long click, but our selection will not be updated
+        updateSelection(chateeId, view)
     }
 
     override fun onItemClick(chateeId: String, view: View) {
@@ -157,37 +158,29 @@ class ChatsFragment :
                     //display the chatee's name in the dialog message
                     if (selectedChatsCount == 1) {
                         dbRef.child("profiles").child(listOfSelectedChats[0])
-                            .child("name").addListenerForSingleValueEvent(
-                                object : ValueEventListener {
-                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                        val name = snapshot.getValue<String>()
-                                        //show alert dialog to confirm deletion
-                                        AlertDialog.Builder(requireContext())
-                                            .setMessage("Delete chat with $name?")
-                                            .setPositiveButton("Yes") { dialog, which ->
-                                                //create an hashmap of paths to set to null
-                                                //only the current user's chat reference will be deleted
-                                                val childUpdates = hashMapOf<String, Any?>(
-                                                    "/user-messages/${currentUser.uid}/${listOfSelectedChats[0]}" to null,
-                                                    "/user-messages/recent-message/${currentUser.uid}/${listOfSelectedChats[0]}" to null
-                                                )
-                                                //update the specified paths defined in the hashMap
-                                                dbRef.updateChildren(childUpdates)
-                                                //dismiss dialog
-                                                dialog.dismiss()
-                                                //finish and close action mode by calling onDestroyActionMode method
-                                                mode?.finish()
-                                            }.setNegativeButton("No") { dialog, which ->
-                                                //dismiss dialog
-                                                dialog.dismiss()
-                                            }.show()
-                                    }
-
-                                    override fun onCancelled(error: DatabaseError) {}
-                                }
-                            )
-
-
+                            .child("name").get().addOnSuccessListener { dataSnapshot ->
+                                val name = dataSnapshot.getValue<String>()
+                                //show alert dialog to confirm deletion
+                                AlertDialog.Builder(requireContext())
+                                    .setMessage("Delete chat with $name?")
+                                    .setPositiveButton("Yes") { dialog, which ->
+                                        //create an hashmap of paths to set to null
+                                        //only the current user's chat reference will be deleted
+                                        val childUpdates = hashMapOf<String, Any?>(
+                                            "/user-messages/${currentUser.uid}/${listOfSelectedChats[0]}" to null,
+                                            "/user-messages/recent-message/${currentUser.uid}/${listOfSelectedChats[0]}" to null
+                                        )
+                                        //update the specified paths defined in the hashMap
+                                        dbRef.updateChildren(childUpdates)
+                                        //dismiss dialog
+                                        dialog.dismiss()
+                                        //finish and close action mode by calling onDestroyActionMode method
+                                        mode?.finish()
+                                    }.setNegativeButton("No") { dialog, which ->
+                                        //dismiss dialog
+                                        dialog.dismiss()
+                                    }.show()
+                            }
                     } else {
                         AlertDialog.Builder(requireContext())
                             .setMessage("Delete $selectedChatsCount chats?")
@@ -226,13 +219,6 @@ class ChatsFragment :
             actionMode = null
         }
 
-    }
-
-    override fun onItemLongCLicked(chateeId: String, view: View) {
-        if (actionMode == null) {
-            actionMode = (activity as AppCompatActivity?)!!.startSupportActionMode(actionModeCallBack)
-        }
-        updateSelection(chateeId, view)
     }
 
     //this method is used to keep track of selected items and update the visual state of views

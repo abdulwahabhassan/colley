@@ -6,21 +6,20 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
+import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
 import com.colley.android.adapter.PrivateMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentPrivateMessageBinding
-import com.colley.android.model.GroupMessage
-import com.colley.android.model.PrivateChat
-import com.colley.android.model.Profile
-import com.colley.android.model.SendButtonObserver
+import com.colley.android.model.*
 import com.colley.android.observer.PrivateMessageScrollToBottomObserver
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -58,6 +57,9 @@ class PrivateMessageFragment :
             onImageSelected(uri)
         }
     }
+    private var actionMode: ActionMode? = null
+    private var listOfSelectedMessages = arrayListOf<String>()
+    private var selectedMessagesCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +79,8 @@ class PrivateMessageFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.chatee_info_menu_item -> {
-                val action = PrivateMessageFragmentDirections.actionPrivateMessageFragmentToChateeInfoFragment(args.chateeId)
+                val action = PrivateMessageFragmentDirections
+                    .actionPrivateMessageFragmentToChateeInfoFragment(args.chateeId)
                 findNavController().navigate(action)
                 true
             }
@@ -107,18 +110,14 @@ class PrivateMessageFragment :
         currentUser = auth.currentUser!!
 
         //set action bar title as chatee name
-        dbRef.child("profiles").child(args.chateeId).addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val profile = snapshot.getValue<Profile>()
-                    if (profile != null) {
-                        (activity as AppCompatActivity?)?.supportActionBar?.title = profile.name
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
+        dbRef.child("profiles").child(args.chateeId).get().addOnSuccessListener {
+            dataSnapshot ->
+            val profile = dataSnapshot.getValue<Profile>()
+            if (profile != null) {
+                (activity as AppCompatActivity?)?.supportActionBar?.title = profile.name
             }
-        )
+        }
+
 
         //get a query reference to messages
         val messagesRef = dbRef.child("user-messages").child(currentUser.uid).child(args.chateeId)
@@ -126,13 +125,23 @@ class PrivateMessageFragment :
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         //build an options to configure adapter. setQuery takes firebase query to listen to and a
         //model class to which snapShots should be parsed
-        val options = FirebaseRecyclerOptions.Builder<PrivateChat>()
-            .setQuery(messagesRef, PrivateChat::class.java)
+        val options = FirebaseRecyclerOptions.Builder<PrivateMessage>()
+            .setQuery(messagesRef, PrivateMessage::class.java)
             .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
-        adapter = PrivateMessageRecyclerAdapter(options, currentUser, this, this, requireContext())
-        manager =  WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        adapter = PrivateMessageRecyclerAdapter(
+            options,
+            currentUser,
+            this,
+            this,
+            requireContext())
+
+        manager =  WrapContentLinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false)
+
         manager.stackFromEnd = true
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
@@ -151,34 +160,45 @@ class PrivateMessageFragment :
         binding.sendButton.setOnClickListener {
 
             if (binding.messageEditText.text?.trim()?.toString() != "") {
-                val privateMessage = PrivateChat(
-                    fromUserId = currentUser.uid,
-                    toUserId = args.chateeId,
-                    text = binding.messageEditText.text.toString()
-                )
+
                 //create a reference for the message on user's messages location and retrieve its
                 //key with which to update other locations that should have a ref to the message
-                val key = dbRef.child("user-messages").child(currentUser.uid).child(args.chateeId).push().key
+                val key = dbRef.child("user-messages").child(currentUser.uid)
+                    .child(args.chateeId).push().key
 
-                //used to update multiple paths in the database
-                //here we save a copy of the message to both the sender and receiver's path
-                val childUpdates = hashMapOf<String, Any>(
-                    "/user-messages/${currentUser.uid}/${args.chateeId}/$key" to privateMessage,
-                    "/user-messages/recent-message/${currentUser.uid}/${args.chateeId}" to privateMessage,
-                    "/user-messages/${args.chateeId}/${currentUser.uid}/$key" to privateMessage,
-                    "/user-messages/recent-message/${args.chateeId}/${currentUser.uid}" to privateMessage
-                )
-                //the value of the recent message is used when displaying a user's private
-                //messages from different colleagues, so we make a reference for this to
-                //make it easier to retrieve from the database
+                if(key != null) {
+                    //instantiate the message using the retrieved key as its id
+                    val privateMessage = PrivateMessage(
+                        fromUserId = currentUser.uid,
+                        toUserId = args.chateeId,
+                        text = binding.messageEditText.text.toString(),
+                        messageId = key
+                    )
 
-                //update the specified paths defined in the hashMap
-                dbRef.updateChildren(childUpdates)
+                    //used to update multiple paths in the database
+                    //here we save a copy of the message to both the sender and receiver's path
+                    val childUpdates = hashMapOf<String, Any>(
+                        "/user-messages/${currentUser.uid}/${args.chateeId}/$key" to privateMessage,
+                        "/user-messages/recent-message/${currentUser.uid}/${args.chateeId}" to privateMessage,
+                        "/user-messages/${args.chateeId}/${currentUser.uid}/$key" to privateMessage,
+                        "/user-messages/recent-message/${args.chateeId}/${currentUser.uid}" to privateMessage
+                    )
+                    //the value of the recent message is used when displaying a user's private
+                    //messages from different colleagues, so we make a reference for this to
+                    //make it easier to retrieve from the database
 
-                //set edit text field to empty text
-                binding.messageEditText.setText("")
+                    //update the specified paths defined in the hashMap
+                    dbRef.updateChildren(childUpdates)
+
+                    //set edit text field to empty text
+                    binding.messageEditText.setText("")
+                } else {
+                    Toast.makeText(requireContext(), "Unsuccessful", Toast.LENGTH_SHORT).show()
+                }
+
             } else {
-                Toast.makeText(requireContext(), "Empty message not sent", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Empty message not sent", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -194,7 +214,7 @@ class PrivateMessageFragment :
 
         //a template message with which to temporarily create a ref and retrieve its key for
         //further operations
-        val tempMessage = PrivateChat(
+        val tempMessage = PrivateMessage(
             fromUserId = currentUser.uid,
             toUserId = args.chateeId,
             image = LOADING_IMAGE_URL
@@ -234,11 +254,11 @@ class PrivateMessageFragment :
                 // and add it to the message.
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { uri ->
-                        val privateMessage =
-                            PrivateChat(
+                        val privateMessage = PrivateMessage(
                                 fromUserId = currentUser.uid,
                                 toUserId = args.chateeId,
-                                image = uri.toString()
+                                image = uri.toString(),
+                                messageId = key
                             )
 
                         //used to update multiple paths in the database
@@ -264,14 +284,15 @@ class PrivateMessageFragment :
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>) {
+    override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateMessage>) {
 
         binding.progressBar.visibility = View.GONE
         binding.linearLayout.visibility = View.VISIBLE
 
         if (snapshotArray.isEmpty()) {
             binding.startChattingTextView.text =
-                "Start a conversation with ${(activity as AppCompatActivity?)!!.supportActionBar!!.title}"
+                "Start a conversation with ${(activity as AppCompatActivity?)!!
+                    .supportActionBar!!.title}"
         } else {
             binding.startChattingTextView.visibility = View.GONE
         }
@@ -284,17 +305,131 @@ class PrivateMessageFragment :
         _binding = null
     }
 
+    override fun onItemLongCLicked(message: PrivateMessage, view: View) {
+        if (actionMode == null) {
+            actionMode = (activity as AppCompatActivity?)!!
+                .startSupportActionMode(actionModeCallBack)
+        }
+        //else clause is not used since we want the action mode to be initialized first if null
+        //on a first time long click and function should proceed to update selection
+        //if we mistakenly add an else clause, an unexpected behaviour will occur, action mode will
+        //be initialized the first time on long click, but our selection will not be updated
+        if(message.messageId != null) {
+            updateSelection(message.messageId!!, view)
+        }
+    }
+
+    override fun onItemClicked(message: PrivateMessage, view: View) {
+        if (actionMode != null) {
+            if(message.messageId != null) {
+                updateSelection(message.messageId!!, view)
+            }
+        }
+    }
+
+    //action mode call back
+    private val actionModeCallBack: ActionMode.Callback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mode?.menuInflater?.inflate(R.menu.on_long_click_chat_menu, menu)
+            mode?.title = "0"
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+
+            return when (item?.itemId) {
+                R.id.delete_chat_menu_item -> {
+                    //if only one message is selected
+                    if (selectedMessagesCount == 1) {
+                        AlertDialog.Builder(requireContext())
+                            .setMessage("Delete this message?")
+                            .setPositiveButton("Yes") { dialog, which ->
+                                //create an hashmap of paths to set to null
+                                //only the current user's message reference will be deleted
+                                val childUpdates = hashMapOf<String, Any?>(
+                                    "/user-messages/${currentUser.uid}/${args.chateeId}/" +
+                                            listOfSelectedMessages[0] to null
+                                )
+                                //update the specified paths defined in the hashMap
+                                dbRef.updateChildren(childUpdates)
+                                //dismiss dialog
+                                dialog.dismiss()
+                                //finish and close action mode by calling onDestroyActionMode method
+                                mode?.finish()
+                            }.setNegativeButton("No") { dialog, which ->
+                                //dismiss dialog
+                                dialog.dismiss()
+                            }.show()
+                    } else {
+                        AlertDialog.Builder(requireContext())
+                            .setMessage("Are you sure you want to delete these messages?")
+                            .setPositiveButton("Yes") { dialog, which ->
+                                //for each selected message, using their id,
+                                // set their respective paths to null
+                                listOfSelectedMessages.forEach { messageId ->
+                                    //create an hashmap of paths to set to null
+                                    //only the current user's message reference will be deleted
+                                    val childUpdates = hashMapOf<String, Any?>(
+                                        "/user-messages/${currentUser.uid}/${args.chateeId}/" +
+                                                messageId to null,
+                                    )
+                                    //update the specified paths defined in the hashMap
+                                    dbRef.updateChildren(childUpdates)
+                                }
+                                //dismiss dialog
+                                dialog.dismiss()
+                                //finish and close action mode by calling onDestroyActionMode method
+                                mode?.finish()
+                            }.setNegativeButton("No") { dialog, which ->
+                                //dismiss dialog
+                                dialog.dismiss()
+                            }.show()
+                    }
+                    true
+                } else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            //clear list
+            listOfSelectedMessages.clear()
+            //reset count to zero after clearing list
+            selectedMessagesCount = listOfSelectedMessages.size
+            //reset adapter tracking list to an empty list
+            adapter.resetMessagesSelectedList()
+            //reset backgrounds of selected views to white
+            adapter.restBackgroundForSelectedViews()
+            actionMode = null
+        }
+    }
+
+    //this method is used to keep track of selected items and update the visual state of views
+    //It is also used to configure the action mode title
+    private fun updateSelection(messageId: String, view: View) {
+        if (!listOfSelectedMessages.contains(messageId)) {
+            listOfSelectedMessages.add(messageId)
+            selectedMessagesCount = listOfSelectedMessages.size
+            actionMode?.title = selectedMessagesCount.toString()
+        } else {
+            listOfSelectedMessages.remove(messageId)
+            selectedMessagesCount = listOfSelectedMessages.size
+            actionMode?.title = selectedMessagesCount.toString()
+        }
+        if (selectedMessagesCount == 0) {
+            actionMode?.title = null
+            actionMode?.finish()
+        }
+    }
+
     companion object {
         private const val TAG = "PrivateMessageFragment"
-        private const val LOADING_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/colley-c37ea.appspot.com/o/loading_gif%20copy.gif?alt=media&token=022770e5-9db3-426c-9ee2-582b9d66fbac"
+        private const val LOADING_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/" +
+                "colley-c37ea.appspot.com/o/loading_gif%20copy.gif?alt=media&token=022770e5-9db3-" +
+                "426c-9ee2-582b9d66fbac"
     }
 
-    override fun onItemLongCLicked(message: GroupMessage, view: View) {
-
-    }
-
-    override fun onUserClicked(userId: String, view: View) {
-        val action = PrivateMessageFragmentDirections.actionPrivateMessageFragmentToChateeInfoFragment(userId)
-        findNavController().navigate(action)
-    }
 }
