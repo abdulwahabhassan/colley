@@ -119,7 +119,8 @@ class PostBottomSheetDialogFragment (
         //set likeImageView drawable based on whether the user has liked the post or not
         postId?.let {
             Firebase.database.reference.child("post-likes").child(it)
-                .child(uid).get().addOnSuccessListener { snapShot -> binding.likeImageView.isActivated = snapShot.getValue(Boolean::class.java) == true
+                .child(uid).get().addOnSuccessListener { snapShot ->
+                    binding.likeImageView.isActivated = snapShot.getValue(Boolean::class.java) == true
                 }
         }
 

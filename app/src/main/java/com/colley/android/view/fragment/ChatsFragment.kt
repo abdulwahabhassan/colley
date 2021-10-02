@@ -16,6 +16,7 @@ import com.colley.android.adapter.ChatsRecyclerAdapter
 import com.colley.android.databinding.FragmentPrivateChatsBinding
 import com.colley.android.model.PrivateChat
 import com.colley.android.view.dialog.NewMessageBottomSheetDialogFragment
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
@@ -43,14 +44,11 @@ class ChatsFragment :
     private lateinit var currentUser: FirebaseUser
     private var adapter: ChatsRecyclerAdapter? = null
     private var manager: LinearLayoutManager? = null
-    private var selectedChatsCount = 0
     private lateinit var recyclerView: RecyclerView
-    private var listOfSelectedChats = arrayListOf<String>()
-    private var listOfSelectedChatViews = arrayListOf<View>()
     private var newMessageBottomSheetDialog: NewMessageBottomSheetDialogFragment? = null
-
     private var actionMode: ActionMode? = null
-
+    private var selectedChatsCount = 0
+    private var listOfSelectedChats = arrayListOf<String>()
     private val uid: String
         get() = currentUser.uid
 
@@ -77,7 +75,8 @@ class ChatsFragment :
         currentUser = auth.currentUser!!
 
         //get a query reference to chats
-        val chatsRef = dbRef.child("user-messages").child("recent-message").child(uid)
+        val chatsRef = dbRef.child("user-messages").child("recent-message")
+            .child(uid)
 
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         //build an options to configure adapter. setQuery takes firebase query to listen to and a
@@ -87,25 +86,30 @@ class ChatsFragment :
             .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
-        adapter = ChatsRecyclerAdapter(options, requireContext(), currentUser, this@ChatsFragment, this@ChatsFragment)
-        manager = LinearLayoutManager(requireContext())
+        adapter = ChatsRecyclerAdapter(
+            options,
+            requireContext(),
+            currentUser,
+            this@ChatsFragment,
+            this@ChatsFragment)
+
+        manager = WrapContentLinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false)
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
-
 
         binding.newChatFab.setOnClickListener {
             newMessageBottomSheetDialog = NewMessageBottomSheetDialogFragment(requireContext())
             newMessageBottomSheetDialog?.show(childFragmentManager, null)
         }
-
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
-
 
     override fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>) {
         binding.privateMessagesProgressBar.visibility = GONE
@@ -120,7 +124,8 @@ class ChatsFragment :
 
     override fun onItemLongCLicked(chateeId: String, view: View) {
         if (actionMode == null) {
-            actionMode = (activity as AppCompatActivity?)!!.startSupportActionMode(actionModeCallBack)
+            actionMode = (activity as AppCompatActivity?)!!
+                .startSupportActionMode(actionModeCallBack)
         }
         //else clause is not used since we want the action mode to be initialized first if null
         //on a first time long click and function should proceed to update selection
@@ -131,7 +136,8 @@ class ChatsFragment :
 
     override fun onItemClick(chateeId: String, view: View) {
         if (actionMode == null) {
-            val action = ChatsFragmentDirections.actionChatsFragmentToPrivateMessageFragment(chateeId)
+            val action = ChatsFragmentDirections
+                .actionChatsFragmentToPrivateMessageFragment(chateeId)
             findNavController().navigate(action)
         } else {
             updateSelection(chateeId, view)
@@ -167,14 +173,17 @@ class ChatsFragment :
                                         //create an hashmap of paths to set to null
                                         //only the current user's chat reference will be deleted
                                         val childUpdates = hashMapOf<String, Any?>(
-                                            "/user-messages/${currentUser.uid}/${listOfSelectedChats[0]}" to null,
-                                            "/user-messages/recent-message/${currentUser.uid}/${listOfSelectedChats[0]}" to null
+                                            "/user-messages/${currentUser.uid}/" +
+                                                    listOfSelectedChats[0] to null,
+                                            "/user-messages/recent-message/${currentUser.uid}/" +
+                                                    listOfSelectedChats[0] to null
                                         )
                                         //update the specified paths defined in the hashMap
                                         dbRef.updateChildren(childUpdates)
                                         //dismiss dialog
                                         dialog.dismiss()
-                                        //finish and close action mode by calling onDestroyActionMode method
+                                        //finish and close action mode by calling
+                                        //onDestroyActionMode method
                                         mode?.finish()
                                     }.setNegativeButton("No") { dialog, which ->
                                         //dismiss dialog
@@ -190,7 +199,8 @@ class ChatsFragment :
                                     //only the current user's chat reference will be deleted
                                     val childUpdates = hashMapOf<String, Any?>(
                                         "/user-messages/${currentUser.uid}/$it" to null,
-                                        "/user-messages/recent-message/${currentUser.uid}/$it" to null
+                                        "/user-messages/recent-message/${currentUser.uid}/" +
+                                                it to null
                                     )
                                     //update the specified paths defined in the hashMap
                                     dbRef.updateChildren(childUpdates)
@@ -210,15 +220,16 @@ class ChatsFragment :
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
+            //clear list
             listOfSelectedChats.clear()
+            //reset count after clearing list
             selectedChatsCount = listOfSelectedChats.size
-            //change background resource of all selected views to reflect their deselection
-            listOfSelectedChatViews.forEach {
-                it.setBackgroundResource(R.drawable.ripple_effect_curved_edges_16dp)
-            }
+            //reset adapter tracking list to an empty list
+            adapter?.resetSelectedChatsList()
+            //reset backgrounds of selected views
+            adapter?.restBackgroundOfSelectedViews()
             actionMode = null
         }
-
     }
 
     //this method is used to keep track of selected items and update the visual state of views
@@ -226,16 +237,12 @@ class ChatsFragment :
     private fun updateSelection(chateeId: String, view: View) {
         if (!listOfSelectedChats.contains(chateeId)) {
             listOfSelectedChats.add(chateeId)
-            listOfSelectedChatViews.add(view)
             selectedChatsCount = listOfSelectedChats.size
             actionMode?.title = selectedChatsCount.toString()
-            view.setBackgroundResource(R.drawable.selected_chat_background)
         } else {
             listOfSelectedChats.remove(chateeId)
-            listOfSelectedChatViews.remove(view)
             selectedChatsCount = listOfSelectedChats.size
             actionMode?.title = selectedChatsCount.toString()
-            view.setBackgroundResource(R.drawable.ripple_effect_curved_edges_16dp)
         }
         if (selectedChatsCount == 0) {
             actionMode?.title = null

@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
-import androidx.core.view.allViews
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -27,10 +26,7 @@ import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
@@ -290,9 +286,14 @@ class PrivateMessageFragment :
         binding.linearLayout.visibility = View.VISIBLE
 
         if (snapshotArray.isEmpty()) {
-            binding.startChattingTextView.text =
-                "Start a conversation with ${(activity as AppCompatActivity?)!!
-                    .supportActionBar!!.title}"
+            dbRef.child("profiles").child(args.chateeId).get().addOnSuccessListener {
+                    dataSnapshot ->
+                val profile = dataSnapshot.getValue<Profile>()
+                if (profile != null) {
+                    binding.startChattingTextView.text =
+                        "Start a conversation with ${profile.name}"
+                }
+            }
         } else {
             binding.startChattingTextView.visibility = View.GONE
         }
@@ -343,52 +344,70 @@ class PrivateMessageFragment :
 
             return when (item?.itemId) {
                 R.id.delete_chat_menu_item -> {
-                    //if only one message is selected
-                    if (selectedMessagesCount == 1) {
-                        AlertDialog.Builder(requireContext())
-                            .setMessage("Delete this message?")
-                            .setPositiveButton("Yes") { dialog, which ->
-                                //create an hashmap of paths to set to null
-                                //only the current user's message reference will be deleted
-                                val childUpdates = hashMapOf<String, Any?>(
-                                    "/user-messages/${currentUser.uid}/${args.chateeId}/" +
-                                            listOfSelectedMessages[0] to null
-                                )
-                                //update the specified paths defined in the hashMap
-                                dbRef.updateChildren(childUpdates)
-                                //dismiss dialog
-                                dialog.dismiss()
-                                //finish and close action mode by calling onDestroyActionMode method
-                                mode?.finish()
-                            }.setNegativeButton("No") { dialog, which ->
-                                //dismiss dialog
-                                dialog.dismiss()
-                            }.show()
-                    } else {
-                        AlertDialog.Builder(requireContext())
-                            .setMessage("Are you sure you want to delete these messages?")
-                            .setPositiveButton("Yes") { dialog, which ->
-                                //for each selected message, using their id,
-                                // set their respective paths to null
-                                listOfSelectedMessages.forEach { messageId ->
-                                    //create an hashmap of paths to set to null
-                                    //only the current user's message reference will be deleted
-                                    val childUpdates = hashMapOf<String, Any?>(
-                                        "/user-messages/${currentUser.uid}/${args.chateeId}/" +
-                                                messageId to null,
-                                    )
-                                    //update the specified paths defined in the hashMap
-                                    dbRef.updateChildren(childUpdates)
-                                }
-                                //dismiss dialog
-                                dialog.dismiss()
-                                //finish and close action mode by calling onDestroyActionMode method
-                                mode?.finish()
-                            }.setNegativeButton("No") { dialog, which ->
-                                //dismiss dialog
-                                dialog.dismiss()
-                            }.show()
-                    }
+                    AlertDialog.Builder(requireContext())
+                        .setMessage("Delete ${singularOrPlural(listOfSelectedMessages, "this message", "these messages")}?")
+                        .setPositiveButton("Yes") { dialog, which ->
+                            //perform operation for all selected messages
+                            listOfSelectedMessages.forEach { messageId ->
+                                dbRef.child("user-messages").child(currentUser.uid)
+                                    .child(args.chateeId).child(messageId).get()
+                                    .addOnSuccessListener { dataSnapshot ->
+                                        val message = dataSnapshot.getValue<PrivateMessage>()
+                                        //if this message has an image and was uploaded by the
+                                        //current user, delete and remove from storage
+                                        if (message?.image != null && message.fromUserId == currentUser.uid) {
+                                            //get a reference to it's location on database storage from its url and
+                                            //delete it with the retrieved reference
+                                            Firebase.storage.getReferenceFromUrl(message.image!!).delete()
+                                                .addOnCompleteListener { task ->
+                                                    if (task.isSuccessful) {
+                                                        //create an hashmap of paths to set to null
+                                                        //delete the current user's message reference and that of the chatee
+                                                        //(we only do this when a message has an image to avoid storage in cases
+                                                        //where both users might delete their references to this message and leave
+                                                        //the image remaining in storage forever)
+                                                        val childUpdates = hashMapOf<String, Any?>(
+                                                            "/user-messages/${currentUser.uid}/${args.chateeId}/" +
+                                                                    messageId to null,
+                                                            "/user-messages/${args.chateeId}/${currentUser.uid}/" +
+                                                                    messageId to null
+                                                        )
+                                                        //update the specified paths defined in the hashMap
+                                                        dbRef.updateChildren(childUpdates)
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Deleted media and message from both ends",
+                                                            Toast.LENGTH_LONG).show()
+                                                    } else {
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Failed to delete media, hence message from both ends",
+                                                            Toast.LENGTH_LONG).show()
+                                                    }
+                                                }
+                                        } else {
+                                            //else if message doesn't contain an image or wasn't uploaded by the user
+                                            //simply delete their only their own reference of the message without affecting
+                                            //the chatee's own reference
+                                            //create an hashmap of paths to set to null
+                                            //only the current user's message reference will be deleted
+                                            val childUpdates = hashMapOf<String, Any?>(
+                                                "/user-messages/${currentUser.uid}/${args.chateeId}/" +
+                                                        messageId to null
+                                            )
+                                            //update the specified paths defined in the hashMap
+                                            dbRef.updateChildren(childUpdates)
+                                        }
+                                    }
+                            }
+                            //dismiss dialog
+                            dialog.dismiss()
+                            //finish and close action mode by calling onDestroyActionMode method
+                            mode?.finish()
+                        }.setNegativeButton("No") { dialog, which ->
+                            //dismiss dialog
+                            dialog.dismiss()
+                        }.show()
                     true
                 } else -> false
             }
@@ -402,9 +421,22 @@ class PrivateMessageFragment :
             //reset adapter tracking list to an empty list
             adapter.resetMessagesSelectedList()
             //reset backgrounds of selected views to white
-            adapter.restBackgroundForSelectedViews()
+            adapter.restBackgroundOfSelectedViews()
             actionMode = null
         }
+    }
+
+    private fun singularOrPlural(list: ArrayList<String>, singular: String, plural: String): String {
+        val size = list.size
+        var output = ""
+       if (list.isNotEmpty()) {
+           output = if (size == 1) {
+               singular
+           } else {
+               plural
+           }
+       }
+        return output
     }
 
     //this method is used to keep track of selected items and update the visual state of views

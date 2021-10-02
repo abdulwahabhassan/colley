@@ -1,10 +1,11 @@
 package com.colley.android.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -33,6 +34,25 @@ class ChatsRecyclerAdapter(
 )
     : FirebaseRecyclerAdapter<PrivateChat, ChatsRecyclerAdapter.PrivateMessageViewHolder>(options) {
 
+    //list to keep tracked of selected chats
+    private var chatsSelectedList = arrayListOf<String>()
+    //list to keep tracked of selected views
+    private var viewsSelectedList = arrayListOf<View>()
+
+    //function to clear selected chats tracking list when action mode is off
+    fun resetSelectedChatsList() {
+        chatsSelectedList.clear()
+    }
+    //rest back resources for all seleceted views when action mode is destroyed
+    fun restBackgroundOfSelectedViews() {
+
+        viewsSelectedList.forEach { view ->
+            Log.w("viewsRes", "$view")
+            view.setBackgroundResource(R.color.white)
+        }
+        viewsSelectedList.clear()
+    }
+
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
     interface DataChangedListener {
         fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>)
@@ -52,99 +72,116 @@ class ChatsRecyclerAdapter(
         holder.bind(currentUser, model, context, clickListener)
     }
 
+    //return unique view type for each item
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     //Callback triggered after all child events in a particular snapshot have been processed.
     //Useful for batch events, such as removing a loading indicator
     override fun onDataChanged() {
         super.onDataChanged()
-
         //display GroupMessageFragment EditText layout only when data has been bound,
         //otherwise show progress bar loading
         onDataChangedListener.onDataAvailable(snapshots)
     }
 
-    class PrivateMessageViewHolder (private val itemBinding : ItemChatBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+    inner class PrivateMessageViewHolder (private val itemBinding : ItemChatBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(currentUser: FirebaseUser?, chat: PrivateChat, context: Context, clickListener: ItemClickedListener) = with(itemBinding) {
 
             //check which id rightly belongs to the chatee
             val chateeId = if (chat.fromUserId == currentUser?.uid) chat.toUserId as String else chat.fromUserId as String
 
-            Firebase.database.reference.child("user-messages").child("recent-message").child(currentUser?.uid!!)
-            //add a listener to retrieve chatee profile
-            Firebase.database.reference.child("profiles").child(chateeId).addListenerForSingleValueEvent(
-                object : ValueEventListener {
-
-                    //set chatee name
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val chateeProfile = snapshot.getValue<Profile>()
-                        if(chateeProfile != null) {
-                            personNameTextView.text = chateeProfile.name
-                        } else {
-                            personNameTextView.text = "Unknown user"
-                        }
-
-                        //set recent message
-                        if(chat.text != null) {
-                            recentMessageImageView.visibility = GONE
-                            recentMessageTextView.text = chat.text
-                            recentMessageTextView.visibility  = VISIBLE
-                        }
-
-                        //set recent message as "photo image" if it is a photo
-                        if (chat.image != null) {
-                            recentMessageImageView.visibility = VISIBLE
-                            recentMessageTextView.visibility  = GONE
-                        }
+            //get and set chatee name
+            Firebase.database.reference.child("profiles").child(chateeId)
+                .child("name").get().addOnSuccessListener { dataSnapshot ->
+                val name = dataSnapshot.getValue(String::class.java)
+                    if(name != null) {
+                        personNameTextView.text = name
+                    } else {
+                        personNameTextView.text = "Unknown user"
                     }
-
-                    override fun onCancelled(error: DatabaseError) {}
-                }
-            )
-
-            //load chatee profile photo
-            Firebase.database.reference.child("photos").child(chateeId).addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val photo = snapshot.getValue<String>()
-                        if (photo != null) {
-                            Glide.with(context).load(photo)
-                                .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(this@with.personImageView)
-                        } else {
-                            Glide.with(context).load(R.drawable.ic_person).into(this@with.personImageView)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
-                }
-            )
-
-
-
-            //set chatee photo
-            Firebase.database.reference.child("photos").child(chateeId).addListenerForSingleValueEvent(
-                object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val chateePhoto = snapshot.getValue<String>()
-                        if (chateePhoto != null) {
-                            Glide.with(context).load(chateePhoto).diskCacheStrategy(
-                                DiskCacheStrategy.RESOURCE).into(this@with.personImageView)
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {}
-                }
-            )
-
-            root.setOnClickListener {
-
-                clickListener.onItemClick(chateeId, it)
             }
 
-            root.setOnLongClickListener {
-                clickListener.onItemLongCLicked(chateeId, it)
+            //set recent message text if not null and hide imageview
+            if(chat.text != null) {
+                recentMessageImageView.visibility = GONE
+                recentMessageTextView.text = chat.text
+                recentMessageTextView.visibility  = VISIBLE
+            }
+
+            //set recent message as "photo image" if it is a photo and hide text view
+            if (chat.image != null) {
+                recentMessageTextView.visibility  = GONE
+                recentMessageImageView.visibility = VISIBLE
+            }
+
+            //set chatee photo
+            Firebase.database.reference.child("photos").child(chateeId).get()
+                .addOnSuccessListener { dataSnapshot ->
+                    val photo = dataSnapshot.getValue<String>()
+                    if (photo != null) {
+                        Glide.with(context).load(photo).diskCacheStrategy(
+                        DiskCacheStrategy.RESOURCE).into(personImageView)
+                } else {
+                        Glide.with(context).load(R.drawable.ic_person_light_pearl).into(personImageView)
+                    }
+
+            }
+
+            root.setOnClickListener { root ->
+                //only work if action mode is on, we know this when chatsSelectedList is not empty
+                //as a result of OnLongClick being already triggered or resetChatsSelectedList
+                //hasn't been called
+                if (chatsSelectedList.isNotEmpty()) {
+                    //a list of selected chats is used to keep track of selected chats to avoid
+                    //inconsistency when views are recycled
+                    if (chatsSelectedList.contains(chateeId)) {
+                        //remove chatee id if they have already been selected
+                        chatsSelectedList.remove(chateeId)
+                        //set background color to indicate deselection
+                        root.setBackgroundResource(R.drawable.ripple_effect_curved_edges_16dp)
+                    } else {
+                        //add chatee id if they haven't already been selected
+                        chatsSelectedList.add(chateeId)
+                        //set background color to indicate selection
+                        root.setBackgroundResource(R.drawable.selected_chat_background)
+                    }
+                    //update list of views
+                    if (viewsSelectedList.contains(root)){
+                        viewsSelectedList.remove(root)
+                    } else {
+                        viewsSelectedList.add(root)
+                    }
+                }
+                clickListener.onItemClick(chateeId, root)
+            }
+
+            root.setOnLongClickListener { root ->
+                //a list of selected chats is used to keep track of selected chats to avoid
+                //inconsistency when views are recycled
+                if (chatsSelectedList.contains(chateeId)) {
+                    //remove chatee id if they have already been selected
+                    chatsSelectedList.remove(chateeId)
+                    //set background color to indicate deselection
+                    root.setBackgroundResource(R.drawable.ripple_effect_curved_edges_16dp)
+                } else {
+                    //add chatee id if they haven't already been selected
+                    chatsSelectedList.add(chateeId)
+                    //set background color to indicate selection
+                    root.setBackgroundResource(R.drawable.selected_chat_background)
+                }
+                //update list of views
+                if (viewsSelectedList.contains(root)){
+                    viewsSelectedList.remove(root)
+                } else {
+                    viewsSelectedList.add(root)
+                }
+                clickListener.onItemLongCLicked(chateeId, root)
                 true
             }
         }
-    }
 
+    }
 
 }

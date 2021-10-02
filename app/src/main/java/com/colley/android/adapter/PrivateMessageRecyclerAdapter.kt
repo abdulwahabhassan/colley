@@ -41,9 +41,8 @@ class PrivateMessageRecyclerAdapter(
         messagesSelectedList.clear()
     }
     //rest back resources for all seleceted views when action mode is destroyed
-    fun restBackgroundForSelectedViews() {
+    fun restBackgroundOfSelectedViews() {
         viewsSelectedList.forEach { view ->
-            Log.w("viewsRest", "$view" )
             view.setBackgroundResource(R.color.white)
         }
         viewsSelectedList.clear()
