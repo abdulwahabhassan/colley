@@ -40,10 +40,6 @@
                                 android:id="@+id/policyFragment"
                                 android:title="@string/menu_item_policy_text"
                                 android:icon="@drawable/ic_policy" />
-                            <item
-                                android:id="@+id/contactUsFragment"
-                                android:title="@string/menu_item_contact_us_title"
-                                android:icon="@drawable/ic_contact_us" />
                      </group>
               </menu>
        </item>
