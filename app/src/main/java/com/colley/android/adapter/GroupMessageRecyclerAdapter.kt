@@ -1,16 +1,18 @@
 package com.colley.android.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
 import com.colley.android.databinding.*
+import com.colley.android.glide.GlideImageLoader
 import com.colley.android.model.GroupMessage
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -29,6 +31,23 @@ class GroupMessageRecyclerAdapter(
     private val context: Context
 ) : FirebaseRecyclerAdapter<GroupMessage, RecyclerView.ViewHolder>(options) {
 
+    //list to keep tracked of selected messages
+    private var messagesSelectedList = arrayListOf<String>()
+    //list to keep tracked of selected views
+    private var viewsSelectedList = arrayListOf<View>()
+
+    //function to clear selected messages tracking list when action mode is off
+    fun resetMessagesSelectedList() {
+        messagesSelectedList.clear()
+    }
+    //rest back resources for all selected views when action mode is destroyed
+    fun restBackgroundOfSelectedViews() {
+        viewsSelectedList.forEach { view ->
+            view.setBackgroundResource(R.color.white)
+        }
+        viewsSelectedList.clear()
+    }
+
     //listener to hide progress bar and display views only when data has been retrieved from
     //database and bound to view holder
     interface DataChangedListener {
@@ -38,6 +57,7 @@ class GroupMessageRecyclerAdapter(
     interface ItemClickedListener {
         fun onItemLongCLicked(message: GroupMessage, view: View)
         fun onUserClicked(userId: String, view: View)
+        fun onItemClicked(message: GroupMessage, root: View)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -158,156 +178,298 @@ class GroupMessageRecyclerAdapter(
 
 
     inner class CurrentUserMessageViewHolder(
-        private val binding: ItemGroupMessageCurrentUserBinding)
+        private val binding: ItemGroupMessageCurrentUserBinding
+        )
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupMessage, itemPosition: Int) {
-
-            //load user photo
-//            Firebase.database.reference.child("photos").child(item.userId!!).get()
-//                .addOnSuccessListener { dataSnapshot ->
-//                    val photo = dataSnapshot.getValue<String?>()
-//                    if (snapshots.size != 0) {
-//                        //if the next message is from the same user, remove userName from the next
-//                            //message
-//                        if(itemPosition > 0 && snapshots[itemPosition].userId ==
-//                            snapshots[itemPosition - 1].userId) {
-//                            binding.currentUserImageView.visibility = INVISIBLE
-//                        } else {
-//                            if (photo != null) {
-//                                loadImageIntoView(binding.currentUserImageView, photo)
-//                            } else {
-//                                Glide.with(context).load(R.drawable.ic_person_light_apricot)
-//                                    .into(binding.currentUserImageView)
-//                                binding.currentUserImageView.visibility = VISIBLE
-//                            }
-//                        }
-//                    }
-//                }
+        fun bind(message: GroupMessage, itemPosition: Int) = with(binding) {
 
             //set message body
-            if (item.text != null) {
-                binding.currentUserMessageTextView.text = item.text
-                binding.currentUserMessageTextView.visibility = VISIBLE
+            if (message.text != null) {
+                currentUserMessageTextView.text = message.text
+                currentUserMessageTextView.visibility = VISIBLE
             } else {
-                binding.currentUserMessageTextView.visibility = GONE
+                currentUserMessageTextView.visibility = GONE
             }
-
-//            //set username
-//            Firebase.database.reference.child("profiles").child(item.userId!!)
-//                .child("name").get().addOnSuccessListener { dataSnapshot ->
-//                    val name = dataSnapshot.getValue<String>()
-//                    if (snapshots.size != 0) {
-//                        //if the next message is from the same user as in the previous message,
-//                            //remove userPhoto from the next message
-//                        if(itemPosition > 0 && snapshots[itemPosition].userId ==
-//                            snapshots[itemPosition - 1].userId) {
-//                            binding.currentUserNameTextView.visibility = GONE
-//                        } else {
-//                            binding.currentUserNameTextView.text = name
-//                            binding.currentUserNameTextView.visibility = VISIBLE
-//                        }
-//                    }
-//                }
-
 
             //load message photo if any
-            if (item.image != null) {
-                loadImageIntoView(binding.currentUserMessagePhotoImageView, item.image!!)
-                binding.currentUserMessagePhotoImageView.visibility = VISIBLE
+            if (message.image != null) {
+                loadMessageImageIntoView(currentUserMessagePhotoImageView, message.image!!, photoProgressBar)
+                currentUserMessagePhotoImageView.visibility = VISIBLE
             } else {
-                binding.currentUserMessagePhotoImageView.visibility = GONE
+                currentUserMessagePhotoImageView.visibility = GONE
+                photoProgressBar.visibility = GONE
             }
 
+            root.setOnClickListener { root ->
+                //only work if action mode is on, we know this when messagesSelectedList is not empty
+                //as a result of OnLongClick being already triggered or resetMessageSelectedList
+                //hasn't been called
+                if(messagesSelectedList.isNotEmpty()) {
+                    //a list of selected messages is used to keep track of selected messages to avoid
+                    //inconsistency when views are recycled
+                    if (messagesSelectedList.contains(message.messageId)) {
+                        //remove message id if they have already been selected
+                        messagesSelectedList.remove(message.messageId)
+                        //set background color to indicate deselection
+                        root.setBackgroundResource(R.color.white)
+                    } else {
+                        //add message id if they haven't be selected
+                        message.messageId?.let { id -> messagesSelectedList.add(id) }
+                        //set background color to indicate selection
+                        root.setBackgroundResource(R.color.lightest_pearl)
+                    }
+                    //update list of views
+                    if (viewsSelectedList.contains(root)){
+                        viewsSelectedList.remove(root)
+                    } else {
+                        viewsSelectedList.add(root)
+                    }
+                    clickListener.onItemClicked(message, root)
+                }
+            }
 
+            root.setOnLongClickListener {
+                //a list of selected messages is used to keep track of selected messages to avoid
+                //inconsistency when views are recycled
+                if (messagesSelectedList.contains(message.messageId)) {
+                    //remove message if they have already been selected
+                    messagesSelectedList.remove(message.messageId)
+                    //set background color to indicate deselection
+                    root.setBackgroundResource(R.color.white)
+                } else {
+                    //add message if they haven't be selected
+                    message.messageId?.let { id -> messagesSelectedList.add(id) }
+                    //set background color to indicate selection
+                    root.setBackgroundResource(R.color.lightest_pearl)
+                }
+                //update list of views
+                if (viewsSelectedList.contains(root)){
+                    viewsSelectedList.remove(root)
+                } else {
+                    viewsSelectedList.add(root)
+                }
+                clickListener.onItemLongCLicked(message, it)
+                true
+            }
+
+            //during onBindViewHolder, which may occur when views are recycled, we use the tracking
+            //list of selected messages to keep the background resource of each message's view set
+            //to the appropriate color
+            if(messagesSelectedList.contains(message.messageId)) {
+                root.setBackgroundResource(R.color.lightest_pearl)
+            } else {
+                root.setBackgroundResource(R.color.white)
+            }
         }
 
     }
 
     inner class CurrentUserMessageViewHolderSame(
-        private val binding: ItemGroupMessageCurrentUserSameBinding) :
+        private val binding: ItemGroupMessageCurrentUserSameBinding
+        ) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupMessage, itemPosition: Int) {
+        fun bind(message: GroupMessage, itemPosition: Int) = with(binding) {
 
             //set message body
-            if (item.text != null) {
-                binding.currentUserMessageTextView.text = item.text
-                binding.currentUserMessageTextView.visibility = VISIBLE
+            if (message.text != null) {
+                currentUserMessageTextView.text = message.text
+                currentUserMessageTextView.visibility = VISIBLE
             } else {
-                binding.currentUserMessageTextView.visibility = GONE
+                currentUserMessageTextView.visibility = GONE
             }
 
             //load message photo if any
-            if (item.image != null) {
-                loadImageIntoView(binding.currentUserMessagePhotoImageView, item.image!!)
-                binding.currentUserMessagePhotoImageView.visibility = VISIBLE
+            if (message.image != null) {
+                loadMessageImageIntoView(currentUserMessagePhotoImageView, message.image!!, photoProgressBar)
+                currentUserMessagePhotoImageView.visibility = VISIBLE
             } else {
-                binding.currentUserMessagePhotoImageView.visibility = GONE
+                currentUserMessagePhotoImageView.visibility = GONE
+                photoProgressBar.visibility = GONE
             }
 
-        }
+            root.setOnClickListener { root ->
+                //only work if action mode is on, we know this when messagesSelectedList is not empty
+                //as a result of OnLongClick being already triggered or resetMessageSelectedList
+                //hasn't been called
+                if(messagesSelectedList.isNotEmpty()) {
+                    //a list of selected messages is used to keep track of selected messages to avoid
+                    //inconsistency when views are recycled
+                    if (messagesSelectedList.contains(message.messageId)) {
+                        //remove message id if they have already been selected
+                        messagesSelectedList.remove(message.messageId)
+                        //set background color to indicate deselection
+                        root.setBackgroundResource(R.color.white)
+                    } else {
+                        //add message id if they haven't be selected
+                        message.messageId?.let { id -> messagesSelectedList.add(id) }
+                        //set background color to indicate selection
+                        root.setBackgroundResource(R.color.lightest_pearl)
+                    }
+                    //update list of views
+                    if (viewsSelectedList.contains(root)){
+                        viewsSelectedList.remove(root)
+                    } else {
+                        viewsSelectedList.add(root)
+                    }
+                    clickListener.onItemClicked(message, root)
+                }
+            }
 
+            root.setOnLongClickListener {
+                //a list of selected messages is used to keep track of selected messages to avoid
+                //inconsistency when views are recycled
+                if (messagesSelectedList.contains(message.messageId)) {
+                    //remove message if they have already been selected
+                    messagesSelectedList.remove(message.messageId)
+                    //set background color to indicate deselection
+                    root.setBackgroundResource(R.color.white)
+                } else {
+                    //add message if they haven't be selected
+                    message.messageId?.let { id -> messagesSelectedList.add(id) }
+                    //set background color to indicate selection
+                    root.setBackgroundResource(R.color.lightest_pearl)
+                }
+                //update list of views
+                if (viewsSelectedList.contains(root)){
+                    viewsSelectedList.remove(root)
+                } else {
+                    viewsSelectedList.add(root)
+                }
+                clickListener.onItemLongCLicked(message, it)
+                true
+            }
+
+            //during onBindViewHolder, which may occur when views are recycled, we use the tracking
+            //list of selected messages to keep the background resource of each message's view set
+            //to the appropriate color
+            if(messagesSelectedList.contains(message.messageId)) {
+                root.setBackgroundResource(R.color.lightest_pearl)
+            } else {
+                root.setBackgroundResource(R.color.white)
+            }
+        }
     }
 
     inner class GroupMessageViewHolder(private val binding: ItemGroupMessageOtherUserBinding)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupMessage, itemPosition: Int) {
+        fun bind(message: GroupMessage, itemPosition: Int) = with(binding) {
 
             //view user profile when image is clicked
-            binding.messengerImageView.setOnClickListener {
-                item.userId?.let { it1 -> clickListener.onUserClicked(it1, it) }
+            messengerImageView.setOnClickListener {
+                message.userId?.let { it1 -> clickListener.onUserClicked(it1, it) }
             }
 
             //load user photo
-            Firebase.database.reference.child("photos").child(item.userId!!).get()
+            Firebase.database.reference.child("photos").child(message.userId!!).get()
                 .addOnSuccessListener {  dataSnapshot ->
                     val photo = dataSnapshot.getValue(String::class.java)
                     if (snapshots.size != 0) {
                         if(itemPosition > 0 && snapshots[itemPosition].userId ==
                             snapshots[itemPosition - 1].userId) {
-                            binding.messengerImageView.visibility = GONE
+                            messengerImageView.visibility = GONE
                         } else {
                             if (photo != null) {
-                                loadImageIntoView(binding.messengerImageView, photo)
+                                loadUserPhotoIntoView(messengerImageView, photo)
                             } else {
                                 Glide.with(context).load(R.drawable.ic_person_light_pearl)
-                                    .into(binding.messengerImageView)
-                                binding.messengerImageView.visibility = VISIBLE
+                                    .into(messengerImageView)
+                                messengerImageView.visibility = VISIBLE
                             }
                         }
                     }
             }
 
             //set message body
-            if (item.text != null) {
-                binding.messageTextView.text = item.text
-                binding.messageTextView.visibility = VISIBLE
+            if (message.text != null) {
+                messageTextView.text = message.text
+                messageTextView.visibility = VISIBLE
             } else {
-                binding.messageTextView.visibility = GONE
+                messageTextView.visibility = GONE
             }
 
             //set username
-            Firebase.database.reference.child("profiles").child(item.userId!!)
+            Firebase.database.reference.child("profiles").child(message.userId!!)
                 .child("name").get()
                 .addOnSuccessListener { dataSnapshot ->
                     val name = dataSnapshot.getValue<String>()
                     if (snapshots.size != 0) {
                         if(itemPosition > 0 && snapshots[itemPosition].userId ==
                             snapshots[itemPosition - 1].userId) {
-                            binding.messengerNameTextView.visibility = GONE
+                            messengerNameTextView.visibility = GONE
                         } else {
-                            binding.messengerNameTextView.text = name
-                            binding.messengerNameTextView.visibility = VISIBLE
+                            messengerNameTextView.text = name
+                            messengerNameTextView.visibility = VISIBLE
                         }
                     }
                 }
 
-
             //load message photo if any
-            if (item.image != null) {
-                loadImageIntoView(binding.messagePhotoImageView, item.image!!)
-                binding.messagePhotoImageView.visibility = VISIBLE
+            if (message.image != null) {
+                loadMessageImageIntoView(messagePhotoImageView, message.image!!, photoProgressBar)
             } else {
-                binding.messagePhotoImageView.visibility = GONE
+                messagePhotoImageView.visibility = GONE
+                photoProgressBar.visibility = GONE
+            }
+
+            root.setOnClickListener { root ->
+                //only work if action mode is on, we know this when messagesSelectedList is not empty
+                //as a result of OnLongClick being already triggered or resetMessageSelectedList
+                //hasn't been called
+                if(messagesSelectedList.isNotEmpty()) {
+                    //a list of selected messages is used to keep track of selected messages to avoid
+                    //inconsistency when views are recycled
+                    if (messagesSelectedList.contains(message.messageId)) {
+                        //remove message id if they have already been selected
+                        messagesSelectedList.remove(message.messageId)
+                        //set background color to indicate deselection
+                        root.setBackgroundResource(R.color.white)
+                    } else {
+                        //add message id if they haven't be selected
+                        message.messageId?.let { id -> messagesSelectedList.add(id) }
+                        //set background color to indicate selection
+                        root.setBackgroundResource(R.color.lightest_pearl)
+                    }
+                    //update list of views
+                    if (viewsSelectedList.contains(root)){
+                        viewsSelectedList.remove(root)
+                    } else {
+                        viewsSelectedList.add(root)
+                    }
+                    clickListener.onItemClicked(message, root)
+                }
+            }
+
+            root.setOnLongClickListener {
+                //a list of selected messages is used to keep track of selected messages to avoid
+                //inconsistency when views are recycled
+                if (messagesSelectedList.contains(message.messageId)) {
+                    //remove message if they have already been selected
+                    messagesSelectedList.remove(message.messageId)
+                    //set background color to indicate deselection
+                    root.setBackgroundResource(R.color.white)
+                } else {
+                    //add message if they haven't be selected
+                    message.messageId?.let { id -> messagesSelectedList.add(id) }
+                    //set background color to indicate selection
+                    root.setBackgroundResource(R.color.lightest_pearl)
+                }
+                //update list of views
+                if (viewsSelectedList.contains(root)){
+                    viewsSelectedList.remove(root)
+                } else {
+                    viewsSelectedList.add(root)
+                }
+                clickListener.onItemLongCLicked(message, it)
+                true
+            }
+
+            //during onBindViewHolder, which may occur when views are recycled, we use the tracking
+            //list of selected messages to keep the background resource of each message's view set
+            //to the appropriate color
+            if(messagesSelectedList.contains(message.messageId)) {
+                root.setBackgroundResource(R.color.lightest_pearl)
+            } else {
+                root.setBackgroundResource(R.color.white)
             }
         }
 
@@ -321,31 +483,89 @@ class GroupMessageRecyclerAdapter(
     inner class GroupMessageViewHolderSame(
         private val binding: ItemGroupMessageOtherUserSameBinding)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: GroupMessage, itemPosition: Int) {
-
+        fun bind(message: GroupMessage, itemPosition: Int) = with(binding) {
 
             //set message body
-            if (item.text != null) {
-                binding.messageTextView.text = item.text
-                binding.messageTextView.visibility = VISIBLE
+            if (message.text != null) {
+                messageTextView.text = message.text
+                messageTextView.visibility = VISIBLE
             } else {
-                binding.messageTextView.visibility = GONE
+                messageTextView.visibility = GONE
             }
-
 
             //load message photo if any
-            if (item.image != null) {
-                loadImageIntoView(binding.messagePhotoImageView, item.image!!)
-                binding.messagePhotoImageView.visibility = VISIBLE
+            if (message.image != null) {
+                loadMessageImageIntoView(messagePhotoImageView, message.image!!, photoProgressBar)
             } else {
-                binding.messagePhotoImageView.visibility = GONE
+                messagePhotoImageView.visibility = GONE
+                photoProgressBar.visibility = GONE
+            }
+
+            root.setOnClickListener { root ->
+                //only work if action mode is on, we know this when messagesSelectedList is not empty
+                //as a result of OnLongClick being already triggered or resetMessageSelectedList
+                //hasn't been called
+                if(messagesSelectedList.isNotEmpty()) {
+                    //a list of selected messages is used to keep track of selected messages to avoid
+                    //inconsistency when views are recycled
+                    if (messagesSelectedList.contains(message.messageId)) {
+                        //remove message id if they have already been selected
+                        messagesSelectedList.remove(message.messageId)
+                        //set background color to indicate deselection
+                        root.setBackgroundResource(R.color.white)
+                    } else {
+                        //add message id if they haven't be selected
+                        message.messageId?.let { id -> messagesSelectedList.add(id) }
+                        //set background color to indicate selection
+                        root.setBackgroundResource(R.color.lightest_pearl)
+                    }
+                    //update list of views
+                    if (viewsSelectedList.contains(root)){
+                        viewsSelectedList.remove(root)
+                    } else {
+                        viewsSelectedList.add(root)
+                    }
+                    clickListener.onItemClicked(message, root)
+                }
+            }
+
+            root.setOnLongClickListener {
+                //a list of selected messages is used to keep track of selected messages to avoid
+                //inconsistency when views are recycled
+                if (messagesSelectedList.contains(message.messageId)) {
+                    //remove message if they have already been selected
+                    messagesSelectedList.remove(message.messageId)
+                    //set background color to indicate deselection
+                    root.setBackgroundResource(R.color.white)
+                } else {
+                    //add message if they haven't be selected
+                    message.messageId?.let { id -> messagesSelectedList.add(id) }
+                    //set background color to indicate selection
+                    root.setBackgroundResource(R.color.lightest_pearl)
+                }
+                //update list of views
+                if (viewsSelectedList.contains(root)){
+                    viewsSelectedList.remove(root)
+                } else {
+                    viewsSelectedList.add(root)
+                }
+                clickListener.onItemLongCLicked(message, it)
+                true
+            }
+
+            //during onBindViewHolder, which may occur when views are recycled, we use the tracking
+            //list of selected messages to keep the background resource of each message's view set
+            //to the appropriate color
+            if(messagesSelectedList.contains(message.messageId)) {
+                root.setBackgroundResource(R.color.lightest_pearl)
+            } else {
+                root.setBackgroundResource(R.color.white)
             }
         }
-
     }
 
-    //image loader
-    private fun loadImageIntoView(imageView: ShapeableImageView, photoUrl: String) {
+    //user photo loader
+    private fun loadUserPhotoIntoView(imageView: ShapeableImageView, photoUrl: String) {
         if (photoUrl.startsWith("gs://")) {
             val storageReference = Firebase.storage.getReferenceFromUrl(photoUrl)
             storageReference.downloadUrl
@@ -357,13 +577,6 @@ class GroupMessageRecyclerAdapter(
                         .into(imageView)
                     imageView.visibility = VISIBLE
                 }
-                .addOnFailureListener { e ->
-                    Log.w(
-                        TAG,
-                        "Getting download url was not successful.",
-                        e
-                    )
-                }
         } else {
             Glide.with(imageView.context).load(photoUrl)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(imageView)
@@ -371,6 +584,30 @@ class GroupMessageRecyclerAdapter(
         }
     }
 
+    //message Image Loader
+    private fun loadMessageImageIntoView(imageView: ShapeableImageView, photoUrl: String, photoProgressBar: ProgressBar) {
+        if (photoUrl.startsWith("gs://")) {
+            val storageReference = Firebase.storage.getReferenceFromUrl(photoUrl)
+            storageReference.downloadUrl
+                .addOnSuccessListener { uri ->
+                    val downloadUrl = uri.toString()
+                    val options = RequestOptions()
+                        .error(R.drawable.ic_downloading)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    imageView.visibility = VISIBLE
+                    //using custom glide image loader to indicate progress in time
+                    GlideImageLoader(imageView, photoProgressBar).load(downloadUrl, options)
+                }
+        } else {
+            val options = RequestOptions()
+                .error(R.drawable.ic_downloading)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+
+            imageView.visibility = VISIBLE
+            //using custom glide image loader to indicate progress in time
+            GlideImageLoader(imageView, photoProgressBar).load(photoUrl, options)
+        }
+    }
 
     companion object {
         const val TAG = "MessageAdapter"

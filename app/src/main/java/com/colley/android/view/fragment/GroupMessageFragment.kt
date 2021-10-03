@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.View.*
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -17,6 +20,7 @@ import com.colley.android.adapter.GroupMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupMessageBinding
 import com.colley.android.model.GroupMessage
+import com.colley.android.model.PrivateMessage
 import com.colley.android.model.SendButtonObserver
 import com.colley.android.observer.GroupMessageScrollToBottomObserver
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
@@ -51,6 +55,9 @@ class GroupMessageFragment :
             onImageSelected(uri)
         }
     }
+    private var actionMode: ActionMode? = null
+    private var listOfSelectedMessages = arrayListOf<String>()
+    private var selectedMessagesCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,7 +138,6 @@ class GroupMessageFragment :
         adapter = GroupMessageRecyclerAdapter(options, currentUser, this, this, requireContext())
         manager =  WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         manager.stackFromEnd = true
-        recyclerView.itemAnimator = DefaultItemAnimator()
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
 
@@ -149,14 +155,26 @@ class GroupMessageFragment :
         //when the send button is clicked, send a text message
         binding.sendButton.setOnClickListener {
             if (binding.messageEditText.text?.trim()?.toString() != "") {
-                val groupMessage = GroupMessage(
-                    userId = currentUser.uid,
-                    text = binding.messageEditText.text.toString()
-                )
-                dbRef.child("group-messages").child(args.groupId).push().setValue(groupMessage)
-                //update group's recent message
-                dbRef.child("group-messages").child("recent-message").child(args.groupId).setValue(groupMessage)
-                binding.messageEditText.setText("")
+
+                //create a reference for the message on user's messages location and retrieve its
+                //key with which to update other locations that should have a ref to the message
+                val key = dbRef.child("user-messages").child(args.groupId).push().key
+
+                if(key != null) {
+                    val groupMessage = GroupMessage(
+                        userId = currentUser.uid,
+                        text = binding.messageEditText.text.toString(),
+                        messageId = key
+                    )
+                    dbRef.child("group-messages").child(args.groupId).child(key)
+                        .setValue(groupMessage)
+                    //update group's recent message
+                    dbRef.child("group-messages").child("recent-message")
+                        .child(args.groupId).setValue(groupMessage)
+                    binding.messageEditText.setText("")
+                } else {
+                    Toast.makeText(requireContext(), "Unsuccessful", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -209,7 +227,8 @@ class GroupMessageFragment :
                         val groupMessage =
                             GroupMessage(
                                 userId = currentUser.uid,
-                                image = uri.toString()
+                                image = uri.toString(),
+                                messageId = key
                             )
                         dbRef
                             .child("group-messages")
@@ -220,7 +239,6 @@ class GroupMessageFragment :
                         dbRef.child("group-messages").child("recent-message").child(args.groupId).setValue(groupMessage)
                     }
             }
-            .addOnFailureListener(requireActivity()) {}
     }
 
 
@@ -245,12 +263,147 @@ class GroupMessageFragment :
     }
 
     override fun onItemLongCLicked(message: GroupMessage, view: View) {
-
+        if (actionMode == null) {
+            actionMode = (activity as AppCompatActivity?)!!
+                .startSupportActionMode(actionModeCallBack)
+        }
+        //else clause is not used since we want the action mode to be initialized first if null
+        //on a first time long click and function should proceed to update selection
+        //if we mistakenly add an else clause, an unexpected behaviour will occur, action mode will
+        //be initialized the first time on long click, but our selection will not be updated
+        if(message.messageId != null) {
+            updateSelection(message.messageId!!, view)
+        }
     }
 
     override fun onUserClicked(userId: String, view: View) {
         val action = GroupMessageFragmentDirections.actionGroupMessageFragmentToUserInfoFragment(userId)
         findNavController().navigate(action)
     }
+
+    override fun onItemClicked(message: GroupMessage, root: View) {
+        if (actionMode != null) {
+            if(message.messageId != null) {
+                updateSelection(message.messageId!!, root)
+            }
+        }
+    }
+
+    //action mode call back
+    private val actionModeCallBack: ActionMode.Callback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            mode?.menuInflater?.inflate(R.menu.on_long_click_chat_menu, menu)
+            mode?.title = "0"
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+
+            return when (item?.itemId) {
+                R.id.delete_chat_menu_item -> {
+                    AlertDialog.Builder(requireContext())
+                        .setMessage(
+                            "Delete " + singularOrPlural(
+                                listOfSelectedMessages,
+                                "this message",
+                                "these messages"
+                            ) + "? \nGroup members can only delete their own messages"
+                        )
+                        .setPositiveButton("Yes") { dialog, which ->
+                            //perform operation for all selected messages
+                            listOfSelectedMessages.forEach { messageId ->
+                                dbRef.child("group-messages").child(args.groupId)
+                                    .child(messageId).get()
+                                    .addOnSuccessListener { dataSnapshot ->
+                                        val message = dataSnapshot.getValue<GroupMessage>()
+                                        //if this message was uploaded by the current user, delete
+                                        if (message?.userId == currentUser.uid) {
+                                            //if this message has an image, delete from database
+                                            //storage
+                                            if(message.image != null) {
+                                                //get a reference to it's location on database storage from its url and
+                                                //delete it with the retrieved reference
+                                                Firebase.storage.getReferenceFromUrl(message.image!!).delete()
+                                                    .addOnCompleteListener { task ->
+                                                        if (task.isSuccessful) {
+                                                            Toast.makeText(
+                                                                requireContext(),
+                                                                "Deleted media",
+                                                                Toast.LENGTH_LONG).show()
+                                                        } else {
+                                                            Toast.makeText(
+                                                                requireContext(),
+                                                                "Failed to delete media",
+                                                                Toast.LENGTH_LONG).show()
+                                                        }
+                                                    }
+                                            }
+                                            //delete message, user can only delete their own messages from the group
+                                            dbRef.child("group-messages").child(args.groupId)
+                                                .child(messageId).setValue(null)
+                                        }
+                                    }
+                            }
+                            //dismiss dialog
+                            dialog.dismiss()
+                            //finish and close action mode by calling onDestroyActionMode method
+                            mode?.finish()
+                        }.setNegativeButton("No") { dialog, which ->
+                            //dismiss dialog
+                            dialog.dismiss()
+                        }.show()
+                    true
+                } else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            //clear list
+            listOfSelectedMessages.clear()
+            //reset count to zero after clearing list
+            selectedMessagesCount = listOfSelectedMessages.size
+            //reset adapter tracking list to an empty list
+            adapter?.resetMessagesSelectedList()
+            //reset backgrounds of selected views to white
+            adapter?.restBackgroundOfSelectedViews()
+            actionMode = null
+        }
+    }
+
+    private fun singularOrPlural(list: ArrayList<String>, singular: String, plural: String): String {
+        val size = list.size
+        var output = ""
+        if (list.isNotEmpty()) {
+            output = if (size == 1) {
+                singular
+            } else {
+                plural
+            }
+        }
+        return output
+    }
+
+    //this method is used to keep track of selected items and update the visual state of views
+    //It is also used to configure the action mode title
+    private fun updateSelection(messageId: String, view: View) {
+        if (!listOfSelectedMessages.contains(messageId)) {
+            listOfSelectedMessages.add(messageId)
+            selectedMessagesCount = listOfSelectedMessages.size
+            actionMode?.title = selectedMessagesCount.toString()
+        } else {
+            listOfSelectedMessages.remove(messageId)
+            selectedMessagesCount = listOfSelectedMessages.size
+            actionMode?.title = selectedMessagesCount.toString()
+        }
+        if (selectedMessagesCount == 0) {
+            actionMode?.title = null
+            actionMode?.finish()
+        }
+    }
+
 
 }

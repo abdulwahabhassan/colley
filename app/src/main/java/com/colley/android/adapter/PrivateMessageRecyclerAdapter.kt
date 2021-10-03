@@ -535,18 +535,14 @@ class PrivateMessageRecyclerAdapter(
                     val options = RequestOptions()
                         .error(R.drawable.ic_downloading)
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-
                     imageView.visibility = VISIBLE
                     //using custom glide image loader to indicate progress in time
                     GlideImageLoader(imageView, photoProgressBar).load(downloadUrl, options);
                 }
-
         } else {
-
             val options = RequestOptions()
                 .error(R.drawable.ic_downloading)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-
             imageView.visibility = VISIBLE
             //using custom glide image loader to indicate progress in time
             GlideImageLoader(imageView, photoProgressBar).load(photoUrl, options);

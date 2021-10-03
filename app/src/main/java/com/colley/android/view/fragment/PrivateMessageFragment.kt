@@ -191,10 +191,6 @@ class PrivateMessageFragment :
                 } else {
                     Toast.makeText(requireContext(), "Unsuccessful", Toast.LENGTH_SHORT).show()
                 }
-
-            } else {
-                Toast.makeText(requireContext(), "Empty message not sent", Toast.LENGTH_SHORT)
-                    .show()
             }
         }
 
@@ -207,7 +203,6 @@ class PrivateMessageFragment :
     }
 
     private fun onImageSelected(uri: Uri) {
-
         //a template message with which to temporarily create a ref and retrieve its key for
         //further operations
         val tempMessage = PrivateMessage(
@@ -274,9 +269,6 @@ class PrivateMessageFragment :
 
                     }
             }
-            .addOnFailureListener(requireActivity()) { e ->
-                Log.w( TAG, "Image upload task was unsuccessful.", e)
-            }
     }
 
     @SuppressLint("SetTextI18n")
@@ -302,7 +294,6 @@ class PrivateMessageFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        adapter.stopListening()
         _binding = null
     }
 
@@ -445,7 +436,7 @@ class PrivateMessageFragment :
         if (!listOfSelectedMessages.contains(messageId)) {
             listOfSelectedMessages.add(messageId)
             selectedMessagesCount = listOfSelectedMessages.size
-            actionMode?.title = selectedMessagesCount.toString()
+            actionMode ?.title = selectedMessagesCount.toString()
         } else {
             listOfSelectedMessages.remove(messageId)
             selectedMessagesCount = listOfSelectedMessages.size
