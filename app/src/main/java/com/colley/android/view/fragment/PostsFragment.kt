@@ -3,8 +3,7 @@ package com.colley.android.view.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
@@ -84,7 +83,7 @@ class PostsFragment : Fragment(),
 
             } else {
                 //if no change in likes count or comments count decreases, it's not important to show it
-                binding.newPostNotificationTextView.visibility = View.INVISIBLE
+                binding.newPostNotificationTextView.visibility = INVISIBLE
             }
 
         }
@@ -159,14 +158,11 @@ class PostsFragment : Fragment(),
             ViewModelFactory(owner = this, repository = DatabaseRepository()))
             .get(PostsViewModel::class.java)
 
-
-
         //get a query reference to posts
         val postsQuery = dbRef.child("posts").orderByChild("timeId")
 
         //initialize adapter
         postsAdapter = PostsPagingAdapter(requireContext(), currentUser, this)
-
 
         //retrieve number of posts from database to be used for estimating the number of new posts
         //added since the user last refreshed
@@ -376,7 +372,7 @@ class PostsFragment : Fragment(),
     override fun onSaveClicked(postId: String, it: View, viewHolder: PostViewHolder) {
         //reference to viewHolder clicked
         postViewHolder = viewHolder
-        //Register like on database
+        //register save to user's list of saved posts on database
         dbRef.child("user-saved_posts").child(uid)
             .runTransaction(object : Transaction.Handler {
                 override fun doTransaction(currentData: MutableData): Transaction.Result {

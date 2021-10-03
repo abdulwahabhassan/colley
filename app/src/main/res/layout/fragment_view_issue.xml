@@ -112,7 +112,7 @@
             app:layout_constraintTop_toTopOf="@+id/contributionsTextView" />
 
         <ImageView
-            android:id="@+id/pinImageView"
+            android:id="@+id/bookMarkmageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -135,9 +135,9 @@
             android:padding="2dp"
             android:layout_marginStart="16dp"
             android:src="@drawable/ic_more"
-            app:layout_constraintBottom_toBottomOf="@+id/pinImageView"
-            app:layout_constraintStart_toEndOf="@+id/pinImageView"
-            app:layout_constraintTop_toTopOf="@+id/pinImageView"
+            app:layout_constraintBottom_toBottomOf="@+id/bookMarkmageView"
+            app:layout_constraintStart_toEndOf="@+id/bookMarkmageView"
+            app:layout_constraintTop_toTopOf="@+id/bookMarkmageView"
             app:layout_constraintVertical_bias="0.444" />
 
         <TextView

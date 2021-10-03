@@ -93,7 +93,7 @@
         android:textColor="@color/light_pearl"
         android:textSize="@dimen/text_size_12sp"
         app:layout_constraintBottom_toBottomOf="@+id/issueTitleTextView"
-        app:layout_constraintEnd_toStartOf="@+id/pinImageView"
+        app:layout_constraintEnd_toStartOf="@+id/bookMarkmageView"
         app:layout_constraintTop_toTopOf="@+id/issueTitleTextView" />
 
     <TextView
@@ -115,7 +115,7 @@
         app:drawableStartCompat="@drawable/ic_endorse" />
 
     <ImageView
-        android:id="@+id/pinImageView"
+        android:id="@+id/bookMarkmageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_16dp"

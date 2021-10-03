@@ -170,7 +170,7 @@ class ViewIssueFragment :
             binding?.issueBodyTextView?.text = issue?.body
             binding?.issueTimeStampTextView?.text = issue?.timeStamp.toString()
 
-            //listener for user photo
+            //get and set user photo
             dbRef.child("photos").child(issue?.userId.toString()).get()
                 .addOnSuccessListener { photoSnapShot ->
                     val photo = photoSnapShot.getValue(String::class.java)
@@ -191,7 +191,7 @@ class ViewIssueFragment :
 
                 }
 
-            //listener for profile to set name and school
+            //get and set name and school
             dbRef.child("profiles").child(issue?.userId.toString()).get()
                 .addOnSuccessListener { profileSnapShot ->
                     val profile = profileSnapShot.getValue<Profile>()
@@ -200,6 +200,14 @@ class ViewIssueFragment :
                         binding?.userSchoolTextView?.text = profile.school
                     }
                 }
+
+            //update book marked drawable icon based on whether user has book-marked this issue
+            //or not
+                dbRef.child("user-book_marked_issues").child(uid).get()
+                    .addOnSuccessListener { dataSnapshot ->
+                        binding?.bookMarkmageView?.isActivated =
+                            dataSnapshot.getValue<ArrayList<String>>()?.contains(args.issueId) == true
+                    }
 
             //view profile when clicked
             binding?.userImageView?.setOnClickListener {
@@ -221,6 +229,51 @@ class ViewIssueFragment :
                 }
             }
 
+        }
+
+        binding?.bookMarkmageView?.setOnClickListener { bookMarkImageView ->
+            //register issue to user's list of book-marked issues on database
+            dbRef.child("user-book_marked_issues").child(uid)
+                .runTransaction(object : Transaction.Handler {
+                    override fun doTransaction(currentData: MutableData): Transaction.Result {
+                        //retrieve the current list of saved posts at this location
+                        var savedIssues = currentData.getValue<ArrayList<String>>()
+                        //if no list is found and null is returned, create a new list
+                        if (savedIssues == null) {
+                            savedIssues = arrayListOf()
+                        }
+                        //if list does not already contain issue id, add it else remove it
+                        if (!savedIssues.contains(args.issueId)) {
+                            savedIssues.add(args.issueId)
+                        } else {
+                            savedIssues.remove(args.issueId)
+                        }
+                        currentData.value = savedIssues
+                        return Transaction.success(currentData)
+                    }
+
+                    override fun onComplete(
+                        error: DatabaseError?,
+                        committed: Boolean,
+                        currentData: DataSnapshot?
+                    ) {
+                        if (error == null) {
+                            //get the updated list
+                            val updatedList = currentData?.getValue<ArrayList<String>>()
+                            //if it contains issueId, toast saved
+                            if (updatedList?.contains(args.issueId) == true) {
+                                Toast.makeText(requireContext(), "BookMarked", Toast.LENGTH_SHORT).show()
+                                //update book mark drawable icon
+                                bookMarkImageView.isActivated = true
+                            } else {
+                                //Toast unsaved
+                                Toast.makeText(requireContext(), "UnMarked", Toast.LENGTH_SHORT).show()
+                                //update book mark drawable icon
+                                bookMarkImageView.isActivated = false
+                            }
+                        }
+                    }
+                })
         }
 
         binding?.commentLinearLayout?.setOnClickListener {
