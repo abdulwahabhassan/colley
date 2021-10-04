@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.databinding.ItemNotificationBinding
-import com.colley.android.model.Notification
+import com.colley.android.Notification
 
 class NotificationsRecyclerAdapter : RecyclerView.Adapter<NotificationsRecyclerAdapter.NotificationViewHolder>() {
 

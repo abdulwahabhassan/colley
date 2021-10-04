@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
 import com.colley.android.databinding.ItemNotificationBinding
-import com.colley.android.model.Notification
+import com.colley.android.Notification
 
 class NotificationsFragmentRecyclerAdapter(private val clickListener: ItemClickedListener)
     : RecyclerView.Adapter<NotificationsFragmentRecyclerAdapter.NotificationViewHolder>() {

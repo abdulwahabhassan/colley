@@ -12,6 +12,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.colley.android.R
 import com.colley.android.databinding.BottomSheetDialogFragmentPostBinding
+import com.colley.android.model.Notification
 import com.colley.android.view.fragment.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
@@ -23,6 +24,9 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PostBottomSheetDialogFragment (
     private val parentContext: Context,
@@ -33,6 +37,7 @@ class PostBottomSheetDialogFragment (
     CommentOnPostBottomSheetDialogFragment.CommentListener{
 
     private var postId: String? = null
+    private var postUserId: String? = null
     private var _binding: BottomSheetDialogFragmentPostBinding? = null
     private val binding get() = _binding!!
     private lateinit var dbRef: DatabaseReference
@@ -54,6 +59,7 @@ class PostBottomSheetDialogFragment (
         arguments?.let {
             //retrieve post id from bundle
             postId = it.getString(POST_ID_KEY)
+            postUserId = it.getString(POST_USER_ID_KEY)
         }
         //initialize Realtime Database
         dbRef = Firebase.database.reference
@@ -112,7 +118,7 @@ class PostBottomSheetDialogFragment (
                 requireView(),
                 this
             )
-            sheetDialogCommentOn.arguments = bundleOf("postIdKey" to postId)
+            sheetDialogCommentOn.arguments = bundleOf("postIdKey" to postId, "postUserIdKey" to postUserId)
             sheetDialogCommentOn.show(parentFragmentManager, null)
         }
 
@@ -146,6 +152,7 @@ class PostBottomSheetDialogFragment (
                         }
 
                         //on successful entry, update likes count
+                        @SuppressLint("SimpleDateFormat")
                         override fun onComplete(
                             error: DatabaseError?,
                             committed: Boolean,
@@ -161,6 +168,44 @@ class PostBottomSheetDialogFragment (
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
+                                //only create notification if post was liked not if post was unliked
+                                if (liked == true) {
+                                    //notify the user who owns the post that a like was given on their
+                                    //post
+                                    postUserId?.let { postUserId ->
+
+                                        //get current time and format it
+                                        //timeId will be used for sorting notification from the most recent
+                                        val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
+                                        val date: String = df.format(Calendar.getInstance().time)
+                                        val timeId = SimpleDateFormat("yyyyMMddHHmmss").format(
+                                            Calendar.getInstance().time).toLong() * -1
+
+                                        //create instance of notification
+                                        val notification = Notification(
+                                            itemActorUserId = uid,
+                                            itemId = postId,
+                                            itemOwnerUserId = postUserId,
+                                            timeId = timeId,
+                                            timeStamp = date,
+                                            itemActionId = null,
+                                            itemType = "post",
+                                            itemActionType = "like"
+                                        )
+
+                                        //push notification, retrieve key and set as notification id
+                                        dbRef.child("user-notifications").child(postUserId)
+                                            .push().setValue(notification) { error, ref ->
+                                                if (error == null) {
+                                                    val notificationKey = ref.key
+                                                    dbRef.child("user-notifications")
+                                                        .child(postUserId).child(notificationKey!!)
+                                                        .child("notificationId").setValue(notificationKey)
+                                                }
+                                            }
+                                    }
+                                }
+
                                 //update likes count
                                 dbRef.child("posts").child(postId!!).child("likesCount")
                                     .runTransaction(
@@ -176,6 +221,7 @@ class PostBottomSheetDialogFragment (
                                                 //if liked, increase count by 1 else decrease by 1
                                                 if (liked == true) {
                                                     count++
+
                                                 } else {
                                                     count--
                                                 }
@@ -185,7 +231,6 @@ class PostBottomSheetDialogFragment (
                                             }
 
                                             //after successfully updating likes count on database, update ui
-                                            @SuppressLint("SetTextI18n")
                                             override fun onComplete(
                                                 error: DatabaseError?,
                                                 committed: Boolean,
@@ -217,6 +262,7 @@ class PostBottomSheetDialogFragment (
 
     companion object {
         private const val POST_ID_KEY = "postIdKey"
+        private const val POST_USER_ID_KEY = "postUserIdKey"
     }
 
     override fun onComment(currentData: DataSnapshot?) {

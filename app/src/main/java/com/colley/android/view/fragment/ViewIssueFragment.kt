@@ -281,7 +281,9 @@ class ViewIssueFragment :
                 requireContext(),
                 requireView(),
                 this)
-            commentOnIssueSheetDialog.arguments = bundleOf("issueIdKey" to args.issueId)
+            //pass issueId and the id of user who raise the issue as arguments to comment dialog
+            commentOnIssueSheetDialog.arguments = bundleOf(
+                "issueIdKey" to args.issueId, "issueUserIdKey" to issueUserId)
             commentOnIssueSheetDialog.show(parentFragmentManager, null)
         }
 

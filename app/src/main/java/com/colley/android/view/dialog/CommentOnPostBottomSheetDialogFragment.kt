@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.colley.android.databinding.PostCommentDialogFragmentBinding
 import com.colley.android.model.Comment
+import com.colley.android.model.Notification
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -27,6 +28,7 @@ class CommentOnPostBottomSheetDialogFragment (
 ) : BottomSheetDialogFragment() {
 
     private var postId: String? = null
+    private var postUserId: String? = null
     private var _binding: PostCommentDialogFragmentBinding? = null
     private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
@@ -42,6 +44,7 @@ class CommentOnPostBottomSheetDialogFragment (
         arguments?.let {
             //retrieve post id from bundle
             postId = it.getString(POST_ID_KEY)
+            postUserId = it.getString(POST_USER_ID_KEY)
         }
     }
 
@@ -70,7 +73,7 @@ class CommentOnPostBottomSheetDialogFragment (
                 //get current time and format it
                 val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
                 val date: String = df.format(Calendar.getInstance().time)
-                val timeId = SimpleDateFormat("dMMyyyyHHmmss").format(Calendar.getInstance().time).toLong() * -1
+                val timeId = SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().time).toLong() * -1
 
                 //timeId will be used for sorting posts from the most recent
 
@@ -95,9 +98,36 @@ class CommentOnPostBottomSheetDialogFragment (
                                 return@CompletionListener
                             }
                             //after writing comment to database, retrieve its key on the database and set it as the comment id
-                            val key = ref.key
-                            dbRef.child("post-comments").child(postId).child(key!!)
-                                .child("commentId").setValue(key)
+                            val commentKey = ref.key
+                            dbRef.child("post-comments").child(postId).child(commentKey!!)
+                                .child("commentId").setValue(commentKey)
+
+                            //notify the user who owns the post that a comment was made on their post
+                            //create instance of notification
+                            postUserId?.let { postUserId ->
+                                val notification = Notification(
+                                    itemActorUserId = uid,
+                                    itemId = postId,
+                                    itemOwnerUserId = postUserId,
+                                    timeId = timeId,
+                                    timeStamp = date,
+                                    itemActionId = commentKey,
+                                    itemType = "post",
+                                    itemActionType = "comment"
+                                )
+
+                                //push notification, retrieve key and set as notification id
+                                dbRef.child("user-notifications").child(postUserId)
+                                    .push().setValue(notification) { error, ref ->
+                                        if (error == null) {
+                                            val notificationKey = ref.key
+                                            dbRef.child("user-notifications")
+                                                .child(postUserId).child(notificationKey!!)
+                                                .child("notificationId").setValue(notificationKey)
+                                        }
+                                    }
+
+                            }
 
                             //update comments count
                             dbRef.child("posts").child(postId).child("commentsCount")
@@ -146,5 +176,6 @@ class CommentOnPostBottomSheetDialogFragment (
 
     companion object {
         private const val POST_ID_KEY = "postIdKey"
+        private const val POST_USER_ID_KEY = "postUserIdKey"
     }
 }

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.NotificationsFragmentRecyclerAdapter
 import com.colley.android.databinding.FragmentNotificationsBinding
 import com.colley.android.model.DummyData
-import com.colley.android.model.Notification
+import com.colley.android.Notification
 
 
 class NotificationsFragment : Fragment(), NotificationsFragmentRecyclerAdapter.ItemClickedListener {

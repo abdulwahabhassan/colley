@@ -1,5 +1,7 @@
 package com.colley.android.model
 
+import com.colley.android.Notification
+
 object DummyData {
 
 

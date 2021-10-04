@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.colley.android.databinding.IssueCommentDialogFragmentBinding
 import com.colley.android.model.Comment
+import com.colley.android.model.Notification
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -28,6 +29,7 @@ class CommentOnIssueBottomSheetDialogFragment (
         ) : BottomSheetDialogFragment() {
 
     private var issueId: String? = null
+    private var issueUserId: String? = null
     private var _binding: IssueCommentDialogFragmentBinding? = null
     private val binding get() = _binding
     private lateinit var dbRef: DatabaseReference
@@ -41,8 +43,9 @@ class CommentOnIssueBottomSheetDialogFragment (
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            //retrieve issue id from issue fragment
+            //retrieve issue id and user id from bundle
             issueId = it.getString(ISSUE_ID_KEY)
+            issueUserId = it.getString(ISSUE_USER_ID_KEY)
         }
     }
 
@@ -71,7 +74,7 @@ class CommentOnIssueBottomSheetDialogFragment (
                 //get current time and format it
                 val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
                 val date: String = df.format(Calendar.getInstance().time)
-                val timeId = SimpleDateFormat("dMMyyyyHHmmss").format(Calendar.getInstance().time).toLong() * -1
+                val timeId = SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().time).toLong() * -1
                 //timeId will be used for sorting comments from the most recent
 
                 val comment = Comment(
@@ -91,9 +94,34 @@ class CommentOnIssueBottomSheetDialogFragment (
                                 return@CompletionListener
                             }
                             //after writing comment to database, retrieve its key on the database and set it as the comment id
-                            val key = ref.key
-                            dbRef.child("issue-comments").child(issueId).child(key!!)
-                                .child("commentId").setValue(key)
+                            val commentKey = ref.key
+                            dbRef.child("issue-comments").child(issueId).child(commentKey!!)
+                                .child("commentId").setValue(commentKey)
+
+                            //notify the user who owns the issue that a comment was made on their issue
+                            //create instance of notification
+                            issueUserId?.let { issueUserId ->
+                                val notification = Notification(
+                                    itemActorUserId = uid,
+                                    itemId = issueId,
+                                    itemOwnerUserId = issueUserId,
+                                    timeId = timeId,
+                                    timeStamp = date,
+                                    itemActionId = commentKey,
+                                    itemType = "issue",
+                                    itemActionType = "comment"
+                                )
+                                //push notification, retrieve key and set as notification id
+                                dbRef.child("user-notifications").child(issueUserId)
+                                    .push().setValue(notification) { error, ref ->
+                                        if (error == null) {
+                                            val notificationKey = ref.key
+                                            dbRef.child("user-notifications")
+                                                .child(issueUserId).child(notificationKey!!)
+                                                .child("notificationId").setValue(notificationKey)
+                                        }
+                                    }
+                            }
 
                             //update contributions count of issue
                             dbRef.child("issues").child(issueId).child("contributionsCount").runTransaction(
@@ -140,5 +168,6 @@ class CommentOnIssueBottomSheetDialogFragment (
 
     companion object {
         private const val ISSUE_ID_KEY = "issueIdKey"
+        private const val ISSUE_USER_ID_KEY = "issueUserIdKey"
     }
 }

@@ -34,11 +34,11 @@ class PostsPagingAdapter (
 ) : PagingDataAdapter<DataSnapshot, PostViewHolder>(POST_COMPARATOR) {
 
     interface PostPagingItemClickedListener {
-        fun onItemClick(postId: String, view: View, viewHolder: PostViewHolder)
+        fun onItemClick(postId: String, postUserId: String, view: View, viewHolder: PostViewHolder)
         fun onItemLongCLicked(postId: String, view: View, viewHolder: PostViewHolder)
         fun onUserClicked(userId: String, view: View)
-        fun onCommentClicked(postId: String, view: View, viewHolder: PostViewHolder)
-        fun onLikeClicked(postId: String, view: View, viewHolder: PostViewHolder)
+        fun onCommentClicked(postId: String, postUserId: String, view: View, viewHolder: PostViewHolder)
+        fun onLikeClicked(postId: String, postUserId: String, view: View, viewHolder: PostViewHolder)
         fun onSaveClicked(postId: String, it: View, viewHolder: PostViewHolder)
         fun onMoreClicked(postId: String, userId: String?, it: View?, viewHolder: PostViewHolder)
     }
@@ -198,9 +198,9 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
         //click post to show post interactions (comments, likes and promotions)
         root.setOnClickListener {
             Log.w("clickListener", "${post?.postId}")
-            if(post?.postId != null) {
+            if(post?.postId != null && post.userId != null) {
                 Log.w("clickListener", "${post?.postId}")
-                clickListener.onItemClick(post.postId, it, viewHolder)
+                clickListener.onItemClick(post.postId, post.userId, it, viewHolder)
             }
         }
 
@@ -228,15 +228,15 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
 
         //click comment to show comment dialog to comment on post
         commentLinearLayout.setOnClickListener {
-            if(post?.postId != null) {
-                clickListener.onCommentClicked(post.postId, it, viewHolder)
+            if(post?.postId != null && post.userId != null) {
+                clickListener.onCommentClicked(post.postId, post.userId, it, viewHolder)
             }
         }
 
         //click like to show dialog to like post
         likeLinearLayout.setOnClickListener {
-            if(post?.postId != null) {
-                clickListener.onLikeClicked(post.postId, it, viewHolder)
+            if(post?.postId != null && post.userId != null) {
+                clickListener.onLikeClicked(post.postId, post.userId, it, viewHolder)
             }
         }
 
@@ -246,7 +246,7 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
                 clickListener.onSaveClicked(post.postId, it, viewHolder)
             }
         }
-
+        //click to view more options for post
         moreImageView.setOnClickListener {
             if(post?.postId != null) {
                 clickListener.onMoreClicked(post.postId, post.userId, it, viewHolder)

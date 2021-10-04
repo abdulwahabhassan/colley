@@ -23,6 +23,7 @@ import com.colley.android.view.dialog.NewPostBottomSheetDialogFragment
 import com.colley.android.view.dialog.CommentOnPostBottomSheetDialogFragment
 import com.colley.android.viewmodel.PostsViewModel
 import com.colley.android.factory.ViewModelFactory
+import com.colley.android.model.Notification
 import com.colley.android.view.dialog.MoreBottomSheetDialogFragment
 import com.colley.android.view.dialog.PostBottomSheetDialogFragment
 import com.firebase.ui.auth.AuthUI
@@ -35,14 +36,17 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class PostsFragment : Fragment(),
     PostsPagingAdapter.PostPagingItemClickedListener,
     CommentOnPostBottomSheetDialogFragment.CommentListener,
     PostBottomSheetDialogFragment.ActionsDialogListener,
-    MoreBottomSheetDialogFragment.MoreOptionsDialogListener{
-
+    MoreBottomSheetDialogFragment.MoreOptionsDialogListener {
 
     private var _binding: FragmentPostsBinding? = null
     private val binding get() = _binding!!
@@ -97,7 +101,7 @@ class PostsFragment : Fragment(),
         override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
             super.onItemRangeInserted(positionStart, itemCount)
             manager?.scrollToPosition(0)
-            binding.newPostNotificationTextView.visibility = View.INVISIBLE
+            binding.newPostNotificationTextView.visibility = INVISIBLE
         }
         //observer for adapter item removal
         override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
@@ -258,7 +262,11 @@ class PostsFragment : Fragment(),
         }
     }
 
-    override fun onItemClick(postId: String, view: View, viewHolder: PostViewHolder) {
+    override fun onItemClick(
+        postId: String,
+        postUserId: String,
+        view: View,
+        viewHolder: PostViewHolder) {
         //reference to viewHolder clicked
         postViewHolder = viewHolder
         postDialog = PostBottomSheetDialogFragment(
@@ -266,7 +274,10 @@ class PostsFragment : Fragment(),
             requireView(),
             this
         )
-        postDialog.arguments = bundleOf("postIdKey" to postId)
+        //put post id and post owner id in bundle
+        postDialog.arguments = bundleOf(
+            "postIdKey" to postId,
+            "postUserIdKey" to postUserId)
         postDialog.show(parentFragmentManager, null)
     }
 
@@ -279,7 +290,11 @@ class PostsFragment : Fragment(),
         parentFragment?.findNavController()?.navigate(action)
     }
 
-    override fun onCommentClicked(postId: String, view: View, viewHolder: PostViewHolder) {
+    override fun onCommentClicked(
+        postId: String,
+        postUserId: String,
+        view: View,
+        viewHolder: PostViewHolder) {
         //reference to viewHolder clicked
         postViewHolder = viewHolder
         sheetDialogCommentOn = CommentOnPostBottomSheetDialogFragment(
@@ -287,11 +302,17 @@ class PostsFragment : Fragment(),
             requireView(),
             this
         )
-        sheetDialogCommentOn.arguments = bundleOf("postIdKey" to postId)
+        sheetDialogCommentOn.arguments = bundleOf(
+            "postIdKey" to postId,
+            "postUserIdKey" to postUserId)
         sheetDialogCommentOn.show(parentFragmentManager, null)
     }
 
-    override fun onLikeClicked(postId: String, view: View, viewHolder: PostViewHolder) {
+    override fun onLikeClicked(
+        postId: String,
+        postUserId: String,
+        view: View,
+        viewHolder: PostViewHolder) {
         //reference to viewHolder clicked
         postViewHolder = viewHolder
         //Register like on database
@@ -313,6 +334,7 @@ class PostsFragment : Fragment(),
                 }
 
                 //on successful entry, update likes count
+                @SuppressLint("SimpleDateFormat")
                 override fun onComplete(
                     error: DatabaseError?,
                     committed: Boolean,
@@ -320,7 +342,6 @@ class PostsFragment : Fragment(),
                 ) {
                     //get current value of liked
                     val liked = currentData?.getValue(Boolean::class.java)
-
                     if (error != null) {
                         Toast.makeText(
                             context,
@@ -328,6 +349,42 @@ class PostsFragment : Fragment(),
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
+                        //only create notification if post was liked not if post was unliked
+                        if (liked == true) {
+                            //notify the user who owns the post that a like was given on their
+                            //post
+                            postUserId.let { postUserId ->
+                                //get current time and format it
+                                //timeId will be used for sorting notification from the most recent
+                                val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
+                                val date: String = df.format(Calendar.getInstance().time)
+                                val timeId = SimpleDateFormat("yyyyMMddHHmmss").format(
+                                    Calendar.getInstance().time).toLong() * -1
+
+                                //create instance of notification
+                                val notification = Notification(
+                                    itemActorUserId = uid,
+                                    itemId = postId,
+                                    itemOwnerUserId = postUserId,
+                                    timeId = timeId,
+                                    timeStamp = date,
+                                    itemActionId = null,
+                                    itemType = "post",
+                                    itemActionType = "like"
+                                )
+
+                                //push notification, retrieve key and set as notification id
+                                dbRef.child("user-notifications").child(postUserId)
+                                    .push().setValue(notification) { error, ref ->
+                                        if (error == null) {
+                                            val notificationKey = ref.key
+                                            dbRef.child("user-notifications")
+                                                .child(postUserId).child(notificationKey!!)
+                                                .child("notificationId").setValue(notificationKey)
+                                        }
+                                    }
+                            }
+                        }
                         //update likes count
                         dbRef.child("posts").child(postId).child("likesCount")
                             .runTransaction(
@@ -339,7 +396,6 @@ class PostsFragment : Fragment(),
                                         if (count == null) {
                                             count = 1
                                         }
-
                                         //if liked, increase count by 1 else decrease by 1
                                         if (liked == true) {
                                             count++
@@ -350,9 +406,7 @@ class PostsFragment : Fragment(),
                                         //set database count value to the new update
                                         return Transaction.success(currentData)
                                     }
-
                                     //after successfully updating likes count on database, update ui
-                                    @SuppressLint("SetTextI18n")
                                     override fun onComplete(
                                         error: DatabaseError?,
                                         committed: Boolean,
@@ -402,12 +456,14 @@ class PostsFragment : Fragment(),
                         val updatedList = currentData?.getValue<ArrayList<String>>()
                         //if it contains postid, toast saved
                         if (updatedList?.contains(postId) == true) {
-                            Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT)
+                                .show()
                             //update savedPostTextView start drawable icon
                             postViewHolder?.itemBinding?.savePostTextView?.isActivated = true
                         } else {
                             //Toast unsaved
-                            Toast.makeText(requireContext(), "UnSaved", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "UnSaved", Toast.LENGTH_SHORT)
+                                .show()
                             //update savedPostTextView start drawable icon
                             postViewHolder?.itemBinding?.savePostTextView?.isActivated = false
                         }
@@ -419,7 +475,11 @@ class PostsFragment : Fragment(),
     }
 
     //on more options clicked, open dialog
-    override fun onMoreClicked(postId: String, userId: String?, it: View?, viewHolder: PostViewHolder) {
+    override fun onMoreClicked(
+        postId: String,
+        userId: String?,
+        it: View?,
+        viewHolder: PostViewHolder) {
         //reference to viewHolder clicked
         postViewHolder = viewHolder
         moreOptionsDialog = MoreBottomSheetDialogFragment(
@@ -435,7 +495,6 @@ class PostsFragment : Fragment(),
         super.onStart()
         //add value event listener for posts count
         dbRef.child("postsCount").addValueEventListener(postsCountValueEventListener)
-
         //register observer to adapter to scroll to  position when new items are added
         postsAdapter?.registerAdapterDataObserver(postsAdapterObserver)
 
