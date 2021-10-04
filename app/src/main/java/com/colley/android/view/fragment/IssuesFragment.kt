@@ -19,6 +19,7 @@ import com.colley.android.databinding.FragmentIssuesBinding
 import com.colley.android.repository.DatabaseRepository
 import com.colley.android.viewmodel.IssuesViewModel
 import com.colley.android.factory.ViewModelFactory
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -39,7 +40,7 @@ class IssuesFragment ():
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
     private var issuesAdapter: IssuesPagingAdapter? = null
-    private var manager: LinearLayoutManager? = null
+    private var manager: WrapContentLinearLayoutManager? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private val uid: String
@@ -103,7 +104,10 @@ class IssuesFragment ():
         issuesAdapter = IssuesPagingAdapter(requireContext(), currentUser, this)
 
         //set recycler view layout manager
-        manager = LinearLayoutManager(requireContext())
+        manager =  WrapContentLinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false)
         recyclerView.layoutManager = manager
         //initialize adapter
         recyclerView.adapter = issuesAdapter
@@ -115,7 +119,6 @@ class IssuesFragment ():
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.searchIssues(issuesQuery).collectLatest {
                     pagingData ->
-                Log.w("itemCountIA", "$pagingData")
                 issuesAdapter?.submitData(pagingData)
 
             }

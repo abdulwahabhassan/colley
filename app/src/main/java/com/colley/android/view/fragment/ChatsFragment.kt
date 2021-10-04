@@ -47,7 +47,7 @@ class ChatsFragment :
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
     private var adapter: ChatsRecyclerAdapter? = null
-    private var manager: LinearLayoutManager? = null
+    private var manager: WrapContentLinearLayoutManager? = null
     private lateinit var recyclerView: RecyclerView
     private var newMessageBottomSheetDialog: NewMessageBottomSheetDialogFragment? = null
     private var actionMode: ActionMode? = null

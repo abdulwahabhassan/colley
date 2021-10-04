@@ -92,5 +92,6 @@
     <string name="flag_issue_text">Flag this issue</string>
     <string name="delete_issue_text">Delete issue</string>
     <string name="no_issues_currently">No issues currently</string>
+    <string name="no_notifications_currently">No notifications currently</string>
 
 </resources>

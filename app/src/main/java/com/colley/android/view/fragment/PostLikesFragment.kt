@@ -19,6 +19,7 @@ import com.colley.android.databinding.FragmentLikesBinding
 import com.colley.android.factory.ViewModelFactory
 import com.colley.android.repository.DatabaseRepository
 import com.colley.android.viewmodel.PostLikesViewModel
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -46,7 +47,7 @@ class PostLikesFragment(
     private var differenceCount: Int = 0
     private var likesQuery: Query? = null
     private var likesAdapter: PostLikesPagingAdapter? = null
-    private var manager: LinearLayoutManager? = null
+    private var manager: WrapContentLinearLayoutManager? = null
     private val uid: String
         get() = currentUser.uid
 
@@ -144,7 +145,10 @@ class PostLikesFragment(
         getLikesCount()
 
         //set recycler view layout manager
-        manager = LinearLayoutManager(requireContext())
+        manager =  WrapContentLinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false)
         recyclerView.layoutManager = manager
         //initialize adapter
         recyclerView.adapter = likesAdapter

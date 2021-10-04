@@ -19,14 +19,13 @@ import com.colley.android.R
 import com.colley.android.adapter.*
 import com.colley.android.databinding.FragmentPostsBinding
 import com.colley.android.repository.DatabaseRepository
-import com.colley.android.view.dialog.NewPostBottomSheetDialogFragment
 import com.colley.android.view.dialog.CommentOnPostBottomSheetDialogFragment
 import com.colley.android.viewmodel.PostsViewModel
 import com.colley.android.factory.ViewModelFactory
 import com.colley.android.model.Notification
-import com.colley.android.view.dialog.MoreBottomSheetDialogFragment
+import com.colley.android.view.dialog.PostOptionsBottomSheetDialogFragment
 import com.colley.android.view.dialog.PostBottomSheetDialogFragment
-import com.firebase.ui.auth.AuthUI
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -46,23 +45,23 @@ class PostsFragment : Fragment(),
     PostsPagingAdapter.PostPagingItemClickedListener,
     CommentOnPostBottomSheetDialogFragment.CommentListener,
     PostBottomSheetDialogFragment.ActionsDialogListener,
-    MoreBottomSheetDialogFragment.MoreOptionsDialogListener {
+    PostOptionsBottomSheetDialogFragment.MoreOptionsDialogListener {
 
     private var _binding: FragmentPostsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var dbRef: DatabaseReference
-    private lateinit var auth: FirebaseAuth
-    private lateinit var currentUser: FirebaseUser
     private var postsAdapter: PostsPagingAdapter? = null
-    private var manager: LinearLayoutManager? = null
+    private var manager: WrapContentLinearLayoutManager? = null
     private lateinit var recyclerView: RecyclerView
     private var postViewHolder: PostViewHolder? = null
     private var postsCount: Int = 0
     private var differenceCount: Int = 0
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var postDialog: PostBottomSheetDialogFragment
-    private lateinit var moreOptionsDialog: MoreBottomSheetDialogFragment
+    private lateinit var postOptionsOptionsDialog: PostOptionsBottomSheetDialogFragment
     private lateinit var sheetDialogCommentOn: CommentOnPostBottomSheetDialogFragment
+    private lateinit var dbRef: DatabaseReference
+    private lateinit var auth: FirebaseAuth
+    private lateinit var currentUser: FirebaseUser
     private val uid: String
         get() = currentUser.uid
 
@@ -173,7 +172,10 @@ class PostsFragment : Fragment(),
         getPostsCount()
 
         //set recycler view layout manager
-        manager = LinearLayoutManager(requireContext())
+        manager =  WrapContentLinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false)
         recyclerView.layoutManager = manager
         //initialize adapter
         recyclerView.adapter = postsAdapter
@@ -350,10 +352,12 @@ class PostsFragment : Fragment(),
                         ).show()
                     } else {
                         //only create notification if post was liked not if post was unliked
-                        if (liked == true) {
+                        //and if itemActor(user liking the post) is not the same user that owns the post
+                        if (liked == true && postUserId != uid) {
                             //notify the user who owns the post that a like was given on their
                             //post
-                            postUserId.let { postUserId ->
+                            postUserId?.let { postUserId ->
+
                                 //get current time and format it
                                 //timeId will be used for sorting notification from the most recent
                                 val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
@@ -363,9 +367,9 @@ class PostsFragment : Fragment(),
 
                                 //create instance of notification
                                 val notification = Notification(
-                                    itemActorUserId = uid,
                                     itemId = postId,
                                     itemOwnerUserId = postUserId,
+                                    itemActorUserId = uid,
                                     timeId = timeId,
                                     timeStamp = date,
                                     itemActionId = null,
@@ -482,13 +486,13 @@ class PostsFragment : Fragment(),
         viewHolder: PostViewHolder) {
         //reference to viewHolder clicked
         postViewHolder = viewHolder
-        moreOptionsDialog = MoreBottomSheetDialogFragment(
+        postOptionsOptionsDialog = PostOptionsBottomSheetDialogFragment(
             requireContext(),
             requireView(),
             this
         )
-        moreOptionsDialog.arguments = bundleOf("postIdKey" to postId, "userIdKey" to userId)
-        moreOptionsDialog.show(parentFragmentManager, null)
+        postOptionsOptionsDialog.arguments = bundleOf("postIdKey" to postId, "userIdKey" to userId)
+        postOptionsOptionsDialog.show(parentFragmentManager, null)
     }
 
     override fun onStart() {

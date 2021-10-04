@@ -29,7 +29,7 @@ import com.colley.android.view.dialog.CommentOnIssueBottomSheetDialogFragment
 import com.colley.android.viewmodel.ViewIssueViewModel
 import com.colley.android.factory.ViewModelFactory
 import com.colley.android.view.dialog.IssueOptionsBottomSheetDialogFragment
-import com.colley.android.view.dialog.MoreBottomSheetDialogFragment
+import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -60,7 +60,7 @@ class ViewIssueFragment :
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var commentOnIssueSheetDialog: CommentOnIssueBottomSheetDialogFragment
     private var commentsAdapter: IssueCommentsPagingAdapter? = null
-    private var manager: LinearLayoutManager? = null
+    private var manager: WrapContentLinearLayoutManager? = null
     private val uid: String
         get() = currentUser.uid
     private lateinit var issueOptionsDialog: IssueOptionsBottomSheetDialogFragment
@@ -349,7 +349,10 @@ class ViewIssueFragment :
         getCommentsCount()
 
         //set recycler view layout manager
-        manager = LinearLayoutManager(requireContext())
+        manager =  WrapContentLinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false)
         recyclerView.layoutManager = manager
         //initialize adapter
         recyclerView.adapter = commentsAdapter

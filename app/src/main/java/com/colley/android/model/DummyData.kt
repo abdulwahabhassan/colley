@@ -1,7 +1,5 @@
 package com.colley.android.model
 
-import com.colley.android.Notification
-
 object DummyData {
 
 
@@ -24,69 +22,6 @@ object DummyData {
             School("University of Agriculture, Makurdi", "https://rebrand.ly/h4n434r"),
             School("The Polytechnic, Ibadan", "https://rebrand.ly/t6jio7f"),
             School("Federal University of Petroleum Resources", "https://rebrand.ly/fk9co9i")
-        )
-    }
-
-
-    fun getListOfPromotions(): ArrayList<Promotion> {
-        return arrayListOf(
-            Promotion(
-                "Mirabell Sanchez Ozioma",
-                "https://rebrand.ly/00p0y9v",
-            ),
-            Promotion(
-                "Akpos Godfrey",
-                userImage = null,
-            ),
-            Promotion(
-                "Emmanuel Campbell",
-                "https://rebrand.ly/bfdcfd",
-            ),
-            Promotion(
-                "Patricia Benedict",
-                "https://rebrand.ly/cc685c",
-            )
-        )
-    }
-
-    fun getListOfNotifications(): ArrayList<Notification> {
-        return arrayListOf(
-            Notification(
-                "https://rebrand.ly/00p0y9v",
-                "Ella Andrews from UNIUYO commented on your post",
-                "Just now"
-            ),
-            Notification(
-                image = null,
-                "Alice Angel from FUTO promoted your post",
-                "3min ago"
-            ),
-            Notification(
-                "https://rebrand.ly/bfdcfd",
-                "Bernard Matthew from UNICAL contributed to this issue - Let’s talk about the malpractice",
-                "1hr ago"
-            ),
-            Notification(
-                "https://rebrand.ly/cc685c",
-                "Zane Tega from BABCOCK commented on your contribution to this issue - " +
-                        "Bank road is not safe to walk on at the moment",
-                "4hr ago"
-            ),
-            Notification(
-                "https://rebrand.ly/cc685c",
-                "Zane Tega from BABCOCK liked your contribution on this issue - Bank road is not safe to walk on at the moment",
-                "4hr ago"
-            ),
-            Notification(
-                "https://rebrand.ly/zlhfnjj",
-                "Timidayo Bawo from UNN responded to your comment on Alfred Chigbo’s post",
-                "yd"
-            ),
-            Notification(
-                image = null,
-                "Alfred Chigbo from UNIMAID liked your comment on his post",
-                "3dy ago"
-            )
         )
     }
 

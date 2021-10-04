@@ -40,7 +40,6 @@ class AddMoreGroupMemberBottomSheetDialogFragment (
     private var selectedMembersCount = 0
     private val selectedMembersList = arrayListOf<String>()
     private var listOfExistingMembers: ArrayList<String>? = null
-    //private lateinit var membersValueEventListener: ValueEventListener
     private var bundledGroupId: String? = null
     private val uid: String
         get() = currentUser.uid

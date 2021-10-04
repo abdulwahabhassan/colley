@@ -1,7 +1,6 @@
 package com.colley.android.view.dialog
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,11 +15,10 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
-class MoreBottomSheetDialogFragment (
+class PostOptionsBottomSheetDialogFragment (
     private val parentContext: Context,
     private val postView: View,
     private val moreOptionsDialogListener: MoreOptionsDialogListener
@@ -143,7 +141,7 @@ class MoreBottomSheetDialogFragment (
                             moreOptionsDialogListener.onDeletePost(postId)
 
                         }
-                        this@MoreBottomSheetDialogFragment.dismiss()
+                        this@PostOptionsBottomSheetDialogFragment.dismiss()
                     }
 
                 }
@@ -155,7 +153,7 @@ class MoreBottomSheetDialogFragment (
                 //prevent multiple clicks
                 reportPost.isEnabled = false
                 moreOptionsDialogListener.onReportPost(postId)
-                this@MoreBottomSheetDialogFragment.dismiss()
+                this@PostOptionsBottomSheetDialogFragment.dismiss()
             }
         }
 

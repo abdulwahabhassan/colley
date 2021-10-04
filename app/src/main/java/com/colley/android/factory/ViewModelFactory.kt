@@ -17,26 +17,25 @@ class ViewModelFactory(
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
+        @Suppress("UNCHECKED_CAST")
         when {
             modelClass.isAssignableFrom(PostsViewModel::class.java) -> {
-                @Suppress("UNCHECKED_CAST")
                 return PostsViewModel(handle, repository) as T
             }
             modelClass.isAssignableFrom(IssuesViewModel::class.java) -> {
-                @Suppress("UNCHECKED_CAST")
                 return IssuesViewModel(handle, repository) as T
             }
             modelClass.isAssignableFrom(ViewIssueViewModel::class.java) -> {
-                @Suppress("UNCHECKED_CAST")
                 return ViewIssueViewModel(handle, repository) as T
             }
             modelClass.isAssignableFrom(PostCommentsViewModel::class.java) -> {
-                @Suppress("UNCHECKED_CAST")
                 return PostCommentsViewModel(handle, repository) as T
             }
             modelClass.isAssignableFrom(PostLikesViewModel::class.java) -> {
-                @Suppress("UNCHECKED_CAST")
                 return PostLikesViewModel(handle, repository) as T
+            }
+            modelClass.isAssignableFrom(NotificationsViewModel::class.java) -> {
+                return NotificationsViewModel(handle, repository) as T
             }
         }
         throw IllegalArgumentException("Unknown ViewModel class")

@@ -169,7 +169,8 @@ class PostBottomSheetDialogFragment (
                                 ).show()
                             } else {
                                 //only create notification if post was liked not if post was unliked
-                                if (liked == true) {
+                                //and if itemActor(user liking the post) is not the same user that owns the post
+                                if (liked == true && postUserId != uid) {
                                     //notify the user who owns the post that a like was given on their
                                     //post
                                     postUserId?.let { postUserId ->
@@ -183,9 +184,9 @@ class PostBottomSheetDialogFragment (
 
                                         //create instance of notification
                                         val notification = Notification(
-                                            itemActorUserId = uid,
                                             itemId = postId,
                                             itemOwnerUserId = postUserId,
+                                            itemActorUserId = uid,
                                             timeId = timeId,
                                             timeStamp = date,
                                             itemActionId = null,

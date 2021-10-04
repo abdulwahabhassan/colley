@@ -102,31 +102,35 @@ class CommentOnPostBottomSheetDialogFragment (
                             dbRef.child("post-comments").child(postId).child(commentKey!!)
                                 .child("commentId").setValue(commentKey)
 
-                            //notify the user who owns the post that a comment was made on their post
-                            //create instance of notification
-                            postUserId?.let { postUserId ->
-                                val notification = Notification(
-                                    itemActorUserId = uid,
-                                    itemId = postId,
-                                    itemOwnerUserId = postUserId,
-                                    timeId = timeId,
-                                    timeStamp = date,
-                                    itemActionId = commentKey,
-                                    itemType = "post",
-                                    itemActionType = "comment"
-                                )
+                            //if itemActor(commenter) is not the same user that owns the post
+                            if(postUserId != uid) {
+                                //notify the user who owns the post that a comment was made on their post
+                                //create instance of notification
+                                postUserId?.let { postUserId ->
+                                    val notification = Notification(
+                                        itemId = postId,
+                                        itemOwnerUserId = postUserId,
+                                        itemActorUserId = uid,
+                                        timeId = timeId,
+                                        timeStamp = date,
+                                        itemActionId = commentKey,
+                                        itemType = "post",
+                                        itemActionType = "comment",
+                                        clicked = false
+                                    )
 
-                                //push notification, retrieve key and set as notification id
-                                dbRef.child("user-notifications").child(postUserId)
-                                    .push().setValue(notification) { error, ref ->
-                                        if (error == null) {
-                                            val notificationKey = ref.key
-                                            dbRef.child("user-notifications")
-                                                .child(postUserId).child(notificationKey!!)
-                                                .child("notificationId").setValue(notificationKey)
+                                    //push notification, retrieve key and set as notification id
+                                    dbRef.child("user-notifications").child(postUserId)
+                                        .push().setValue(notification) { error, ref ->
+                                            if (error == null) {
+                                                val notificationKey = ref.key
+                                                dbRef.child("user-notifications")
+                                                    .child(postUserId).child(notificationKey!!)
+                                                    .child("notificationId").setValue(notificationKey)
+                                            }
                                         }
-                                    }
 
+                                }
                             }
 
                             //update comments count

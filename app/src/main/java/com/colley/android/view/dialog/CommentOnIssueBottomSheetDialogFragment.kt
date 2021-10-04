@@ -98,29 +98,33 @@ class CommentOnIssueBottomSheetDialogFragment (
                             dbRef.child("issue-comments").child(issueId).child(commentKey!!)
                                 .child("commentId").setValue(commentKey)
 
-                            //notify the user who owns the issue that a comment was made on their issue
-                            //create instance of notification
-                            issueUserId?.let { issueUserId ->
-                                val notification = Notification(
-                                    itemActorUserId = uid,
-                                    itemId = issueId,
-                                    itemOwnerUserId = issueUserId,
-                                    timeId = timeId,
-                                    timeStamp = date,
-                                    itemActionId = commentKey,
-                                    itemType = "issue",
-                                    itemActionType = "comment"
-                                )
-                                //push notification, retrieve key and set as notification id
-                                dbRef.child("user-notifications").child(issueUserId)
-                                    .push().setValue(notification) { error, ref ->
-                                        if (error == null) {
-                                            val notificationKey = ref.key
-                                            dbRef.child("user-notifications")
-                                                .child(issueUserId).child(notificationKey!!)
-                                                .child("notificationId").setValue(notificationKey)
+                            //if itemActor(commenter) is not the same user that raised the issue
+                            if(issueUserId != uid) {
+                                //notify the user who owns the issue that a comment was made on their issue
+                                //create instance of notification
+                                issueUserId?.let { issueUserId ->
+                                    val notification = Notification(
+                                        itemActorUserId = uid,
+                                        itemId = issueId,
+                                        itemOwnerUserId = issueUserId,
+                                        timeId = timeId,
+                                        timeStamp = date,
+                                        itemActionId = commentKey,
+                                        itemType = "issue",
+                                        itemActionType = "comment",
+                                        clicked = false
+                                    )
+                                    //push notification, retrieve key and set as notification id
+                                    dbRef.child("user-notifications").child(issueUserId)
+                                        .push().setValue(notification) { error, ref ->
+                                            if (error == null) {
+                                                val notificationKey = ref.key
+                                                dbRef.child("user-notifications")
+                                                    .child(issueUserId).child(notificationKey!!)
+                                                    .child("notificationId").setValue(notificationKey)
+                                            }
                                         }
-                                    }
+                                }
                             }
 
                             //update contributions count of issue

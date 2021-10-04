@@ -46,7 +46,7 @@ class PrivateMessageFragment :
     private lateinit var auth: FirebaseAuth
     private lateinit var currentUser: FirebaseUser
     private lateinit var adapter: PrivateMessageRecyclerAdapter
-    private lateinit var manager: LinearLayoutManager
+    private lateinit var manager: WrapContentLinearLayoutManager
     private lateinit var recyclerView: RecyclerView
     private val openDocument = registerForActivityResult(OpenDocumentContract()) { uri ->
         if(uri != null) {
