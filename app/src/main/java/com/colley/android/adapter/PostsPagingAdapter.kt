@@ -137,7 +137,7 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
         if(post?.text == null) {
             contentTextView.visibility = GONE
         } else {
-            contentTextView.visibility = View.VISIBLE
+            contentTextView.visibility = VISIBLE
             contentTextView.text = post.text
         }
 
@@ -145,7 +145,7 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
         if(post?.location == null) {
             locationTextView.visibility = GONE
         } else {
-            locationTextView.visibility = View.VISIBLE
+            locationTextView.visibility = VISIBLE
             locationTextView.text = post.location
         }
 
@@ -171,26 +171,26 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
 
         //set likes count
         when (post?.likesCount) {
-            0 -> likeCountTextView.visibility = View.GONE
+            0 -> likeCountTextView.visibility = GONE
             1 -> {
-                likeCountTextView.visibility = View.VISIBLE
+                likeCountTextView.visibility = VISIBLE
                 likeCountTextView.text = "${post.likesCount} like"
             }
             else -> {
-                likeCountTextView.visibility = View.VISIBLE
+                likeCountTextView.visibility = VISIBLE
                 likeCountTextView.text = "${post?.likesCount} likes"
             }
         }
 
         //set comments count
         when (post?.commentsCount) {
-            0 -> commentCountTextView.visibility = View.GONE
+            0 -> commentCountTextView.visibility = GONE
             1 -> {
-                commentCountTextView.visibility = View.VISIBLE
+                commentCountTextView.visibility = VISIBLE
                 commentCountTextView.text = "${post.commentsCount} comment"
             }
             else -> {
-                commentCountTextView.visibility = View.VISIBLE
+                commentCountTextView.visibility = VISIBLE
                 commentCountTextView.text = "${post?.commentsCount} comments"
             }
         }

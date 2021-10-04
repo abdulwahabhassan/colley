@@ -72,7 +72,14 @@
         android:id="@+id/notificationsFragment"
         android:name="com.colley.android.view.fragment.NotificationsFragment"
         android:label="@string/notifications_label"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_notifications" >
+        <action
+            android:id="@+id/action_notificationsFragment_to_viewIssueFragment"
+            app:destination="@id/viewIssueFragment" />
+        <action
+            android:id="@+id/action_notificationsFragment_to_viewPostFragment"
+            app:destination="@id/viewPostFragment" />
+    </fragment>
     <fragment
         android:id="@+id/rateAppFragment"
         android:name="com.colley.android.view.fragment.RateUsFragment"
@@ -160,6 +167,14 @@
         tools:layout="@layout/fragment_user_info">
         <argument
             android:name="userId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewPostFragment"
+        android:name="com.colley.android.view.fragment.ViewPostFragment"
+        android:label="Post">
+        <argument
+            android:name="postId"
             app:argType="string" />
     </fragment>
 </navigation>

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -72,7 +73,9 @@ class NotificationsFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
 
         // get the view model
-        val viewModel = ViewModelProvider(this, ViewModelFactory(owner = this, repository = DatabaseRepository()))
+        val viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(owner = this, repository = DatabaseRepository()))
             .get(NotificationsViewModel::class.java)
 
         //get a query reference to notifications
@@ -80,7 +83,11 @@ class NotificationsFragment : Fragment(),
             .orderByChild("timeId")
 
         //initialize adapter
-        notificationsAdapter = NotificationsPagingAdapter(requireContext(), currentUser, this, dbRef)
+        notificationsAdapter = NotificationsPagingAdapter(
+            requireContext(),
+            currentUser,
+            this,
+            dbRef)
 
         //set recycler view layout manager
         manager =  WrapContentLinearLayoutManager(
@@ -110,7 +117,10 @@ class NotificationsFragment : Fragment(),
                     is LoadState.Error -> {
                         // The initial load failed. Call the retry() method
                         // in order to retry the load operation.
-                        Toast.makeText(context, "Error fetching notifications! Retrying..", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "Error fetching notifications! Retrying..",
+                            Toast.LENGTH_SHORT).show()
                         //display no posts available at the moment
                         binding.noNotificationsLayout.visibility = VISIBLE
                         notificationsAdapter?.retry()
@@ -158,6 +168,32 @@ class NotificationsFragment : Fragment(),
     }
 
     override fun onItemClick(notification: com.colley.android.model.Notification) {
+        //Navigate to issue if the notification is for an issue
+        if(notification.itemType == "issue") {
+            val action = notification.itemId?.let { itemId ->
+                NotificationsFragmentDirections.actionNotificationsFragmentToViewIssueFragment(itemId)
+            }
+            if (action != null) {
+                notification.notificationId?.let { notificationId ->
+                    dbRef.child("user-notifications").child(uid)
+                        .child(notificationId).child("clicked").setValue(true)
+                }
+                parentFragment?.findNavController()?.navigate(action)
+            }
+        } else if (notification.itemType == "post") {
+            val action = notification.itemId?.let { itemId ->
+                NotificationsFragmentDirections.actionNotificationsFragmentToViewPostFragment(itemId)
+            }
+            if (action != null) {
+                notification.notificationId?.let { notificationId ->
+                    dbRef.child("user-notifications").child(uid)
+                        .child(notificationId).child("clicked").setValue(true)
+                }
+                parentFragment?.findNavController()?.navigate(action)
+            }
+
+        }
+
     }
 
 }
