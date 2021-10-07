@@ -464,39 +464,50 @@ class ViewIssueFragment :
                 .setMessage("Delete comment?")
                 .setPositiveButton("Yes") { dialog, which ->
                     //locate and delete comment from database only if the user is the owner of the comment
-                    comment.commentId?.let { dbRef.child("issue-comments").child(args.issueId)
-                        .child(it).setValue(null, DatabaseReference.CompletionListener { error, ref ->
-                            //if comment was successfully deleted, decrease comments count
-                            if (error == null) {
-                                dbRef.child("issues").child(args.issueId)
-                                    .child("contributionsCount").runTransaction(object :
-                                        Transaction.Handler {
-                                        override fun doTransaction(currentData: MutableData):
-                                                Transaction.Result {
-                                            var count = currentData.getValue(Int::class.java)
-                                            if(count != null) {
-                                                count--
-                                                currentData.value = count
-                                            }
-                                            return Transaction.success(currentData)
-                                        }
+                    comment.commentId?.let { commentId -> dbRef.child("issue-comments").child(args.issueId)
+                        .child(commentId).get().addOnSuccessListener { dataSnapshot ->
+                            val commentSnap = dataSnapshot.getValue(Comment::class.java)
+                            //if comment exists, i.e hasn't already been removed, delete and
+                            //update count
+                            if(commentSnap != null) {
+                                dbRef.child("issue-comments").child(args.issueId)
+                                    .child(commentId).setValue(null) { error, ref ->
+                                        //if comment was successfully deleted, decrease comments count
+                                        if (error == null) {
+                                            dbRef.child("issues").child(args.issueId)
+                                                .child("contributionsCount").runTransaction(object :
+                                                    Transaction.Handler {
+                                                    override fun doTransaction(currentData: MutableData):
+                                                            Transaction.Result {
+                                                        var count =
+                                                            currentData.getValue(Int::class.java)
+                                                        if (count != null) {
+                                                            count--
+                                                            currentData.value = count
+                                                        }
+                                                        return Transaction.success(currentData)
+                                                    }
 
-                                        override fun onComplete(
-                                            error: DatabaseError?,
-                                            committed: Boolean,
-                                            currentData: DataSnapshot?
-                                        ) {
-                                           if(error == null) {
-                                               Toast.makeText(
-                                                   requireContext(),
-                                                   "Deleted, Refresh",
-                                                   Toast.LENGTH_SHORT).show()
-                                           }
-                                        }
+                                                    override fun onComplete(
+                                                        error: DatabaseError?,
+                                                        committed: Boolean,
+                                                        currentData: DataSnapshot?
+                                                    ) {
+                                                        if (error == null) {
+                                                            Toast.makeText(
+                                                                requireContext(),
+                                                                "Deleted, Refresh",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                    }
 
-                                    })
+                                                })
+                                        }
+                                    }
                             }
-                        }) }
+                        }
+                         }
                     dialog.dismiss()
                 }.setNegativeButton("No") { dialog, which ->
                     dialog.dismiss()

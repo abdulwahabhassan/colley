@@ -285,40 +285,51 @@ class PostCommentsFragment(
                     comment.commentId?.let { commentId ->
                         if (postId != null) {
                             dbRef.child("post-comments").child(postId)
-                                .child(commentId).setValue(null) { error, ref ->
-                                    //if comment was successfully deleted, decrease comments count
-                                    if (error == null) {
-                                        dbRef.child("posts").child(postId)
-                                            .child("commentsCount").runTransaction(object :
-                                                Transaction.Handler {
-                                                override fun doTransaction(currentData: MutableData):
-                                                        Transaction.Result {
-                                                    var count =
-                                                        currentData.getValue(Int::class.java)
-                                                    if (count != null) {
-                                                        count--
-                                                        currentData.value = count
-                                                    }
-                                                    return Transaction.success(currentData)
-                                                }
+                                .child(commentId).get().addOnSuccessListener {
+                                    dataSnapshot ->
+                                    //get comment first, if it is not null, delete and update count
+                                    //so as to avoid updating count while comment no longer exits
+                                    //when delete us selected multiple times
+                                    val commentSnap = dataSnapshot.getValue(Comment::class.java)
+                                    if (commentSnap != null) {
+                                        dbRef.child("post-comments").child(postId)
+                                            .child(commentId).setValue(null) { error, ref ->
+                                                //if comment was successfully deleted, decrease comments count
+                                                if (error == null) {
+                                                    dbRef.child("posts").child(postId)
+                                                        .child("commentsCount").runTransaction(object :
+                                                            Transaction.Handler {
+                                                            override fun doTransaction(currentData: MutableData):
+                                                                    Transaction.Result {
+                                                                var count =
+                                                                    currentData.getValue(Int::class.java)
+                                                                if (count != null) {
+                                                                    count--
+                                                                    currentData.value = count
+                                                                }
+                                                                return Transaction.success(currentData)
+                                                            }
 
-                                                override fun onComplete(
-                                                    error: DatabaseError?,
-                                                    committed: Boolean,
-                                                    currentData: DataSnapshot?
-                                                ) {
-                                                    if (error == null) {
-                                                        Toast.makeText(
-                                                            requireContext(),
-                                                            "Deleted, Refresh",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    }
-                                                }
+                                                            override fun onComplete(
+                                                                error: DatabaseError?,
+                                                                committed: Boolean,
+                                                                currentData: DataSnapshot?
+                                                            ) {
+                                                                if (error == null) {
+                                                                    Toast.makeText(
+                                                                        requireContext(),
+                                                                        "Deleted, Refresh",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+                                                                }
+                                                            }
 
-                                            })
+                                                        })
+                                                }
+                                            }
                                     }
                                 }
+
                         }
                     }
                     dialog.dismiss()
