@@ -192,6 +192,11 @@ class ChatsFragment :
                                         //if list is not empty meaning that there are messages in
                                         //the chats perform the following operation on each message
                                         if (listOfMessageIds.isNotEmpty()) {
+
+                                            //delete reference to recent chat
+                                            dbRef.child("/user-messages/recent-message/${currentUser.uid}/${chatId}")
+                                                .setValue(null)
+
                                             listOfMessageIds.forEach { messageId ->
                                                 dbRef.child("user-messages").child(currentUser.uid)
                                                     .child(chatId).child(messageId).get()
