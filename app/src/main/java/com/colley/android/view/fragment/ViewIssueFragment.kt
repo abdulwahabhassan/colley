@@ -2,6 +2,7 @@ package com.colley.android.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.widget.Toast
@@ -30,6 +31,7 @@ import com.colley.android.viewmodel.ViewIssueViewModel
 import com.colley.android.factory.ViewModelFactory
 import com.colley.android.view.dialog.IssueOptionsBottomSheetDialogFragment
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
+import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -446,9 +448,48 @@ class ViewIssueFragment :
         //expand comment
     }
 
+    //to delete a comment from an issue
     override fun onItemLongCLicked(comment: Comment, view: View) {
-        //create option to delete
-        //create option to respond
+        if (comment.commenterId == uid) {
+            AlertDialog.Builder(requireContext())
+                .setMessage("Delete comment?")
+                .setPositiveButton("Yes") { dialog, which ->
+                    //locate and delete comment from database only if the user is the owner of the comment
+                    comment.commentId?.let { dbRef.child("issue-comments").child(args.issueId)
+                        .child(it).setValue(null, DatabaseReference.CompletionListener { error, ref ->
+                            //if comment was successfully deleted, decrease comments count
+                            if (error == null) {
+                                dbRef.child("issues").child(args.issueId)
+                                    .child("contributionsCount").runTransaction(object :
+                                        Transaction.Handler {
+                                        override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                            var count = currentData.getValue(Int::class.java)
+                                            if(count != null) {
+                                                count--
+                                                currentData.value = count
+                                            }
+                                            return Transaction.success(currentData)
+                                        }
+
+                                        override fun onComplete(
+                                            error: DatabaseError?,
+                                            committed: Boolean,
+                                            currentData: DataSnapshot?
+                                        ) {
+                                           if(error == null) {
+                                               Toast.makeText(requireContext(), "Deleted, Refresh", Toast.LENGTH_SHORT).show()
+                                           }
+                                        }
+
+                                    })
+                            }
+                        }) }
+                    dialog.dismiss()
+                }.setNegativeButton("No") { dialog, which ->
+                    dialog.dismiss()
+                }.show()
+        }
+
     }
 
     //view user profile

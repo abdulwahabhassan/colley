@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -24,10 +25,7 @@ import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.collectLatest
@@ -271,8 +269,51 @@ class PostCommentsFragment(
 
     }
 
+    //To delete a comment from a post
     override fun onItemLongCLicked(comment: Comment, view: View) {
+        if (comment.commenterId == uid) {
+            AlertDialog.Builder(requireContext())
+                .setMessage("Delete comment?")
+                .setPositiveButton("Yes") { dialog, which ->
+                    //locate and delete comment from database only if the user is the owner of the comment
+                    comment.commentId?.let { commentId ->
+                        if (postId != null) {
+                            dbRef.child("post-comments").child(postId)
+                                .child(commentId).setValue(null, DatabaseReference.CompletionListener { error, ref ->
+                                    //if comment was successfully deleted, decrease comments count
+                                    if (error == null) {
+                                        dbRef.child("posts").child(postId)
+                                            .child("commentsCount").runTransaction(object :
+                                                Transaction.Handler {
+                                                override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                                    var count = currentData.getValue(Int::class.java)
+                                                    if(count != null) {
+                                                        count--
+                                                        currentData.value = count
+                                                    }
+                                                    return Transaction.success(currentData)
+                                                }
 
+                                                override fun onComplete(
+                                                    error: DatabaseError?,
+                                                    committed: Boolean,
+                                                    currentData: DataSnapshot?
+                                                ) {
+                                                    if(error == null) {
+                                                        Toast.makeText(requireContext(), "Deleted, Refresh", Toast.LENGTH_SHORT).show()
+                                                    }
+                                                }
+
+                                            })
+                                    }
+                                })
+                        }
+                    }
+                    dialog.dismiss()
+                }.setNegativeButton("No") { dialog, which ->
+                    dialog.dismiss()
+                }.show()
+        }
     }
 
     override fun onUserClicked(userId: String, view: View) {
