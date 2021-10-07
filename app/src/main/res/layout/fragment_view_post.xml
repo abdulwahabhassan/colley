@@ -204,7 +204,7 @@
                 android:drawablePadding="@dimen/padding_4dp"
                 android:focusable="true"
                 android:text="@string/comment_text"
-                android:textColor="@color/text_color_state_selector"
+                android:textColor="@drawable/text_color_state_selector"
                 app:drawableStartCompat="@drawable/ic_comment" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -231,7 +231,7 @@
                 android:layout_margin="@dimen/margin_12dp"
                 android:drawablePadding="@dimen/padding_4dp"
                 android:text="@string/like_text"
-                android:textColor="@color/text_color_state_selector"
+                android:textColor="@drawable/text_color_state_selector"
                 app:drawableStartCompat="@drawable/like_drawable_state_selector" />
 
 
@@ -272,7 +272,7 @@
                 android:layout_margin="@dimen/margin_12dp"
                 android:drawablePadding="@dimen/padding_4dp"
                 android:text="@string/save_text"
-                android:textColor="@color/text_color_state_selector"
+                android:textColor="@drawable/text_color_state_selector"
                 app:drawableStartCompat="@drawable/save_drawable_state_selector" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

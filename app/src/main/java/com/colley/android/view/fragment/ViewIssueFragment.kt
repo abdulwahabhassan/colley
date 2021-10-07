@@ -496,7 +496,7 @@ class ViewIssueFragment :
                                                         if (error == null) {
                                                             Toast.makeText(
                                                                 requireContext(),
-                                                                "Deleted, Refresh",
+                                                                "Deleted, Refresh to see changes",
                                                                 Toast.LENGTH_SHORT
                                                             ).show()
                                                         }
