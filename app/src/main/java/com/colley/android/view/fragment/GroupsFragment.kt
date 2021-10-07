@@ -57,7 +57,6 @@ class GroupsFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.search_groups_menu_item -> {
-                Toast.makeText(context, "Searching groups", Toast.LENGTH_LONG).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

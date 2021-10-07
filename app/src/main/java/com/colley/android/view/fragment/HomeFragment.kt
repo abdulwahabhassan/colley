@@ -46,7 +46,6 @@ class HomeFragment:
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
        return when (item.itemId) {
             R.id.search_menu_item -> {
-                Toast.makeText(context, "Searching", Toast.LENGTH_LONG).show()
                 return true
             }
             else -> super.onOptionsItemSelected(item)

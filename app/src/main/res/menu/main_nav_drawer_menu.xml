@@ -20,11 +20,6 @@
                                 android:icon="@drawable/ic_notifications"/>
 
                             <item
-                                android:id="@+id/settingsFragment"
-                                android:title="@string/menu_item_settings_title"
-                                android:icon="@drawable/ic_settings" />
-
-                            <item
                                 android:id="@+id/logOutTextView"
                                 android:onClick="logOut"
                                 android:title="@string/menu_item_logout_title"

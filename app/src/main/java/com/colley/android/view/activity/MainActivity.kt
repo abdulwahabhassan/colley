@@ -149,7 +149,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     //method called when user tries to navigate up within an activity's hierarchy to a previous screen
     //we override this method so that we pass the navigation task to the navController to take care of appropriately
     override fun onSupportNavigateUp() = navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()

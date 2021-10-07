@@ -73,7 +73,6 @@ class IssuesFragment ():
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.search_issues_menu_item -> {
-                Toast.makeText(context, "Searching issues", Toast.LENGTH_LONG).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)
