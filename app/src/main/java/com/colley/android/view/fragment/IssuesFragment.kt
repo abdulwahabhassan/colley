@@ -132,7 +132,10 @@ class IssuesFragment ():
 
                         // The initial load failed. Call the retry() method
                         // in order to retry the load operation.
-                        Toast.makeText(context, "Error fetching issues! Retrying..", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "Error fetching issues! Retrying..",
+                            Toast.LENGTH_SHORT).show()
                         //display no posts available at the moment
                         binding.noIssuesLayout.visibility = VISIBLE
                         issuesAdapter?.retry()

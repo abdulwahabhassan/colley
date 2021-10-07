@@ -12,7 +12,6 @@ import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
@@ -20,8 +19,7 @@ import com.colley.android.adapter.GroupMessageRecyclerAdapter
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupMessageBinding
 import com.colley.android.model.GroupMessage
-import com.colley.android.model.PrivateMessage
-import com.colley.android.model.SendButtonObserver
+import com.colley.android.observer.SendButtonObserver
 import com.colley.android.observer.GroupMessageScrollToBottomObserver
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -77,7 +75,8 @@ class GroupMessageFragment :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.group_info_menu_item -> {
-                val action = GroupMessageFragmentDirections.actionGroupMessageFragmentToGroupInfoFragment(args.groupId)
+                val action = GroupMessageFragmentDirections
+                    .actionGroupMessageFragmentToGroupInfoFragment(args.groupId)
                 findNavController().navigate(action)
                 true
             }
@@ -107,7 +106,8 @@ class GroupMessageFragment :
         currentUser = auth.currentUser!!
 
         //set group name
-        dbRef.child("groups").child(args.groupId).child("name").addListenerForSingleValueEvent(
+        dbRef.child("groups").child(args.groupId).child("name")
+            .addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val groupName = snapshot.getValue<String>()
@@ -135,8 +135,16 @@ class GroupMessageFragment :
             .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
-        adapter = GroupMessageRecyclerAdapter(options, currentUser, this, this, requireContext())
-        manager =  WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        adapter = GroupMessageRecyclerAdapter(
+            options,
+            currentUser,
+            this,
+            this,
+            requireContext())
+        manager =  WrapContentLinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL,
+            false)
         manager.stackFromEnd = true
         recyclerView.layoutManager = manager
         recyclerView.adapter = adapter
@@ -155,7 +163,6 @@ class GroupMessageFragment :
         //when the send button is clicked, send a text message
         binding.sendButton.setOnClickListener {
             if (binding.messageEditText.text?.trim()?.toString() != "") {
-
                 //create a reference for the message on user's messages location and retrieve its
                 //key with which to update other locations that should have a ref to the message
                 val key = dbRef.child("user-messages").child(args.groupId).push().key
@@ -236,7 +243,8 @@ class GroupMessageFragment :
                             .child(key!!)
                             .setValue(groupMessage)
                         //update group's recent message
-                        dbRef.child("group-messages").child("recent-message").child(args.groupId).setValue(groupMessage)
+                        dbRef.child("group-messages").child("recent-message")
+                            .child(args.groupId).setValue(groupMessage)
                     }
             }
     }
@@ -259,7 +267,9 @@ class GroupMessageFragment :
 
     companion object {
         private const val TAG = "GroupMessageFragment"
-        private const val LOADING_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/colley-c37ea.appspot.com/o/loading_gif%20copy.gif?alt=media&token=022770e5-9db3-426c-9ee2-582b9d66fbac"
+        private const val LOADING_IMAGE_URL = "https://firebasestorage.googleapis.com/v0/b/colley-" +
+                "c37ea.appspot.com/o/loading_gif%20copy.gif?alt=media&token=022770e5-9db3-426c" +
+                "-9ee2-582b9d66fbac"
     }
 
     override fun onItemLongCLicked(message: GroupMessage, view: View) {
@@ -277,7 +287,8 @@ class GroupMessageFragment :
     }
 
     override fun onUserClicked(userId: String, view: View) {
-        val action = GroupMessageFragmentDirections.actionGroupMessageFragmentToUserInfoFragment(userId)
+        val action = GroupMessageFragmentDirections
+            .actionGroupMessageFragmentToUserInfoFragment(userId)
         findNavController().navigate(action)
     }
 
@@ -325,9 +336,11 @@ class GroupMessageFragment :
                                             //if this message has an image, delete from database
                                             //storage
                                             if(message.image != null) {
-                                                //get a reference to it's location on database storage from its url and
-                                                //delete it with the retrieved reference
-                                                Firebase.storage.getReferenceFromUrl(message.image!!).delete()
+                                                //get a reference to it's location on database
+                                                //storage from its url and delete it with the
+                                                //retrieved reference
+                                                Firebase.storage.getReferenceFromUrl(message.image!!)
+                                                    .delete()
                                                     .addOnCompleteListener { task ->
                                                         if (task.isSuccessful) {
                                                             Toast.makeText(
@@ -342,8 +355,10 @@ class GroupMessageFragment :
                                                         }
                                                     }
                                             }
-                                            //delete message, user can only delete their own messages from the group
-                                            dbRef.child("group-messages").child(args.groupId)
+                                            //delete message, user can only delete their own
+                                            //messages from the group
+                                            dbRef.child("group-messages")
+                                                .child(args.groupId)
                                                 .child(messageId).setValue(null)
                                         }
                                     }

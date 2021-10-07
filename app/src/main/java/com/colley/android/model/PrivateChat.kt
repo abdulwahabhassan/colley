@@ -5,5 +5,4 @@ class PrivateChat (
     var toUserId: String? = null,
     var text: String? = null,
     var image: String? = null,
-        ) {
-}
+        )

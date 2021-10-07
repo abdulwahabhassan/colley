@@ -16,8 +16,6 @@ class WrapContentLinearLayoutManager(
     override fun onLayoutChildren(recycler: Recycler, state: RecyclerView.State) {
         try {
             super.onLayoutChildren(recycler, state)
-        } catch (e: IndexOutOfBoundsException) {
-            Log.d("TAGE", "meet a IOOBE in RecyclerView")
-        }
+        } catch (e: IndexOutOfBoundsException) { }
     }
 }

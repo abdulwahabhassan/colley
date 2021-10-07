@@ -149,7 +149,8 @@ class MemberInteractionBottomSheetDialogFragment(
                         //make it easier to retrieve from the database
 
                         dbRef.updateChildren(childUpdates).addOnSuccessListener {
-                            Toast.makeText(parentContext, "Message sent", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(parentContext, "Message sent", Toast.LENGTH_SHORT)
+                                .show()
                         }
 
                         binding?.editMMessageEditText?.setText("")
@@ -172,10 +173,6 @@ class MemberInteractionBottomSheetDialogFragment(
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    companion object {
-        const val TAG = "MemberProfile"
     }
 
 }

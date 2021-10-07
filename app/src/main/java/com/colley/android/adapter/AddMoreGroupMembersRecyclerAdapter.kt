@@ -24,7 +24,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class AddMoreGroupMembersRecyclerAdapter(
-    private val options: FirebaseRecyclerOptions<User>,
+    options: FirebaseRecyclerOptions<User>,
     private val listOfExistingMembers: ArrayList<String>,
     private val currentUser: FirebaseUser?,
     private val clickListener: ItemClickedListener,
@@ -41,7 +41,8 @@ class AddMoreGroupMembersRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupMemberViewHolder {
-        val viewBinding = ItemNewGroupMemberBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val viewBinding = ItemNewGroupMemberBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return GroupMemberViewHolder(viewBinding)
     }
 
@@ -54,10 +55,11 @@ class AddMoreGroupMembersRecyclerAdapter(
         return position
     }
 
-    inner class GroupMemberViewHolder (private val itemBinding : ItemNewGroupMemberBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(user: User, clickListener: ItemClickedListener, context: Context) = with(itemBinding) {
+    inner class GroupMemberViewHolder (private val itemBinding : ItemNewGroupMemberBinding)
+        : RecyclerView.ViewHolder(itemBinding.root) {
+        fun bind(user: User, clickListener: ItemClickedListener, context: Context) =
+            with(itemBinding) {
 
-            Log.w("listi", "$listOfExistingMembers")
             //check if user is the current user or if user is already a member of the group
             //if yes, check them, disable check box and add them to tracking list if they haven't
             //already been added to keep them always checked
@@ -77,7 +79,8 @@ class AddMoreGroupMembersRecyclerAdapter(
                     //get reference to clicked user's id
                     val clickedUserId = user.userId
 
-                    //a list of selected members is used to keep track of selected users when views are recycled
+                    //a list of selected members is used to keep track of selected users when views
+                    //are recycled
                     if (memberSelectedList.contains(clickedUserId)) {
                         //remove a user if they have already been selected
                         memberSelectedList.remove(clickedUserId)
@@ -92,12 +95,13 @@ class AddMoreGroupMembersRecyclerAdapter(
                 }
             }
 
-            //during onBindViewHolder, which may occur when views are recycled, we use the tracking list
-            //of selected user to keep checkbox status consistent
+            //during onBindViewHolder, which may occur when views are recycled, we use the tracking
+            //list of selected user to keep checkbox status consistent
             addGroupMemberCheckBox.isChecked = memberSelectedList.contains(user.userId)
 
             //set name
-            Firebase.database.reference.child("profiles").child(user.userId!!).addListenerForSingleValueEvent(
+            Firebase.database.reference.child("profiles").child(user.userId!!)
+                .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     @SuppressLint("SetTextI18n")
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -109,13 +113,9 @@ class AddMoreGroupMembersRecyclerAdapter(
                         } else {
                             groupMemberNameTextView.text = name
                         }
-
-
                     }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(TAG, "getUserName:OnCancelled", error.toException())
-                    }
+                    override fun onCancelled(error: DatabaseError) {}
                 }
             )
 
@@ -134,9 +134,7 @@ class AddMoreGroupMembersRecyclerAdapter(
                         }
                     }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(TAG, "getUserPhoto:OnCancelled", error.toException())
-                    }
+                    override fun onCancelled(error: DatabaseError) {}
                 }
             )
 
@@ -144,11 +142,6 @@ class AddMoreGroupMembersRecyclerAdapter(
                 clickListener.onItemClick(user)
             }
         }
-    }
-
-
-    companion object {
-        const val TAG = "AGMRecyclerAdapter"
     }
 
 

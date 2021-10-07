@@ -51,7 +51,8 @@ class IssuesPagingAdapter (
                 oldItem: DataSnapshot,
                 newItem: DataSnapshot
             ): Boolean {
-                return oldItem.getValue(Issue::class.java)?.issueId == newItem.getValue(Issue::class.java)?.issueId
+                return oldItem.getValue(Issue::class.java)?.issueId ==
+                        newItem.getValue(Issue::class.java)?.issueId
             }
 
             override fun areContentsTheSame(
@@ -65,7 +66,8 @@ class IssuesPagingAdapter (
     }
 }
 
-class IssueViewHolder (private val itemBinding : ItemIssueBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+class IssueViewHolder (private val itemBinding : ItemIssueBinding)
+    : RecyclerView.ViewHolder(itemBinding.root) {
     @SuppressLint("SetTextI18n")
     fun bind(
         currentUser: FirebaseUser?,
@@ -117,7 +119,8 @@ class IssueViewHolder (private val itemBinding : ItemIssueBinding) : RecyclerVie
                         Glide.with(root.context).load(photo)
                             .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(userImageView)
                     } else {
-                        Glide.with(root.context).load(R.drawable.ic_person_light_pearl).into(userImageView)
+                        Glide.with(root.context).load(R.drawable.ic_person_light_pearl)
+                            .into(userImageView)
                     }
                 }
 

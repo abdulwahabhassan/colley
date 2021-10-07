@@ -6,6 +6,4 @@ data class Comment(
     val commentTimeStamp: String? = null,
     val commentId: String? = null,
     val timeId: Long? = null
-) {
-
-}
+)

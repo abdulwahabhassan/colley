@@ -31,16 +31,16 @@ class PagingSource(private val mQuery: Query) : PagingSource<Any, DataSnapshot>(
             else -> this
         }
     }
-    /**
-     * reason of SuppressLint: DatabaseError.fromStatus() is not meant to be public.
-     */
+
+//    reason of SuppressLint: DatabaseError.fromStatus() is not meant to be public
+
     @SuppressLint("RestrictedApi")
     override suspend fun load(params: LoadParams<Any>): LoadResult<Any, DataSnapshot> {
         //change mQuery.startAt at value  if child index
 
         //if not null then what we have here is orderByChild query
         val querychildpathindex:PathIndex? = mQuery.spec.index as? PathIndex
-        val pkey=params.key as Pair<Any?,String>?
+        val pkey = params.key as Pair<Any?,String>?
 
         val task: Task<DataSnapshot> =
 
@@ -48,9 +48,11 @@ class PagingSource(private val mQuery: Query) : PagingSource<Any, DataSnapshot>(
                 mQuery.limitToFirst(params.loadSize).get()
             } else {
                 if (querychildpathindex != null)  //orderByChild query mode
-                    mQuery.startAt_childvalue(pkey?.first, pkey?.second).limitToFirst(params.loadSize + 1).get()
+                    mQuery.startAt_childvalue(pkey?.first, pkey?.second)
+                        .limitToFirst(params.loadSize + 1).get()
                 else
-                    mQuery.startAt(null,pkey?.second).limitToFirst(params.loadSize + 1).get()
+                    mQuery.startAt(null,pkey?.second).limitToFirst(params.loadSize + 1)
+                        .get()
             }
         try {
             val dataSnapshot = task.await()
@@ -144,8 +146,6 @@ class PagingSource(private val mQuery: Query) : PagingSource<Any, DataSnapshot>(
     companion object {
         private const val STATUS_DATABASE_NOT_FOUND = "DATA_NOT_FOUND"
         private const val MESSAGE_DATABASE_NOT_FOUND = "Data not found at given child path!"
-        private const val MESSAGE_CLIENT_OFFLINE = "Data not found, Client offline, conn!"
         private const val DETAILS_DATABASE_NOT_FOUND = "No data was returned for the given query: "
-        private const val DETAILS_CLIENT_OFFLINE = "Client offline, connection failed"
     }
 }

@@ -62,7 +62,8 @@ class PostsPagingAdapter (
                 oldItem: DataSnapshot,
                 newItem: DataSnapshot
             ): Boolean {
-                return oldItem.getValue(Post::class.java)?.postId == newItem.getValue(Post::class.java)?.postId
+                return oldItem.getValue(Post::class.java)?.postId ==
+                        newItem.getValue(Post::class.java)?.postId
             }
 
             override fun areContentsTheSame(
@@ -91,7 +92,8 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
 
         //check if userId is not null
         post?.userId?.let { userId ->
-            Firebase.database.reference.child("profiles").child(userId).get().addOnSuccessListener {
+            Firebase.database.reference.child("profiles").child(userId).get()
+                .addOnSuccessListener {
                     snapShot ->
                 val profile = snapShot.getValue(Profile::class.java)
                 if(profile != null) {
@@ -102,7 +104,8 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
             }
 
             //retrieve user photo
-            Firebase.database.reference.child("photos").child(userId).get().addOnSuccessListener {
+            Firebase.database.reference.child("photos").child(userId).get()
+                .addOnSuccessListener {
                     snapShot ->
                 val photo = snapShot.getValue(String::class.java)
                 //set photo
@@ -154,7 +157,8 @@ class PostViewHolder (val itemBinding : ItemPostBinding)
         post?.postId?.let {
             Firebase.database.reference.child("post-likes").child(it)
                 .child(currentUser?.uid!!).get().addOnSuccessListener {
-                        snapShot -> likeTextView.isActivated = snapShot.getValue(Boolean::class.java) == true
+                        snapShot -> likeTextView.isActivated =
+                    snapShot.getValue(Boolean::class.java) == true
                 }
 
         }

@@ -78,7 +78,8 @@ class PostCommentViewHolder(private val itemBinding: ItemCommentBinding)
         currentUser: FirebaseUser?,
         dataSnapshot: DataSnapshot?,
         context: Context,
-        clickListener: PostCommentsPagingAdapter.PostCommentItemClickedListener) = with (itemBinding) {
+        clickListener: PostCommentsPagingAdapter.PostCommentItemClickedListener) =
+        with (itemBinding) {
 
         //parse snapshot to comment model
         val comment = dataSnapshot?.getValue(Comment::class.java)
@@ -107,7 +108,8 @@ class PostCommentViewHolder(private val itemBinding: ItemCommentBinding)
                     Glide.with(context).load(photoUrl).diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(commenterImageView)
                 } else {
-                    Glide.with(context).load(R.drawable.ic_person_light_pearl).into(commenterImageView)
+                    Glide.with(context).load(R.drawable.ic_person_light_pearl)
+                        .into(commenterImageView)
                 }
             }
 

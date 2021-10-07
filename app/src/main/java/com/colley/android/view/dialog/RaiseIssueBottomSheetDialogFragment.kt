@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ import java.util.*
 
 class RaiseIssueBottomSheetDialogFragment(
     private val parentContext: Context,
-    private val issuesView: View,
     private val newIssueListener: NewIssueListener,
     private val homeFabListener: RaiseIssueHomeFabListener
 ) : BottomSheetDialogFragment() {
@@ -49,7 +47,8 @@ class RaiseIssueBottomSheetDialogFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomSheetDialogFragmentRaiseIssueBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentRaiseIssueBinding
+            .inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -78,7 +77,10 @@ class RaiseIssueBottomSheetDialogFragment(
 
             //if fields are empty, do not upload issue to database
             if (title == "" && body == "") {
-                Toast.makeText(parentContext, "Fields cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    parentContext,
+                    "Fields cannot be empty",
+                    Toast.LENGTH_SHORT).show()
                 setEditingEnabled(true)
                 return@setOnClickListener
             }
@@ -101,22 +103,19 @@ class RaiseIssueBottomSheetDialogFragment(
                             "Unable to create issue",
                             Toast.LENGTH_LONG).show()
 
-                        Log.w(
-                            AddGroupBottomSheetDialogFragment.TAG,
-                            "Unable to write issue to database. ${error.message}"
-                        )
-
                         setEditingEnabled(true)
                         return@CompletionListener
                     }
                     //after creating issue, retrieve its key on the database and set it as the issue id
                     val key = ref.key
-                    dbRef.child("issues").child(key!!).child("issueId").setValue(key).addOnCompleteListener {
+                    dbRef.child("issues").child(key!!).child("issueId")
+                        .setValue(key).addOnCompleteListener {
 
                         //update issues count
                         dbRef.child("issuesCount").runTransaction(
                             object : Transaction.Handler {
-                                override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                override fun doTransaction(currentData: MutableData):
+                                        Transaction.Result {
                                     var count = currentData.getValue(Int::class.java)
                                     if (count != null){
                                         currentData.value = count++

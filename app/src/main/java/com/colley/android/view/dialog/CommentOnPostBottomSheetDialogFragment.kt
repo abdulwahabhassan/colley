@@ -97,14 +97,16 @@ class CommentOnPostBottomSheetDialogFragment (
                                 setEditingEnabled(true)
                                 return@CompletionListener
                             }
-                            //after writing comment to database, retrieve its key on the database and set it as the comment id
+                            //after writing comment to database, retrieve its key on the database
+                            // and set it as the comment id
                             val commentKey = ref.key
                             dbRef.child("post-comments").child(postId).child(commentKey!!)
                                 .child("commentId").setValue(commentKey)
 
                             //if itemActor(commenter) is not the same user that owns the post
                             if(postUserId != uid) {
-                                //notify the user who owns the post that a comment was made on their post
+                                //notify the user who owns the post that a comment was made on
+                                //their post
                                 //create instance of notification
                                 postUserId?.let { postUserId ->
                                     val notification = Notification(
@@ -126,7 +128,8 @@ class CommentOnPostBottomSheetDialogFragment (
                                                 val notificationKey = ref.key
                                                 dbRef.child("user-notifications")
                                                     .child(postUserId).child(notificationKey!!)
-                                                    .child("notificationId").setValue(notificationKey)
+                                                    .child("notificationId")
+                                                    .setValue(notificationKey)
                                             }
                                         }
 
@@ -134,10 +137,12 @@ class CommentOnPostBottomSheetDialogFragment (
                             }
 
                             //update comments count
-                            dbRef.child("posts").child(postId).child("commentsCount")
+                            dbRef.child("posts").child(postId)
+                                .child("commentsCount")
                                 .runTransaction(
                                     object : Transaction.Handler {
-                                        override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                        override fun doTransaction(currentData: MutableData):
+                                                Transaction.Result {
                                             //retrieve the current value of count at this location
                                             var count = currentData.getValue<Int>()
                                             if (count != null) {

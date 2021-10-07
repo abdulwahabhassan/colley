@@ -66,7 +66,8 @@ class IssueOptionsBottomSheetDialogFragment (
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomSheetDialogFragmentIssueOptionsBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentIssueOptionsBinding
+            .inflate(inflater, container, false)
         return binding.root
     }
 
@@ -90,13 +91,15 @@ class IssueOptionsBottomSheetDialogFragment (
                     .setPositiveButton("Yes") { dialog, which ->
                         issueId?.let { issueId ->
                             //delete issue from database, pass a DatabaseReference.onCompletionListener
-                            dbRef.child("issues").child(issueId).setValue(null) { error, ref ->
+                            dbRef.child("issues").child(issueId)
+                                .setValue(null) { error, ref ->
                                 //if no error, continue further operations
                                 if(error == null) {
                                     //decrease issues count
                                     dbRef.child("issuesCount").runTransaction(
                                         object : Transaction.Handler {
-                                            override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                            override fun doTransaction(currentData: MutableData):
+                                                    Transaction.Result {
                                                 var count = currentData.getValue(Int::class.java)
                                                 if (count != null){
                                                     currentData.value = count--
@@ -116,7 +119,8 @@ class IssueOptionsBottomSheetDialogFragment (
                                     )
 
                                     //set issue comments to null
-                                    dbRef.child("issue-comments").child(issueId).setValue(null)
+                                    dbRef.child("issue-comments").child(issueId)
+                                        .setValue(null)
 
                                     //trigger listeners
                                     moreOptionsDialogListener.onDeleteIssue(issueId)
@@ -142,10 +146,7 @@ class IssueOptionsBottomSheetDialogFragment (
                 this@IssueOptionsBottomSheetDialogFragment.dismiss()
             }
         }
-
-
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

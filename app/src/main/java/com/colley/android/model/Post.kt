@@ -10,6 +10,4 @@ data class Post(
     val image: String? = null,
     val likesCount: Int = 0,
     val commentsCount: Int = 0
-) {
-
-}
+)

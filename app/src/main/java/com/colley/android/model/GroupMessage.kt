@@ -5,5 +5,4 @@ class GroupMessage(
     var text: String? = null,
     var image: String? = null,
     var messageId: String? = null
-        ) {
-}
+        )

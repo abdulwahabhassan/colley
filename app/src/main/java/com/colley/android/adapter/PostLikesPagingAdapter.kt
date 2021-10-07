@@ -96,7 +96,8 @@ class PostLikeViewHolder(private val itemBinding: ItemLikeBinding)
                         Glide.with(context).load(photoUrl)
                             .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(userImageView)
                     } else {
-                        Glide.with(context).load(R.drawable.ic_person_light_pearl).into(userImageView)
+                        Glide.with(context).load(R.drawable.ic_person_light_pearl)
+                            .into(userImageView)
                     }
                 }
 

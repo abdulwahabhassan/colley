@@ -61,7 +61,8 @@ class PostOptionsBottomSheetDialogFragment (
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomSheetDialogFragmentMoreBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentMoreBinding
+            .inflate(inflater, container, false)
         return binding.root
     }
 
@@ -113,7 +114,8 @@ class PostOptionsBottomSheetDialogFragment (
                             //decrease posts count
                             dbRef.child("postsCount").runTransaction(
                                 object : Transaction.Handler {
-                                    override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                    override fun doTransaction(currentData: MutableData):
+                                            Transaction.Result {
                                         var count = currentData.getValue(Int::class.java)
                                         if (count != null){
                                             currentData.value = count--
@@ -143,10 +145,7 @@ class PostOptionsBottomSheetDialogFragment (
                         }
                         this@PostOptionsBottomSheetDialogFragment.dismiss()
                     }
-
                 }
-
-
             }
 
             reportPost.setOnClickListener {
@@ -156,8 +155,6 @@ class PostOptionsBottomSheetDialogFragment (
                 this@PostOptionsBottomSheetDialogFragment.dismiss()
             }
         }
-
-
     }
 
 

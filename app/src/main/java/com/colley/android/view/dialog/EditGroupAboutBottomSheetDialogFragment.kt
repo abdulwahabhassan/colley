@@ -34,7 +34,8 @@ class EditGroupAboutBottomSheetDialogFragment (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomSheetDialogFragmentEditGroupAboutBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentEditGroupAboutBinding
+            .inflate(inflater, container, false)
         return binding.root
     }
 
@@ -62,7 +63,8 @@ class EditGroupAboutBottomSheetDialogFragment (
 
         //retrieve group id from bundle arguments and update group description on database
         arguments?.getString("groupIdKey")?.let {
-            dbRef.child("groups").child(it).child("description").setValue(description).addOnCompleteListener { task ->
+            dbRef.child("groups").child(it).child("description")
+                .setValue(description).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(parentContext, "Updated", Toast.LENGTH_SHORT).show()
                     //dismiss dialog

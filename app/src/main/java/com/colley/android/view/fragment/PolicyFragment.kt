@@ -10,8 +10,6 @@ import com.colley.android.R
 
 class PolicyFragment : Fragment() {
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

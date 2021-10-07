@@ -40,7 +40,8 @@ class EditProfileBottomSheetDialogFragment (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomSheetDialogFragmentEditProfileBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentEditProfileBinding
+            .inflate(inflater, container, false)
         return binding.root
     }
 

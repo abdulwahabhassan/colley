@@ -165,26 +165,32 @@ class ChatsFragment :
             return when (item?.itemId) {
                 R.id.delete_chat_menu_item -> {
                     AlertDialog.Builder(requireContext())
-                        .setMessage("Delete ${singularOrPlural(listOfSelectedChats, "this chat", "these chats")}?")
+                        .setMessage(
+                            "Delete ${singularOrPlural(listOfSelectedChats, 
+                                "this chat", 
+                                "these chats")}?")
                         .setPositiveButton("Yes") { dialog, which ->
-                            //for each selected chat with a chatId, get a reference to its location on the
-                            //user's messages path
+                            //for each selected chat with a chatId, get a reference to its
+                            //location on the user's messages path
                             listOfSelectedChats.forEach { chatId ->
-                                //retrieve all the messages in the location(chat) as a list of dataSnapshots
-                                dbRef.child("user-messages").child(currentUser.uid).child(chatId)
+                                //retrieve all the messages in the location(chat) as a list of
+                                //dataSnapshots
+                                dbRef.child("user-messages").child(currentUser.uid)
+                                    .child(chatId)
                                     .get().addOnSuccessListener { dataSnapshot ->
                                         val listOfMessageIds = arrayListOf<String>()
-                                        //parse each dataSnapshot as PrivateMessage and for each one retrieve
-                                        //its messageId
+                                        //parse each dataSnapshot as PrivateMessage and for each one
+                                        //retrieve its messageId
                                         dataSnapshot.children.forEach { snapshot ->
-                                            val messageId = snapshot.getValue(PrivateMessage::class.java)?.messageId
+                                            val messageId = snapshot
+                                                .getValue(PrivateMessage::class.java)?.messageId
                                             //add messageId to list
                                             if (messageId != null) {
                                                 listOfMessageIds.add(messageId)
                                             }
                                         }
-                                        //if list is not empty meaning that there are messages in the chats
-                                        //perform the following operation on each message
+                                        //if list is not empty meaning that there are messages in
+                                        //the chats perform the following operation on each message
                                         if (listOfMessageIds.isNotEmpty()) {
                                             listOfMessageIds.forEach { messageId ->
                                                 dbRef.child("user-messages").child(currentUser.uid)

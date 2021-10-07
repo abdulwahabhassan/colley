@@ -3,7 +3,6 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
-
     //Plugin for safeArgs
     id "androidx.navigation.safeargs.kotlin"
 
@@ -81,9 +80,6 @@ dependencies {
 
     // FirebaseUI for Firebase Realtime Database
     implementation 'com.firebaseui:firebase-ui-database:8.0.0'
-
-    //Firebase Analytics
-    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     //Android Paging Library
     implementation "androidx.paging:paging-runtime-ktx:3.0.1"

@@ -74,7 +74,8 @@ class AddGroupBottomSheetDialogFragment (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomSheetDialogFragmentAddGroupBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentAddGroupBinding
+            .inflate(inflater, container, false)
         recyclerView = binding.addGroupMembersRecyclerView
         return binding.root
     }
@@ -106,7 +107,10 @@ class AddGroupBottomSheetDialogFragment (
             this,
             groupContext)
 
-        recyclerView.layoutManager = WrapContentLinearLayoutManager(groupContext, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = WrapContentLinearLayoutManager(
+            groupContext,
+            LinearLayoutManager.VERTICAL,
+            false)
         recyclerView.adapter = adapter
 
 
@@ -120,7 +124,9 @@ class AddGroupBottomSheetDialogFragment (
                 val groupDescription = binding.addGroupDescriptionEditText.text.toString()
 
                 if(TextUtils.isEmpty(groupName.trim())) {
-                    Toast.makeText(requireContext(), "Group name cannot be empty", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),
+                        "Group name cannot be empty",
+                        Toast.LENGTH_LONG).show()
                     return@setOnClickListener
                 } else {
                     createGroup(groupName, groupDescription, groupImageUri)
@@ -145,13 +151,13 @@ class AddGroupBottomSheetDialogFragment (
        )
 
         //create and push new group to database, retrieve key and add it as groupId
-        dbRef.child("groups").push().setValue(newGroup, DatabaseReference.CompletionListener { error, ref ->
+        dbRef.child("groups").push()
+            .setValue(newGroup, DatabaseReference.CompletionListener { error, ref ->
             //disable home fab button while writing to database
             homeFabListener.enableFab(false)
         //in case of error
             if (error != null) {
                 Toast.makeText(context, "Unable to create group", Toast.LENGTH_LONG).show()
-                Log.w(TAG, "Unable to write new group to database.", error.toException())
                 setEditingEnabled(true)
                 return@CompletionListener
             }
@@ -159,10 +165,13 @@ class AddGroupBottomSheetDialogFragment (
                 val key = ref.key
                 dbRef.child("groups").child(key!!).child("groupId").setValue(key)
 
-            //create a reference to group-messages on database and set initial message to "Welcome to the group"
-                dbRef.child("group-messages").child(key).push().setValue(GroupMessage(uid, "I welcome everyone to the group"))
+            //create a reference to group-messages on database and set initial message to "Welcome
+                //to the group"
+                dbRef.child("group-messages").child(key).push()
+                    .setValue(GroupMessage(uid, "I welcome everyone to the group"))
             //update group's recent message
-                dbRef.child("group-messages").child("recent-message").child(key).setValue(GroupMessage(uid, "I welcome everyone to the group"))
+                dbRef.child("group-messages").child("recent-message").child(key)
+                    .setValue(GroupMessage(uid, "I welcome everyone to the group"))
 
             //if a groupPhoto is selected, retrieve its uri and define a storage path for it
             if (groupImageUri != null) {
@@ -175,9 +184,13 @@ class AddGroupBottomSheetDialogFragment (
             } else {
                 //simply update database without group photo
                     val url = null
-                dbRef.child("groups-id-name-photo").child(key).setValue(GroupChat(key, groupName, url))
+                dbRef.child("groups-id-name-photo").child(key)
+                    .setValue(GroupChat(key, groupName, url))
             }
-                Snackbar.make(groupView, "Group created successfully! Uploading to database..", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    groupView,
+                    "Group created successfully! Uploading to database..",
+                    Snackbar.LENGTH_LONG).show()
 
             //update each users list of groups they are a member of
             selectedMembersList.forEach {
@@ -187,16 +200,17 @@ class AddGroupBottomSheetDialogFragment (
                         override fun doTransaction(currentData: MutableData): Transaction.Result {
                             //retrieve the database list
                             val listOfGroups = currentData.getValue<ArrayList<String>>()
-                            //if the database list returns null, set it to an array containing the group's id
-                            if (listOfGroups == null) {
+                            //if the database list returns null, set it to an array containing
+                            //the group's id
+                            return if (listOfGroups == null) {
                                 currentData.value = arrayListOf(key)
-                                return Transaction.success(currentData)
+                                Transaction.success(currentData)
                             } else {
                                 //add group's id to the list of group's this members belongs to
                                 listOfGroups.add(key)
                                 //set database list to this update list and return it
                                 currentData.value = listOfGroups
-                                return Transaction.success(currentData)
+                                Transaction.success(currentData)
                             }
 
                         }
@@ -205,11 +219,7 @@ class AddGroupBottomSheetDialogFragment (
                             error: DatabaseError?,
                             committed: Boolean,
                             currentData: DataSnapshot?
-                        ) {
-                            if (!committed && error != null) {
-                                Log.d(GroupInfoFragment.TAG, "listOfGroupsTransaction:onComplete:$error")
-                            }
-                        }
+                        ) {}
 
                     }
                 )
@@ -274,29 +284,27 @@ class AddGroupBottomSheetDialogFragment (
                 // and add it to database
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { uri ->
-                        dbRef.child("groups-id-name-photo").child(key).setValue(GroupChat(key, groupName, uri.toString())).addOnCompleteListener { task ->
+                        dbRef.child("groups-id-name-photo").child(key)
+                            .setValue(GroupChat(key, groupName, uri.toString()))
+                            .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(groupContext, "Group photo uploaded successfully", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    groupContext,
+                                    "Group photo uploaded successfully",
+                                    Toast.LENGTH_LONG).show()
                             } else {
-                                Toast.makeText(groupContext, "Photo uploaded failed", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    groupContext,
+                                    "Photo uploaded failed",
+                                    Toast.LENGTH_LONG).show()
                             }
                         }
                     }
-            }
-            .addOnFailureListener(requireActivity()) { e ->
-                Log.w(
-                    TAG, "Image upload task was unsuccessful.", e
-                )
             }
     }
 
     //Display selected photo
     private fun displaySelectedPhoto(groupImageUri: Uri) {
         Glide.with(groupContext).load(groupImageUri).into(binding.addGroupImageView)
-    }
-
-
-    companion object {
-        const val TAG = "AddGroupDialog"
     }
 }

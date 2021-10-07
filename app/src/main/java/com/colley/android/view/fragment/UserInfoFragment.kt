@@ -99,7 +99,8 @@ class UserInfoFragment : Fragment() {
 
                 binding?.profilePhotoImageView?.visibility = VISIBLE
                 //using custom glide image loader to indicate progress in time
-                GlideImageLoader(binding?.profilePhotoImageView, binding?.photoProgressBar).load(photo, options);
+                GlideImageLoader(binding?.profilePhotoImageView, binding?.photoProgressBar)
+                    .load(photo, options);
             }
         }
     }

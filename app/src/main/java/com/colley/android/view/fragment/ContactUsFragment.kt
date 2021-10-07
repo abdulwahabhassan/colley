@@ -10,7 +10,6 @@ import com.colley.android.R
 
 class ContactUsFragment : Fragment() {
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -18,6 +17,5 @@ class ContactUsFragment : Fragment() {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_contact_us, container, false)
     }
-
 
 }

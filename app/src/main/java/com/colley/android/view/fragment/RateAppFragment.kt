@@ -18,5 +18,4 @@ class RateUsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_rate_app, container, false)
     }
 
-
 }

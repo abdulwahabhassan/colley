@@ -109,7 +109,6 @@ class PostsFragment : Fragment(),
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -491,7 +490,8 @@ class PostsFragment : Fragment(),
             requireView(),
             this
         )
-        postOptionsOptionsDialog.arguments = bundleOf("postIdKey" to postId, "userIdKey" to userId)
+        postOptionsOptionsDialog.arguments =
+            bundleOf("postIdKey" to postId, "userIdKey" to userId)
         postOptionsOptionsDialog.show(parentFragmentManager, null)
     }
 

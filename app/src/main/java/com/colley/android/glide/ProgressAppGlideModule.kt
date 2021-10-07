@@ -51,17 +51,15 @@ class ProgressAppGlideModule : AppGlideModule() {
     interface UIonProgressListener {
         fun onProgress(bytesRead: Long, expectedLength: Long)
 
-        /**
-         * Control how often the listener needs an update. 0% and 100% will always be dispatched.
-         * @return in percentage (0.2 = call [.onProgress] around every 0.2 percent of progress)
-         */
+//        Control how often the listener needs an update. 0% and 100% will always be dispatched.
+//        @return in percentage (0.2 = call [.onProgress] around every 0.2 percent of progress)
+
         val granularityPercentage: Float
     }
 
     private class DispatchingProgressListener internal constructor() : ResponseProgressListener {
         private val handler: Handler = Handler(Looper.getMainLooper())
         override fun update(url: HttpUrl?, bytesRead: Long, contentLength: Long) {
-            //System.out.printf("%s: %d/%d = %.2f%%%n", url, bytesRead, contentLength, (100f * bytesRead) / contentLength);
             val key: String = url.toString()
             val listener = LISTENERS[key]
                 ?: return

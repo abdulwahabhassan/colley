@@ -1,5 +1,6 @@
 package com.colley.android.view.dialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.net.Uri
@@ -71,6 +72,7 @@ class NewPostBottomSheetDialogFragment(
         homeFabListener.enableFab(true)
     }
 
+    @SuppressLint("SimpleDateFormat")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -196,11 +198,9 @@ class NewPostBottomSheetDialogFragment(
                 // and set it as the post image
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { uri ->
-                        dbRef.child("posts").child(key).child("image").setValue(uri.toString())
+                        dbRef.child("posts").child(key).child("image")
+                            .setValue(uri.toString())
                     }
-            }
-            .addOnFailureListener(requireActivity()) { e ->
-                Log.w(TAG, "Image upload task was unsuccessful.", e)
             }
     }
 
@@ -225,7 +225,4 @@ class NewPostBottomSheetDialogFragment(
         _binding = null
     }
 
-    companion object {
-        const val TAG = "NewPostDialog"
-    }
 }

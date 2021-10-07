@@ -12,27 +12,26 @@ import com.colley.android.R
 import com.colley.android.databinding.ItemNotificationCommentBinding
 import com.colley.android.databinding.ItemNotificationLikeBinding
 import com.colley.android.model.Issue
+import com.colley.android.model.Notification
 import com.colley.android.model.Profile
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 
 class NotificationsPagingAdapter(
     private val context: Context,
-    private val currentUser: FirebaseUser?,
     private val clickListener: NotificationPagingItemClickedListener,
     private val dbRef: DatabaseReference
 )
     : PagingDataAdapter<DataSnapshot, RecyclerView.ViewHolder>(NOTIFICATION_COMPARATOR) {
 
     interface NotificationPagingItemClickedListener {
-        fun onItemClick(notification: com.colley.android.model.Notification)
+        fun onItemClick(notification: Notification)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
-        //return viewholder depending on viewType specified
+        //return viewHolder depending on viewType specified
         var viewHolder : RecyclerView.ViewHolder? = null
 
         when(viewType) {
@@ -60,15 +59,15 @@ class NotificationsPagingAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         //parse dataSnapshot as Notification
-        val notification = getItem(position)?.getValue(com.colley.android.model.Notification::class.java)
+        val notification = getItem(position)?.getValue(Notification::class.java)
         //confirm the type of action (whether like or comment) in order to call the appropriate bind
         //operation
         if (notification?.itemActionType == "like") {
             (holder as NotificationLikeViewHolder)
-                .bind(currentUser, notification, context, clickListener)
+                .bind(notification, clickListener)
         } else if (notification?.itemActionType == "comment") {
             (holder as NotificationCommentViewHolder)
-                .bind(currentUser, notification, context, clickListener)
+                .bind(notification, context, clickListener)
         }
     }
 
@@ -76,7 +75,7 @@ class NotificationsPagingAdapter(
         //deduce and return the appropriate view type for view holder
         var viewType = 0
         //parse dataSnapshot as Notification
-        val notification = getItem(position)?.getValue(com.colley.android.model.Notification::class.java)
+        val notification = getItem(position)?.getValue(Notification::class.java)
         if (notification?.itemActionType == "like") {
             viewType = VIEW_TYPE_LIKE
         } else if (notification?.itemActionType == "comment") {
@@ -89,7 +88,11 @@ class NotificationsPagingAdapter(
         : RecyclerView.ViewHolder(itemBinding.root) {
 
         @SuppressLint("SetTextI18n")
-        fun bind(currentUser: FirebaseUser?, notification: com.colley.android.model.Notification, context: Context, clickListener: NotificationPagingItemClickedListener) = with(itemBinding) {
+        fun bind(
+            notification: Notification,
+            context: Context,
+            clickListener: NotificationPagingItemClickedListener
+        ) = with(itemBinding) {
 
             //set notification background depending on whether notification has been viewed by
             //clicking or not
@@ -104,8 +107,8 @@ class NotificationsPagingAdapter(
                     val profile = profileSnapshot.getValue(Profile::class.java)
                     //if the item that was commented on is a post or a issue, do accordingly
                     if(notification.itemType == "post") {
-                        itemBinding.notificationTextView.text = "${profile?.name} from ${profile?.school} " +
-                                "commented on your post"
+                        itemBinding.notificationTextView.text = "${profile?.name} " +
+                                "from ${profile?.school} commented on your post"
                     } else if (notification.itemType == "issue") {
                         notification.itemId?.let { itemId ->
                             //get issue
@@ -113,8 +116,9 @@ class NotificationsPagingAdapter(
                                 issueSnapshot ->
                                 //retrieve it's title and concatenate it to the notification text
                                 val issue = issueSnapshot.getValue(Issue::class.java)
-                                itemBinding.notificationTextView.text = "${profile?.name} from ${profile?.school} " +
-                                        "commented on your issue: ${issue?.title}"
+                                itemBinding.notificationTextView.text = "${profile?.name} " +
+                                        "from ${profile?.school} commented on your issue: " +
+                                        "${issue?.title}"
                             }
                         }
                     }
@@ -148,7 +152,10 @@ class NotificationsPagingAdapter(
         : RecyclerView.ViewHolder(itemBinding.root) {
 
         @SuppressLint("SetTextI18n")
-        fun bind(currentUser: FirebaseUser?, notification: com.colley.android.model.Notification, context: Context, clickListener: NotificationPagingItemClickedListener) = with(itemBinding) {
+        fun bind(
+            notification: Notification,
+            clickListener: NotificationPagingItemClickedListener
+        ) = with(itemBinding) {
 
             //set notification background depending on whether notification has been viewed by
             //clicking or not
@@ -163,8 +170,8 @@ class NotificationsPagingAdapter(
                     val profile = profileSnapshot.getValue(Profile::class.java)
                     //if the item that was liked is a post or a issue, do accordingly
                     if(notification.itemType == "post") {
-                        itemBinding.notificationTextView.text = "${profile?.name} from ${profile?.school} " +
-                                "liked your post"
+                        itemBinding.notificationTextView.text = "${profile?.name} " +
+                                "from ${profile?.school} liked your post"
                     } else if (notification.itemType == "issue") {
                         notification.itemId?.let { itemId ->
                             //get issue
@@ -172,8 +179,8 @@ class NotificationsPagingAdapter(
                                     issueSnapshot ->
                                 //retrieve it's title and concatenate it to the notification text
                                 val issue = issueSnapshot.getValue(Issue::class.java)
-                                itemBinding.notificationTextView.text = "${profile?.name} from ${profile?.school} " +
-                                        "liked your issue: ${issue?.title}"
+                                itemBinding.notificationTextView.text = "${profile?.name} " +
+                                        "from ${profile?.school} liked your issue: ${issue?.title}"
                             }
                         }
                     }
@@ -183,8 +190,8 @@ class NotificationsPagingAdapter(
 
             root.setOnClickListener {
                 //navigate user to post or issue and set notification clicked to true to indicate
-                //that notification has been viewed, hence background of notification view should become
-                //no longer lightest pearl but white
+                //that notification has been viewed, hence background of notification view should
+                //become no longer lightest pearl but white
                 clickListener.onItemClick(notification)
             }
         }
@@ -196,14 +203,16 @@ class NotificationsPagingAdapter(
                 oldItem: DataSnapshot,
                 newItem: DataSnapshot
             ): Boolean {
-                return oldItem.getValue(com.colley.android.model.Notification::class.java)?.notificationId == newItem.getValue(com.colley.android.model.Notification::class.java)?.notificationId
+                return oldItem.getValue(Notification::class.java)?.notificationId ==
+                        newItem.getValue(Notification::class.java)?.notificationId
             }
 
             override fun areContentsTheSame(
                 oldItem: DataSnapshot,
                 newItem: DataSnapshot
             ): Boolean {
-                return oldItem.getValue(com.colley.android.model.Notification::class.java) == newItem.getValue(com.colley.android.model.Notification::class.java)
+                return oldItem.getValue(Notification::class.java) ==
+                        newItem.getValue(Notification::class.java)
             }
 
         }

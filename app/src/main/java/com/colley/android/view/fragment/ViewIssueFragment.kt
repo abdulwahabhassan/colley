@@ -159,7 +159,8 @@ class ViewIssueFragment :
 
         // get the view model
         val viewModel = ViewModelProvider(this,
-            ViewModelFactory(owner = this, repository = DatabaseRepository())).get(ViewIssueViewModel::class.java)
+            ViewModelFactory(owner = this, repository = DatabaseRepository()))
+            .get(ViewIssueViewModel::class.java)
 
         //get issue
         dbRef.child("issues").child(args.issueId).get().addOnSuccessListener { issueSnapShot ->
@@ -264,12 +265,18 @@ class ViewIssueFragment :
                             val updatedList = currentData?.getValue<ArrayList<String>>()
                             //if it contains issueId, toast saved
                             if (updatedList?.contains(args.issueId) == true) {
-                                Toast.makeText(requireContext(), "BookMarked", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "BookMarked",
+                                    Toast.LENGTH_SHORT).show()
                                 //update book mark drawable icon
                                 bookMarkImageView.isActivated = true
                             } else {
                                 //Toast unsaved
-                                Toast.makeText(requireContext(), "UnMarked", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "UnMarked",
+                                    Toast.LENGTH_SHORT).show()
                                 //update book mark drawable icon
                                 bookMarkImageView.isActivated = false
                             }
@@ -334,7 +341,8 @@ class ViewIssueFragment :
                 requireView(),
                 this
             )
-            issueOptionsDialog.arguments = bundleOf("issueIdKey" to args.issueId, "userIdKey" to issueUserId)
+            issueOptionsDialog.arguments =
+                bundleOf("issueIdKey" to args.issueId, "userIdKey" to issueUserId)
             issueOptionsDialog.show(parentFragmentManager, null)
         }
 
@@ -362,7 +370,8 @@ class ViewIssueFragment :
         //refresh adapter everytime refresh action is called on swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
             commentsAdapter?.refresh()
-            //reset posts count on refresh so that this fragment knows the correct database posts count
+            //reset posts count on refresh so that this fragment knows the correct database posts
+            //count
             getCommentsCount()
 
         }
@@ -462,7 +471,8 @@ class ViewIssueFragment :
                                 dbRef.child("issues").child(args.issueId)
                                     .child("contributionsCount").runTransaction(object :
                                         Transaction.Handler {
-                                        override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                        override fun doTransaction(currentData: MutableData):
+                                                Transaction.Result {
                                             var count = currentData.getValue(Int::class.java)
                                             if(count != null) {
                                                 count--
@@ -477,7 +487,10 @@ class ViewIssueFragment :
                                             currentData: DataSnapshot?
                                         ) {
                                            if(error == null) {
-                                               Toast.makeText(requireContext(), "Deleted, Refresh", Toast.LENGTH_SHORT).show()
+                                               Toast.makeText(
+                                                   requireContext(),
+                                                   "Deleted, Refresh",
+                                                   Toast.LENGTH_SHORT).show()
                                            }
                                         }
 

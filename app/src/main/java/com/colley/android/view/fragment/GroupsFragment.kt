@@ -1,11 +1,9 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,18 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.R
 import com.colley.android.adapter.GroupsRecyclerAdapter
 import com.colley.android.databinding.FragmentGroupsBinding
-import com.colley.android.model.PrivateChat
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 
@@ -93,8 +86,13 @@ class GroupsFragment :
             .setLifecycleOwner(viewLifecycleOwner)
             .build()
 
-        adapter = GroupsRecyclerAdapter(options, requireContext(), currentUser, this@GroupsFragment, this@GroupsFragment)
-        recyclerView.layoutManager = WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        adapter = GroupsRecyclerAdapter(
+            options,
+            this@GroupsFragment,
+            this@GroupsFragment
+        )
+        recyclerView.layoutManager = WrapContentLinearLayoutManager(requireContext(),
+            LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
 
     }
@@ -114,9 +112,4 @@ class GroupsFragment :
             binding.noGroupsLayout.visibility = GONE
         }
     }
-
-    companion object {
-        const val TAG = "GroupsFragment"
-    }
-
 }

@@ -26,7 +26,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class ChatsRecyclerAdapter(
-    private val options: FirebaseRecyclerOptions<PrivateChat>,
+    options: FirebaseRecyclerOptions<PrivateChat>,
     private val context: Context,
     private val currentUser: FirebaseUser?,
     private val onDataChangedListener: DataChangedListener,
@@ -47,13 +47,13 @@ class ChatsRecyclerAdapter(
     fun restBackgroundOfSelectedViews() {
 
         viewsSelectedList.forEach { view ->
-            Log.w("viewsRes", "$view")
             view.setBackgroundResource(R.color.white)
         }
         viewsSelectedList.clear()
     }
 
-    //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder
+    //listener to hide progress bar and display views only when data has been retrieved from
+    //database and bound to view holder
     interface DataChangedListener {
         fun onDataAvailable(snapshotArray: ObservableSnapshotArray<PrivateChat>)
     }
@@ -64,11 +64,15 @@ class ChatsRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PrivateMessageViewHolder {
-        val viewBinding = ItemChatBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val viewBinding = ItemChatBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return PrivateMessageViewHolder(viewBinding)
     }
 
-    override fun onBindViewHolder(holder: PrivateMessageViewHolder, position: Int, model: PrivateChat) {
+    override fun onBindViewHolder(
+        holder: PrivateMessageViewHolder,
+        position: Int,
+        model: PrivateChat) {
         holder.bind(currentUser, model, context, clickListener)
     }
 
@@ -86,11 +90,18 @@ class ChatsRecyclerAdapter(
         onDataChangedListener.onDataAvailable(snapshots)
     }
 
-    inner class PrivateMessageViewHolder (private val itemBinding : ItemChatBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(currentUser: FirebaseUser?, chat: PrivateChat, context: Context, clickListener: ItemClickedListener) = with(itemBinding) {
+    inner class PrivateMessageViewHolder (private val itemBinding : ItemChatBinding)
+        : RecyclerView.ViewHolder(itemBinding.root) {
+        @SuppressLint("SetTextI18n")
+        fun bind(
+            currentUser: FirebaseUser?,
+            chat: PrivateChat,
+            context: Context,
+            clickListener: ItemClickedListener) = with(itemBinding) {
 
             //check which id rightly belongs to the chatee
-            val chateeId = if (chat.fromUserId == currentUser?.uid) chat.toUserId as String else chat.fromUserId as String
+            val chateeId = if (chat.fromUserId == currentUser?.uid) chat.toUserId as String
+                            else chat.fromUserId as String
 
             //get and set chatee name
             Firebase.database.reference.child("profiles").child(chateeId)
@@ -124,7 +135,8 @@ class ChatsRecyclerAdapter(
                         Glide.with(context).load(photo).diskCacheStrategy(
                         DiskCacheStrategy.RESOURCE).into(personImageView)
                 } else {
-                        Glide.with(context).load(R.drawable.ic_person_light_pearl).into(personImageView)
+                        Glide.with(context).load(R.drawable.ic_person_light_pearl)
+                            .into(personImageView)
                     }
 
             }

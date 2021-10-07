@@ -1,13 +1,10 @@
 package com.colley.android.adapter
 
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.core.view.allViews
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -27,8 +24,7 @@ class PrivateMessageRecyclerAdapter(
     options: FirebaseRecyclerOptions<PrivateMessage>,
     private val currentUser: FirebaseUser?,
     private val clickListener: ItemClickedListener,
-    private val onDataChangedListener: DataChangedListener,
-    private val context: Context
+    private val onDataChangedListener: DataChangedListener
 ) : FirebaseRecyclerAdapter<PrivateMessage, RecyclerView.ViewHolder>(options) {
 
     //list to keep tracked of selected messages
@@ -423,8 +419,8 @@ class PrivateMessageRecyclerAdapter(
                 clickListener.onItemLongCLicked(message, it)
                 true
             }
-            //during onBindViewHolder, which may occur when views are recycled, we use the tracking list
-            //of selected messages to keep the background resource of each message's view set
+            //during onBindViewHolder, which may occur when views are recycled, we use the tracking
+            //list of selected messages to keep the background resource of each message's view set
             //to the appropriate color
             if(messagesSelectedList.contains(message.messageId)) {
                 root.setBackgroundResource(R.color.lightest_pearl)

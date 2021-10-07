@@ -158,7 +158,8 @@ class GroupMessageRecyclerAdapter(
         val uid = currentUser?.uid
         if (snapshots[position].userId != uid) {
             if (snapshots.size != 0) {
-                viewType = if(position > 0 && snapshots[position].userId == snapshots[position - 1].userId) {
+                viewType = if(position > 0 && snapshots[position].userId ==
+                    snapshots[position - 1].userId) {
                     VIEW_TYPE_GROUP_MEMBER_SAME
                 } else {
                     VIEW_TYPE_GROUP_MEMBER
@@ -166,7 +167,8 @@ class GroupMessageRecyclerAdapter(
             }
         } else {
             if (snapshots.size != 0) {
-                viewType = if(position > 0 && snapshots[position].userId == snapshots[position - 1].userId) {
+                viewType = if(position > 0 && snapshots[position].userId ==
+                    snapshots[position - 1].userId) {
                     VIEW_TYPE_CURRENT_USER_SAME
                 } else {
                     VIEW_TYPE_CURRENT_USER
@@ -193,7 +195,10 @@ class GroupMessageRecyclerAdapter(
 
             //load message photo if any
             if (message.image != null) {
-                loadMessageImageIntoView(currentUserMessagePhotoImageView, message.image!!, photoProgressBar)
+                loadMessageImageIntoView(
+                    currentUserMessagePhotoImageView,
+                    message.image!!,
+                    photoProgressBar)
                 currentUserMessagePhotoImageView.visibility = VISIBLE
             } else {
                 currentUserMessagePhotoImageView.visibility = GONE
@@ -280,7 +285,10 @@ class GroupMessageRecyclerAdapter(
 
             //load message photo if any
             if (message.image != null) {
-                loadMessageImageIntoView(currentUserMessagePhotoImageView, message.image!!, photoProgressBar)
+                loadMessageImageIntoView(
+                    currentUserMessagePhotoImageView,
+                    message.image!!,
+                    photoProgressBar)
                 currentUserMessagePhotoImageView.visibility = VISIBLE
             } else {
                 currentUserMessagePhotoImageView.visibility = GONE
@@ -585,7 +593,10 @@ class GroupMessageRecyclerAdapter(
     }
 
     //message Image Loader
-    private fun loadMessageImageIntoView(imageView: ShapeableImageView, photoUrl: String, photoProgressBar: ProgressBar) {
+    private fun loadMessageImageIntoView(
+        imageView: ShapeableImageView,
+        photoUrl: String,
+        photoProgressBar: ProgressBar) {
         if (photoUrl.startsWith("gs://")) {
             val storageReference = Firebase.storage.getReferenceFromUrl(photoUrl)
             storageReference.downloadUrl
@@ -610,7 +621,6 @@ class GroupMessageRecyclerAdapter(
     }
 
     companion object {
-        const val TAG = "MessageAdapter"
 
         //four view types
         var VIEW_TYPE_CURRENT_USER = 0

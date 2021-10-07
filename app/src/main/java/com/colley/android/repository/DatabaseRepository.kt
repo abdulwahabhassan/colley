@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.collectLatest
 
 class DatabaseRepository {
 
-
-
     fun getDataStream(query: Query): Flow<PagingData<DataSnapshot>> {
         return Pager(
             config = PagingConfig(

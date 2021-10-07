@@ -24,7 +24,7 @@ import com.google.firebase.ktx.Firebase
 
 class EditGroupNameBottomSheetDialogFragment(
     private val parentContext: Context,
-    val editGroupNameListener: EditGroupNameListener
+    private val editGroupNameListener: EditGroupNameListener
 ) : BottomSheetDialogFragment() {
 
 
@@ -82,14 +82,16 @@ class EditGroupNameBottomSheetDialogFragment(
                         if (admins != null && admins.contains(uid)) {
                             saveGroupName(newGroupName, button)
                         } else {
-                            Toast.makeText(parentContext, "Only admins can change group name", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                parentContext,
+                                "Only admins can change group name",
+                                Toast.LENGTH_LONG).show()
                             //re-enable button to allow for interaction
                             button.isEnabled = true
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        Log.w(TAG, "getAdmins:OnCancelled", error.toException())
                         button.isEnabled = true
                     }
                 }
@@ -124,7 +126,4 @@ class EditGroupNameBottomSheetDialogFragment(
         }
     }
 
-    companion object {
-        const val TAG = "EditGroupNameFragment"
-    }
 }

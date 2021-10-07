@@ -41,7 +41,8 @@ class NewMessageBottomSheetDialogFragment (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomSheetDialogFragmentNewMessageBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentNewMessageBinding
+            .inflate(inflater, container, false)
         recyclerView = binding.addGroupMembersRecyclerView
         return binding.root
     }
@@ -55,22 +56,19 @@ class NewMessageBottomSheetDialogFragment (
 
 
         //add listener to retrieve users and pass them to AddGroupMembersRecyclerAdapter as a list
-        dbRef.child("users").addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    snapshot.children.forEach {
-                       listOfUsers.add(it.getValue<User>()!!)
-                        val adapter = WhoToMessageRecyclerAdapter(currentUser, this@NewMessageBottomSheetDialogFragment, parentContext, listOfUsers)
-                        adapter.notifyDataSetChanged()
-                        recyclerView.adapter = adapter
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.w(TAG, "getUsers:OnCancelled", error.toException() )
-                }
+        dbRef.child("users").get().addOnSuccessListener {
+            dataSnapshot ->
+            val listOfUsers = arrayListOf<User>()
+                dataSnapshot.children.forEach { snapShot ->
+                    snapShot.getValue<User>()?.let { user -> listOfUsers.add(user) }
+                    val adapter = WhoToMessageRecyclerAdapter(
+                        this@NewMessageBottomSheetDialogFragment,
+                        parentContext,
+                        listOfUsers
+                    )
+                    recyclerView.adapter = adapter
             }
-        )
+        }
 
     }
 
@@ -93,7 +91,4 @@ class NewMessageBottomSheetDialogFragment (
 
     }
 
-    companion object {
-        const val TAG = "NewMessageDialog"
-    }
 }

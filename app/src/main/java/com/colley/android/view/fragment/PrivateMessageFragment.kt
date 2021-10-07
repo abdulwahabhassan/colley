@@ -20,6 +20,7 @@ import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentPrivateMessageBinding
 import com.colley.android.model.*
 import com.colley.android.observer.PrivateMessageScrollToBottomObserver
+import com.colley.android.observer.SendButtonObserver
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
@@ -114,9 +115,9 @@ class PrivateMessageFragment :
             }
         }
 
-
         //get a query reference to messages
-        val messagesRef = dbRef.child("user-messages").child(currentUser.uid).child(args.chateeId)
+        val messagesRef = dbRef.child("user-messages").child(currentUser.uid)
+            .child(args.chateeId)
 
         //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         //build an options to configure adapter. setQuery takes firebase query to listen to and a
@@ -130,8 +131,8 @@ class PrivateMessageFragment :
             options,
             currentUser,
             this,
-            this,
-            requireContext())
+            this
+        )
 
         manager =  WrapContentLinearLayoutManager(
             requireContext(),

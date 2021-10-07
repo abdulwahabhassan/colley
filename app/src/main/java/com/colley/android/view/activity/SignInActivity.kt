@@ -77,12 +77,6 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-
-    override fun onStart() {
-        super.onStart()
-
-    }
-
     private fun authenticateUser() {
         if (auth.currentUser == null) {
 
@@ -96,7 +90,6 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
-
         if (result.resultCode == RESULT_OK) {
             Snackbar.make(
                 binding.root,
@@ -106,19 +99,7 @@ class SignInActivity : AppCompatActivity() {
                 .show()
             addUserToDataBase()
         } else {
-
             binding.signInButton.visibility = VISIBLE
-            //otherwise, we  inform user that there was an error
-//            Toast.makeText(
-//                this,
-//                "Error signing in",
-//                Toast.LENGTH_LONG).show()
-            val response = result.idpResponse
-            if (response == null) {
-                Log.w(TAG, "Sign in canceled")
-            } else {
-                Log.w(TAG, "Sign in error", response.error)
-            }
         }
     }
 
@@ -131,13 +112,17 @@ class SignInActivity : AppCompatActivity() {
             if ( user == null) {
                 dbRef.child("users").child(auth.currentUser?.uid!!)
                     .setValue(User(auth.currentUser?.uid, auth.currentUser?.email))
-                binding.welcomeTextView.text = getString(R.string.welcome_text)
-                binding.welcomeTextView.visibility = VISIBLE
-                binding.continueButton.visibility =  VISIBLE
+                  with(binding) {
+                        welcomeTextView.text = getString(R.string.welcome_text)
+                        welcomeTextView.visibility = VISIBLE
+                        continueButton.visibility = VISIBLE
+                    }
             } else {
-                binding.welcomeTextView.text = getString(R.string.welcome_back_text)
-                binding.welcomeTextView.visibility = VISIBLE
-                binding.continueButton.visibility =  VISIBLE
+                with(binding) {
+                    welcomeTextView.text = getString(R.string.welcome_back_text)
+                    welcomeTextView.visibility = VISIBLE
+                    continueButton.visibility = VISIBLE
+                }
             }
         }
 
@@ -148,22 +133,13 @@ class SignInActivity : AppCompatActivity() {
                     val profile = snapshot.getValue<Profile>()
                     if (profile == null) {
                         dbRef.child("profiles").child(auth.currentUser?.uid!!)
-                            .setValue(Profile(auth.currentUser?.displayName, "", "", ""))
+                            .setValue(Profile(auth.currentUser?.displayName))
                     }
-
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.w(TAG, "getProfileData:onCancelled", error.toException())
-                    Snackbar.make(binding.root,
-                        "Error in fetching profile data",
-                        Snackbar.LENGTH_LONG).show()
-                }
+                override fun onCancelled(error: DatabaseError) {}
             }
         )
     }
 
-    companion object {
-        private const val TAG = "Stoktic"
-    }
 }

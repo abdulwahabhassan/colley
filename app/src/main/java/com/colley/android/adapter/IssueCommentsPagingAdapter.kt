@@ -1,8 +1,6 @@
 package com.colley.android.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,17 +11,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.colley.android.R
 import com.colley.android.databinding.ItemCommentBinding
-import com.colley.android.databinding.ItemIssueBinding
 import com.colley.android.model.Comment
-import com.colley.android.model.Issue
 import com.colley.android.model.Profile
-import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class IssueCommentsPagingAdapter (
@@ -45,7 +37,7 @@ class IssueCommentsPagingAdapter (
     }
 
     override fun onBindViewHolder(viewHolder: IssueCommentViewHolder, position: Int) {
-        viewHolder.bind(currentUser, getItem(position), context, clickListener)
+        viewHolder.bind(getItem(position), context, clickListener)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -58,7 +50,8 @@ class IssueCommentsPagingAdapter (
                 oldItem: DataSnapshot,
                 newItem: DataSnapshot
             ): Boolean {
-                return oldItem.getValue(Comment::class.java)?.commentId == newItem.getValue(Comment::class.java)?.commentId
+                return oldItem.getValue(Comment::class.java)?.commentId ==
+                        newItem.getValue(Comment::class.java)?.commentId
             }
 
             override fun areContentsTheSame(
@@ -75,10 +68,11 @@ class IssueCommentsPagingAdapter (
 class IssueCommentViewHolder(private val itemBinding: ItemCommentBinding)
     : RecyclerView.ViewHolder(itemBinding.root) {
     fun bind(
-        currentUser: FirebaseUser?,
         dataSnapshot: DataSnapshot?,
         context: Context,
-        clickListener: IssueCommentsPagingAdapter.IssueCommentItemClickedListener) = with (itemBinding) {
+        clickListener: IssueCommentsPagingAdapter.IssueCommentItemClickedListener
+    ) =
+        with (itemBinding) {
 
         //parse snapshot to comment model
         val comment = dataSnapshot?.getValue(Comment::class.java)
@@ -107,7 +101,8 @@ class IssueCommentViewHolder(private val itemBinding: ItemCommentBinding)
                     Glide.with(context).load(photoUrl).diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                         .into(commenterImageView)
                 } else {
-                    Glide.with(context).load(R.drawable.ic_person_light_pearl).into(commenterImageView)
+                    Glide.with(context).load(R.drawable.ic_person_light_pearl)
+                        .into(commenterImageView)
                 }
             }
 

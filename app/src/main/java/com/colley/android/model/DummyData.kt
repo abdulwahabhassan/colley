@@ -1,9 +1,6 @@
 package com.colley.android.model
 
 object DummyData {
-
-
-
     fun getListOfSchools(): ArrayList<School> {
         return arrayListOf(
             School("Abia State University",

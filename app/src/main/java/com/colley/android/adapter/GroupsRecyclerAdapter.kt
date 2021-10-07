@@ -1,6 +1,5 @@
 package com.colley.android.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -15,7 +14,6 @@ import com.colley.android.model.GroupMessage
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -23,13 +21,11 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
-class GroupsRecyclerAdapter (
-    private val options: FirebaseRecyclerOptions<String>,
-    private val context: Context,
-    private val currentUser: FirebaseUser?,
+class GroupsRecyclerAdapter(
+    options: FirebaseRecyclerOptions<String>,
     private val onDataChangedListener: DataChangedListener,
     private val clickListener: ItemClickedListener
-        )
+)
     : FirebaseRecyclerAdapter<String, GroupsRecyclerAdapter.GroupViewHolder>(options) {
 
     //listener to hide progress bar and display views only when data has been retrieved from database and bound to view holder

@@ -2,23 +2,21 @@ package com.colley.android.view.dialog
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.colley.android.adapter.AddMoreGroupMembersRecyclerAdapter
 import com.colley.android.databinding.FragmentAddGroupMemberBottomSheetDialogBinding
 import com.colley.android.model.User
-import com.colley.android.view.fragment.GroupInfoFragment
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -26,10 +24,9 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
-class AddMoreGroupMemberBottomSheetDialogFragment (
-    private val groupContext: Context,
-    private val homeView: View
-        ) : BottomSheetDialogFragment(), AddMoreGroupMembersRecyclerAdapter.ItemClickedListener {
+class AddMoreGroupMemberBottomSheetDialogFragment(
+    private val groupContext: Context
+) : BottomSheetDialogFragment(), AddMoreGroupMembersRecyclerAdapter.ItemClickedListener {
 
     private var _binding: FragmentAddGroupMemberBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
@@ -50,7 +47,8 @@ class AddMoreGroupMemberBottomSheetDialogFragment (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentAddGroupMemberBottomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = FragmentAddGroupMemberBottomSheetDialogBinding
+            .inflate(inflater, container, false)
         recyclerView = binding.addGroupMembersRecyclerView
         return binding.root
     }
@@ -82,8 +80,8 @@ class AddMoreGroupMemberBottomSheetDialogFragment (
                 val usersRef =  dbRef.child("users")
 
                 //the FirebaseRecyclerAdapter class and options come from the FirebaseUI library
-                //build an options to configure adapter. setQuery takes firebase query to listen to and a
-                //model class to which snapShots should be parsed
+                //build an options to configure adapter. setQuery takes firebase query to listen
+                //to and a model class to which snapShots should be parsed
                 val options = FirebaseRecyclerOptions.Builder<User>()
                     .setQuery(usersRef, User::class.java)
                     .setLifecycleOwner(viewLifecycleOwner)
@@ -98,14 +96,18 @@ class AddMoreGroupMemberBottomSheetDialogFragment (
                     this,
                     groupContext)
 
-                recyclerView.layoutManager = WrapContentLinearLayoutManager(groupContext, LinearLayoutManager.VERTICAL, false)
+                recyclerView.layoutManager = WrapContentLinearLayoutManager(
+                    groupContext,
+                    LinearLayoutManager.VERTICAL,
+                    false)
                 recyclerView.adapter = adapter
             }
 
 
             binding.addMemberButton.setOnClickListener {
                 //run a transaction to update members list on the database
-                dbRef.child("groups").child(bundledGroupId!!).child("members").runTransaction(
+                dbRef.child("groups").child(bundledGroupId!!).child("members")
+                    .runTransaction(
                     object : Transaction.Handler {
                         override fun doTransaction(currentData: MutableData): Transaction.Result {
                             //retrieve the database list which is a mutable data and store in list
@@ -131,24 +133,31 @@ class AddMoreGroupMemberBottomSheetDialogFragment (
                             //Notify user if transaction was successful else log error
                             if (committed && error == null) {
 
-                                //update each new member's groups list which tells which groups they each belong to
+                                //update each new member's groups list which tells which groups they
+                                    //each belong to
                                 selectedMembersList.forEach {
-                                    //run a transaction to update each user's list of groups they are a member of
+                                    //run a transaction to update each user's list of groups they
+                                    //are a member of
                                     dbRef.child("user-groups").child(it).runTransaction(
                                         object : Transaction.Handler {
-                                            override fun doTransaction(currentData: MutableData): Transaction.Result {
+                                            override fun doTransaction(currentData: MutableData):
+                                                    Transaction.Result {
                                                 //retrieve the database list
-                                                val listOfGroups = currentData.getValue<ArrayList<String>>()
-                                                //if the database list returns null, set it to an array containing the group's id
-                                                if (listOfGroups == null) {
+                                                val listOfGroups =
+                                                    currentData.getValue<ArrayList<String>>()
+                                                //if the database list returns null, set it to an
+                                                //array containing the group's id
+                                                return if (listOfGroups == null) {
                                                     currentData.value = arrayListOf(bundledGroupId)
-                                                    return Transaction.success(currentData)
+                                                    Transaction.success(currentData)
                                                 } else {
-                                                    //add group's id to the list of group's this members belongs to
+                                                    //add group's id to the list of group's this
+                                                    //members belongs to
                                                     listOfGroups.add(bundledGroupId!!)
-                                                    //set database list to this update list and return it
+                                                    //set database list to this update list and
+                                                    //return it
                                                     currentData.value = listOfGroups
-                                                    return Transaction.success(currentData)
+                                                    Transaction.success(currentData)
                                                 }
 
                                             }
@@ -157,11 +166,7 @@ class AddMoreGroupMemberBottomSheetDialogFragment (
                                                 error: DatabaseError?,
                                                 committed: Boolean,
                                                 currentData: DataSnapshot?
-                                            ) {
-                                                if (!committed && error != null) {
-                                                    Log.d(GroupInfoFragment.TAG, "listOfGroupsTransaction:onComplete:$error")
-                                                }
-                                            }
+                                            ) {}
 
                                         }
                                     )
@@ -169,17 +174,25 @@ class AddMoreGroupMemberBottomSheetDialogFragment (
 
                                 when (selectedMembersList.size) {
                                     0 -> {
-                                        Snackbar.make(homeView, "No new member selected", Snackbar.LENGTH_LONG).show()
+                                        Toast.makeText(
+                                            groupContext,
+                                            "No new member selected",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                     1 -> {
-                                        Snackbar.make(homeView, "1 new member added successfully", com.google.android.material.snackbar.Snackbar.LENGTH_LONG).show()
+                                        Toast.makeText(
+                                            groupContext,
+                                            "1 new member added successfully",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                     else -> {
-                                        Snackbar.make(homeView, "${selectedMembersList.size} new members added successfully", Snackbar.LENGTH_LONG).show()
+                                        Toast.makeText(
+                                            groupContext,
+                                            "${selectedMembersList.size} " +
+                                                    "new members added successfully",
+                                            Toast.LENGTH_LONG).show()
                                     }
                                 }
-                            } else {
-                                Log.d(TAG, "addMemberTransaction:onComplete:$error")
                             }
                             //dismiss dialog
                             this@AddMoreGroupMemberBottomSheetDialogFragment.dismiss()
@@ -221,8 +234,4 @@ class AddMoreGroupMemberBottomSheetDialogFragment (
         _binding = null
     }
 
-
-    companion object {
-        const val TAG = "AddGroupMemberDialog"
-    }
 }

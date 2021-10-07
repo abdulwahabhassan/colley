@@ -132,12 +132,15 @@ class PostCommentsFragment(
         currentUser = auth.currentUser!!
 
         //get the view model
-        val viewModel = ViewModelProvider(this, ViewModelFactory(owner = this, repository = DatabaseRepository()))
+        val viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(owner = this, repository = DatabaseRepository()))
             .get(PostCommentsViewModel::class.java)
 
         //get a query reference to issue comments ordered by time code so that the most recent
         //comments appear first
-        val commentsQuery = postId?.let { dbRef.child("post-comments").child(it).orderByChild("timeId") }
+        val commentsQuery = postId?.let { dbRef.child("post-comments").child(it)
+            .orderByChild("timeId") }
 
         //initialize adapter
         commentsAdapter = PostCommentsPagingAdapter(requireContext(), currentUser, this)
@@ -158,7 +161,8 @@ class PostCommentsFragment(
         //refresh adapter everytime refresh action is called on swipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener {
             commentsAdapter?.refresh()
-            //reset posts count on refresh so that this fragment knows the correct database posts count
+            //reset posts count on refresh so that this fragment knows the correct database posts
+            // count
             getCommentsCount()
         }
 
@@ -243,7 +247,8 @@ class PostCommentsFragment(
         //listener for contributions count used to set count text
         if (postId != null) {
             dbRef.child("posts").child(postId)
-                .child("commentsCount").addValueEventListener(commentsCountValueEventListener)
+                .child("commentsCount")
+                .addValueEventListener(commentsCountValueEventListener)
         }
         //register observer to adapter to scroll to  position when new items are added
         commentsAdapter?.registerAdapterDataObserver(commentsAdapterObserver)
@@ -275,19 +280,22 @@ class PostCommentsFragment(
             AlertDialog.Builder(requireContext())
                 .setMessage("Delete comment?")
                 .setPositiveButton("Yes") { dialog, which ->
-                    //locate and delete comment from database only if the user is the owner of the comment
+                    //locate and delete comment from database only if the user is the owner of the
+                    // comment
                     comment.commentId?.let { commentId ->
                         if (postId != null) {
                             dbRef.child("post-comments").child(postId)
-                                .child(commentId).setValue(null, DatabaseReference.CompletionListener { error, ref ->
+                                .child(commentId).setValue(null) { error, ref ->
                                     //if comment was successfully deleted, decrease comments count
                                     if (error == null) {
                                         dbRef.child("posts").child(postId)
                                             .child("commentsCount").runTransaction(object :
                                                 Transaction.Handler {
-                                                override fun doTransaction(currentData: MutableData): Transaction.Result {
-                                                    var count = currentData.getValue(Int::class.java)
-                                                    if(count != null) {
+                                                override fun doTransaction(currentData: MutableData):
+                                                        Transaction.Result {
+                                                    var count =
+                                                        currentData.getValue(Int::class.java)
+                                                    if (count != null) {
                                                         count--
                                                         currentData.value = count
                                                     }
@@ -299,14 +307,18 @@ class PostCommentsFragment(
                                                     committed: Boolean,
                                                     currentData: DataSnapshot?
                                                 ) {
-                                                    if(error == null) {
-                                                        Toast.makeText(requireContext(), "Deleted, Refresh", Toast.LENGTH_SHORT).show()
+                                                    if (error == null) {
+                                                        Toast.makeText(
+                                                            requireContext(),
+                                                            "Deleted, Refresh",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
                                                     }
                                                 }
 
                                             })
                                     }
-                                })
+                                }
                         }
                     }
                     dialog.dismiss()

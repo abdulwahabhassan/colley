@@ -74,7 +74,8 @@ class CommentOnIssueBottomSheetDialogFragment (
                 //get current time and format it
                 val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
                 val date: String = df.format(Calendar.getInstance().time)
-                val timeId = SimpleDateFormat("yyyyMMddHHmmss").format(Calendar.getInstance().time).toLong() * -1
+                val timeId = SimpleDateFormat("yyyyMMddHHmmss")
+                    .format(Calendar.getInstance().time).toLong() * -1
                 //timeId will be used for sorting comments from the most recent
 
                 val comment = Comment(
@@ -88,20 +89,23 @@ class CommentOnIssueBottomSheetDialogFragment (
                     dbRef.child("issue-comments").child(issueId).push().setValue(
                         comment, DatabaseReference.CompletionListener { error, ref ->
                             if (error != null) {
-                                Toast.makeText(parentContext, "Unable to write comment to database", Toast.LENGTH_SHORT).show()
-                                Log.w(AddGroupBottomSheetDialogFragment.TAG, "Unable to write comment to database. ${error.message}")
+                                Toast.makeText(
+                                    parentContext,
+                                    "Unable to write comment to database",
+                                    Toast.LENGTH_SHORT).show()
                                 setEditingEnabled(true)
                                 return@CompletionListener
                             }
-                            //after writing comment to database, retrieve its key on the database and set it as the comment id
+                            //after writing comment to database, retrieve its key on the database
+                            //and set it as the comment id
                             val commentKey = ref.key
                             dbRef.child("issue-comments").child(issueId).child(commentKey!!)
                                 .child("commentId").setValue(commentKey)
 
                             //if itemActor(commenter) is not the same user that raised the issue
                             if(issueUserId != uid) {
-                                //notify the user who owns the issue that a comment was made on their issue
-                                //create instance of notification
+                                //notify the user who owns the issue that a comment was made on
+                                //their issue create instance of notification
                                 issueUserId?.let { issueUserId ->
                                     val notification = Notification(
                                         itemActorUserId = uid,
@@ -121,17 +125,21 @@ class CommentOnIssueBottomSheetDialogFragment (
                                                 val notificationKey = ref.key
                                                 dbRef.child("user-notifications")
                                                     .child(issueUserId).child(notificationKey!!)
-                                                    .child("notificationId").setValue(notificationKey)
+                                                    .child("notificationId")
+                                                    .setValue(notificationKey)
                                             }
                                         }
                                 }
                             }
 
                             //update contributions count of issue
-                            dbRef.child("issues").child(issueId).child("contributionsCount").runTransaction(
+                            dbRef.child("issues").child(issueId)
+                                .child("contributionsCount").runTransaction(
                                 object : Transaction.Handler {
-                                    override fun doTransaction(currentData: MutableData): Transaction.Result {
-                                        //retrieve the current contributions count value at this location
+                                    override fun doTransaction(currentData: MutableData):
+                                            Transaction.Result {
+                                        //retrieve the current contributions count value at this
+                                        //location
                                         var contributionsCount = currentData.getValue<Int>()
                                         if (contributionsCount != null) {
                                             contributionsCount++
@@ -158,7 +166,10 @@ class CommentOnIssueBottomSheetDialogFragment (
                     this.dismiss()
                 }
             } else {
-                Toast.makeText(parentContext, "Can't send an empty comment", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    parentContext,
+                    "Can't send an empty comment",
+                    Toast.LENGTH_LONG).show()
                 setEditingEnabled(true)
             }
         }

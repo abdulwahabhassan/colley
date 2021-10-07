@@ -76,7 +76,8 @@ class PostBottomSheetDialogFragment (
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomSheetDialogFragmentPostBinding.inflate(inflater, container, false)
+        _binding = BottomSheetDialogFragmentPostBinding
+            .inflate(inflater, container, false)
         return binding.root
     }
 
@@ -118,7 +119,8 @@ class PostBottomSheetDialogFragment (
                 requireView(),
                 this
             )
-            sheetDialogCommentOn.arguments = bundleOf("postIdKey" to postId, "postUserIdKey" to postUserId)
+            sheetDialogCommentOn.arguments =
+                bundleOf("postIdKey" to postId, "postUserIdKey" to postUserId)
             sheetDialogCommentOn.show(parentFragmentManager, null)
         }
 
@@ -126,7 +128,8 @@ class PostBottomSheetDialogFragment (
         postId?.let {
             Firebase.database.reference.child("post-likes").child(it)
                 .child(uid).get().addOnSuccessListener { snapShot ->
-                    binding.likeImageView.isActivated = snapShot.getValue(Boolean::class.java) == true
+                    binding.likeImageView.isActivated = snapShot.getValue(Boolean::class.java) ==
+                            true
                 }
         }
 
@@ -169,18 +172,21 @@ class PostBottomSheetDialogFragment (
                                 ).show()
                             } else {
                                 //only create notification if post was liked not if post was unliked
-                                //and if itemActor(user liking the post) is not the same user that owns the post
+                                //and if itemActor(user liking the post) is not the same user that
+                                //owns the post
                                 if (liked == true && postUserId != uid) {
-                                    //notify the user who owns the post that a like was given on their
-                                    //post
+                                    //notify the user who owns the post that a like was given on
+                                    //their post
                                     postUserId?.let { postUserId ->
 
                                         //get current time and format it
-                                        //timeId will be used for sorting notification from the most recent
-                                        val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
+                                        //timeId will be used for sorting notification from the most
+                                        //recent
+                                        val df: DateFormat =
+                                            SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
                                         val date: String = df.format(Calendar.getInstance().time)
-                                        val timeId = SimpleDateFormat("yyyyMMddHHmmss").format(
-                                            Calendar.getInstance().time).toLong() * -1
+                                        val timeId = SimpleDateFormat("yyyyMMddHHmmss")
+                                            .format(Calendar.getInstance().time).toLong() * -1
 
                                         //create instance of notification
                                         val notification = Notification(
@@ -201,14 +207,16 @@ class PostBottomSheetDialogFragment (
                                                     val notificationKey = ref.key
                                                     dbRef.child("user-notifications")
                                                         .child(postUserId).child(notificationKey!!)
-                                                        .child("notificationId").setValue(notificationKey)
+                                                        .child("notificationId")
+                                                        .setValue(notificationKey)
                                                 }
                                             }
                                     }
                                 }
 
                                 //update likes count
-                                dbRef.child("posts").child(postId!!).child("likesCount")
+                                dbRef.child("posts").child(postId!!)
+                                    .child("likesCount")
                                     .runTransaction(
                                         object : Transaction.Handler {
                                             override fun doTransaction(currentData: MutableData):
@@ -254,7 +262,6 @@ class PostBottomSheetDialogFragment (
         }
 
     }
-
 
     override fun onDestroy() {
         super.onDestroy()

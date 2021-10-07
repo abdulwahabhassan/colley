@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.view.View.*
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -112,9 +111,9 @@ class HomeFragment:
                 0 -> {
                     raiseIssueBottomSheetDialog = RaiseIssueBottomSheetDialogFragment(
                         requireContext(),
-                        requireView(),
                         this,
-                        this)
+                        this
+                    )
                     raiseIssueBottomSheetDialog.show(parentFragmentManager, null)
                 }
                 1 -> {

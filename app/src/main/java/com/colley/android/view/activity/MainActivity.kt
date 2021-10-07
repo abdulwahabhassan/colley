@@ -112,7 +112,8 @@ class MainActivity : AppCompatActivity() {
                 val photo = snapshot.getValue<String>()
 
                 if (photo == null) {
-                    Glide.with(this@MainActivity).load(R.drawable.ic_person_light_pearl).into(imageView)
+                    Glide.with(this@MainActivity).load(R.drawable.ic_person_light_pearl)
+                        .into(imageView)
                     photoProgressBar?.visibility = View.GONE
                 } else {
                     val options = RequestOptions()
@@ -125,9 +126,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG,"getPhoto:onCancelled", error.toException())
-            }
+            override fun onCancelled(error: DatabaseError) {}
         }
 
         //set email
@@ -142,16 +141,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.w(TAG,"getProfileName:onCancelled", error.toException())
-            }
+            override fun onCancelled(error: DatabaseError) {}
         }
 
     }
 
-    //method called when user tries to navigate up within an activity's hierarchy to a previous screen
-    //we override this method so that we pass the navigation task to the navController to take care of appropriately
-    override fun onSupportNavigateUp() = navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    //method called when user tries to navigate up within an activity's hierarchy to a previous
+    //screen we override this method so that we pass the navigation task to the navController to
+    //take care of appropriately
+    override fun onSupportNavigateUp() = navController.navigateUp(appBarConfiguration) ||
+            super.onSupportNavigateUp()
 
     override fun onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -172,9 +171,5 @@ class MainActivity : AppCompatActivity() {
             }.show()
     }
 
-
-    companion object{
-        const val TAG = "MainActivity"
-    }
 
 }

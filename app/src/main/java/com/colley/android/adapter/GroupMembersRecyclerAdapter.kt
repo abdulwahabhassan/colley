@@ -24,7 +24,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class GroupMembersRecyclerAdapter(
-    private val options: FirebaseRecyclerOptions<String>,
+    options: FirebaseRecyclerOptions<String>,
     private val currentUser: FirebaseUser?,
     private val clickListener: ItemClickedListener,
     private val context: Context,
@@ -37,7 +37,8 @@ class GroupMembersRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupMemberViewHolder {
-        val viewBinding = ItemGroupMemberBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val viewBinding = ItemGroupMemberBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return GroupMemberViewHolder(viewBinding, currentUser, groupId, context)
     }
 

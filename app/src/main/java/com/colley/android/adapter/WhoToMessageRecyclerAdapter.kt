@@ -1,18 +1,14 @@
 package com.colley.android.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.colley.android.R
-import com.colley.android.databinding.ItemNewGroupMemberBinding
 import com.colley.android.databinding.ItemWhoToMessageBinding
 import com.colley.android.model.Profile
 import com.colley.android.model.User
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -21,7 +17,6 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class WhoToMessageRecyclerAdapter(
-    private val currentUser: FirebaseUser?,
     private val clickListener: ItemClickedListener,
     private val context: Context,
     private val listOfUsers: ArrayList<User>
@@ -33,26 +28,27 @@ class WhoToMessageRecyclerAdapter(
         fun onItemClick(user: User)
     }
 
-    inner class UserViewHolder (private val itemBinding : ItemWhoToMessageBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(user: User, clickListener: ItemClickedListener, context: Context) = with(itemBinding) {
+    inner class UserViewHolder (private val itemBinding : ItemWhoToMessageBinding)
+        : RecyclerView.ViewHolder(itemBinding.root) {
+        fun bind(user: User, clickListener: ItemClickedListener, context: Context) =
+            with(itemBinding) {
 
             //set name
-            Firebase.database.reference.child("profiles").child(user.userId!!).addListenerForSingleValueEvent(
+            Firebase.database.reference.child("profiles").child(user.userId!!)
+                .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val name = snapshot.getValue<Profile>()?.name
                         userNameTextView.text = name
-
                     }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(TAG, "getUserName:OnCancelled", error.toException())
-                    }
+                    override fun onCancelled(error: DatabaseError) {}
                 }
             )
 
             //load photo
-            Firebase.database.reference.child("photos").child(user.userId!!).addListenerForSingleValueEvent(
+            Firebase.database.reference.child("photos").child(user.userId!!)
+                .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val photo = snapshot.getValue<String>()
@@ -63,9 +59,7 @@ class WhoToMessageRecyclerAdapter(
                         }
                     }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(TAG, "getUserPhoto:OnCancelled", error.toException())
-                    }
+                    override fun onCancelled(error: DatabaseError) {}
                 }
             )
 
@@ -76,7 +70,8 @@ class WhoToMessageRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val viewBinding = ItemWhoToMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val viewBinding = ItemWhoToMessageBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
         return UserViewHolder(viewBinding)
     }
 
@@ -87,10 +82,6 @@ class WhoToMessageRecyclerAdapter(
 
     override fun getItemCount(): Int {
         return listOfUsers.size
-    }
-
-    companion object {
-        const val TAG = "AGMRecyclerAdapter"
     }
 
 }

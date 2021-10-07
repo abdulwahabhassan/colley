@@ -100,15 +100,18 @@ class ViewPostFragment : Fragment(),
                 }
 
                 //retrieve user photo
-                Firebase.database.reference.child("photos").child(userId).get().addOnSuccessListener {
+                Firebase.database.reference.child("photos").child(userId).get()
+                    .addOnSuccessListener {
                         snapShot ->
                     val photo = snapShot.getValue(String::class.java)
                     //set photo
                     if (photo != null) {
                         Glide.with(requireContext()).load(photo)
-                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE).into(binding.userPhotoImageView)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                            .into(binding.userPhotoImageView)
                     } else {
-                        Glide.with(requireContext()).load(R.drawable.ic_person).into(binding.userPhotoImageView)
+                        Glide.with(requireContext()).load(R.drawable.ic_person)
+                            .into(binding.userPhotoImageView)
                     }
                 }
             }
@@ -120,7 +123,8 @@ class ViewPostFragment : Fragment(),
 
                 binding.contentImageView.visibility = View.VISIBLE
                 //using custom glide image loader to indicate progress in time
-                GlideImageLoader(binding.contentImageView, binding.progressBar).load(post.image, options);
+                GlideImageLoader(binding.contentImageView, binding.progressBar)
+                    .load(post.image, options);
 
             } else {
                 binding.contentImageView.visibility = View.GONE
@@ -151,7 +155,8 @@ class ViewPostFragment : Fragment(),
             post?.postId?.let {
                 Firebase.database.reference.child("post-likes").child(it)
                     .child(uid).get().addOnSuccessListener {
-                            snapShot -> binding.likeTextView.isActivated = snapShot.getValue(Boolean::class.java) == true
+                            snapShot -> binding.likeTextView.isActivated =
+                        snapShot.getValue(Boolean::class.java) == true
                     }
 
             }
@@ -271,10 +276,11 @@ class ViewPostFragment : Fragment(),
 
                                             //get current time and format it
                                             //timeId will be used for sorting notification from the most recent
-                                            val df: DateFormat = SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
+                                            val df: DateFormat =
+                                                SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss")
                                             val date: String = df.format(Calendar.getInstance().time)
-                                            val timeId = SimpleDateFormat("yyyyMMddHHmmss").format(
-                                                Calendar.getInstance().time).toLong() * -1
+                                            val timeId = SimpleDateFormat("yyyyMMddHHmmss")
+                                                .format(Calendar.getInstance().time).toLong() * -1
 
                                             //create instance of notification
                                             val notification = Notification(
@@ -295,13 +301,15 @@ class ViewPostFragment : Fragment(),
                                                         val notificationKey = ref.key
                                                         dbRef.child("user-notifications")
                                                             .child(postUserId).child(notificationKey!!)
-                                                            .child("notificationId").setValue(notificationKey)
+                                                            .child("notificationId")
+                                                            .setValue(notificationKey)
                                                     }
                                                 }
                                         }
                                     }
                                     //update likes count
-                                    dbRef.child("posts").child(args.postId).child("likesCount")
+                                    dbRef.child("posts").child(args.postId)
+                                        .child("likesCount")
                                         .runTransaction(
                                             object : Transaction.Handler {
                                                 override fun doTransaction(currentData: MutableData):
@@ -321,7 +329,8 @@ class ViewPostFragment : Fragment(),
                                                     //set database count value to the new update
                                                     return Transaction.success(currentData)
                                                 }
-                                                //after successfully updating likes count on database, update ui
+                                                //after successfully updating likes count on database,
+                                                //update ui
                                                 override fun onComplete(
                                                     error: DatabaseError?,
                                                     committed: Boolean,
@@ -371,13 +380,19 @@ class ViewPostFragment : Fragment(),
                                     val updatedList = currentData?.getValue<ArrayList<String>>()
                                     //if it contains postid, toast saved
                                     if (updatedList?.contains(args.postId) == true) {
-                                        Toast.makeText(requireContext(), "Saved", Toast.LENGTH_SHORT)
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "Saved",
+                                            Toast.LENGTH_SHORT)
                                             .show()
                                         //update savedPostTextView start drawable icon
                                         binding.savePostTextView.isActivated = true
                                     } else {
                                         //Toast unsaved
-                                        Toast.makeText(requireContext(), "UnSaved", Toast.LENGTH_SHORT)
+                                        Toast.makeText(
+                                            requireContext(),
+                                            "UnSaved",
+                                            Toast.LENGTH_SHORT)
                                             .show()
                                         //update savedPostTextView start drawable icon
                                         binding.savePostTextView.isActivated = false
@@ -396,7 +411,8 @@ class ViewPostFragment : Fragment(),
                         requireView(),
                         this
                     )
-                    postOptionsOptionsDialog.arguments = bundleOf("postIdKey" to args.postId, "userIdKey" to postUserId)
+                    postOptionsOptionsDialog.arguments =
+                        bundleOf("postIdKey" to args.postId, "userIdKey" to postUserId)
                     postOptionsOptionsDialog.show(parentFragmentManager, null)
                 }
             }

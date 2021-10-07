@@ -118,7 +118,8 @@ class GroupInfoFragment :
             requireContext(),
             args.groupId)
 
-        recyclerView.layoutManager = WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager =
+            WrapContentLinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
 
         //open dialog with the current group description
@@ -139,7 +140,8 @@ class GroupInfoFragment :
 
         //edit group name
         binding.editGroupNameButton.setOnClickListener {
-            editGroupNameBottomSheetDialog = EditGroupNameBottomSheetDialogFragment(requireContext(), this)
+            editGroupNameBottomSheetDialog =
+                EditGroupNameBottomSheetDialogFragment(requireContext(), this)
             editGroupNameBottomSheetDialog?.arguments = bundleOf(
                 "groupNameKey" to binding.groupNameTextView.text.toString(),
                 "groupIdKey" to args.groupId
@@ -150,10 +152,11 @@ class GroupInfoFragment :
         binding.addGroupMemberTextView.setOnClickListener {
         //show dialog to add group member
                 addMoreGroupMemberSheetDialog = AddMoreGroupMemberBottomSheetDialogFragment(
-                    requireContext(),
-                    requireView())
+                    requireContext()
+                )
 
-                addMoreGroupMemberSheetDialog?.arguments = bundleOf("groupIdKey" to args.groupId)
+                addMoreGroupMemberSheetDialog?.arguments =
+                    bundleOf("groupIdKey" to args.groupId)
                 addMoreGroupMemberSheetDialog?.show(childFragmentManager, null)
         }
 
@@ -178,7 +181,8 @@ class GroupInfoFragment :
                                     .setMessage("Are you sure you want to leave this group?")
                                     .setPositiveButton("Yes") { dialog, _ ->
                                         //run transaction on database list of group members
-                                        dbRef.child("groups").child(args.groupId).child("members").runTransaction(
+                                        dbRef.child("groups").child(args.groupId)
+                                            .child("members").runTransaction(
                                             object : Transaction.Handler {
                                                 override fun doTransaction(currentData: MutableData): Transaction.Result {
                                                     //retrieve the database list which is a mutable data and store in list else
@@ -223,18 +227,12 @@ class GroupInfoFragment :
                                                                     error: DatabaseError?,
                                                                     committed: Boolean,
                                                                     currentData: DataSnapshot?
-                                                                ) {
-                                                                    if (!committed && error != null) {
-                                                                        Log.w(TAG, "updateGroupsList:onComplete:$error")
-                                                                    }
-                                                                }
+                                                                ) {}
 
                                                             }
                                                         )
                                                         Snackbar.make(requireView(), "You are no longer a member of this group", Snackbar.LENGTH_LONG).show()
-                                                    } else {
-                                                        Log.d(TAG, "leaveGroupTransaction:onComplete:$error")
-                                                    }
+                                                    } else { }
                                                 }
 
                                             }
@@ -275,11 +273,17 @@ class GroupInfoFragment :
                             .child("groupPhoto").setValue(uri.toString())
                             .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(requireContext(), "Unsuccessful", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Unsuccessful",
+                                    Toast.LENGTH_SHORT).show()
                                 //load group photo
                                 getGroupPhoto()
                             } else {
-                               Toast.makeText(requireContext(), "Unsuccessful", Toast.LENGTH_LONG).show()
+                               Toast.makeText(
+                                   requireContext(),
+                                   "Unsuccessful",
+                                   Toast.LENGTH_LONG).show()
                             }
                         }
                     }
@@ -297,7 +301,8 @@ class GroupInfoFragment :
     //retrieve user profile, open bottom sheet dialog fragment to display user profile
     override fun onItemClick(memberId: String) {
         if (memberId != uid) {
-            memberInteractionSheetDialog =  MemberInteractionBottomSheetDialogFragment(requireContext())
+            memberInteractionSheetDialog =
+                MemberInteractionBottomSheetDialogFragment(requireContext())
             memberInteractionSheetDialog?.arguments = bundleOf("memberIdKey" to memberId)
             memberInteractionSheetDialog?.show(childFragmentManager, null)
         }
@@ -306,9 +311,13 @@ class GroupInfoFragment :
     //retrieve user profile and open alert dialog to remove the member from the group
     override fun onItemLongCLicked(memberId: String) {
         if(memberId == uid) {
-            Toast.makeText(requireContext(), "Leave the group instead, you cannot remove yourself", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(),
+                "Leave the group instead, you cannot remove yourself",
+                Toast.LENGTH_LONG).show()
         } else  {
-            dbRef.child("groups").child(args.groupId).child("groupAdmins").addListenerForSingleValueEvent(
+            dbRef.child("groups").child(args.groupId).child("groupAdmins")
+                .addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         //retrieve list of group admins
@@ -408,8 +417,6 @@ class GroupInfoFragment :
                                                                         }
                                                                     )
                                                                     Snackbar.make(requireView(), "${profile.name} removed successfully", Snackbar.LENGTH_LONG).show()
-                                                                } else {
-                                                                    Log.d(TAG, "removeMemberTransaction:onComplete:$error")
                                                                 }
                                                             }
 
@@ -437,9 +444,6 @@ class GroupInfoFragment :
 
     }
 
-    companion object {
-        const val TAG = "groupInfoFragment"
-    }
 
     override fun onGroupAboutChanged() {
         getGroupDescription()
@@ -475,7 +479,8 @@ class GroupInfoFragment :
             .child("groupPhoto").get().addOnSuccessListener { dataSnapShot ->
                 val photoUrl = dataSnapShot.getValue(String::class.java)
                 if (photoUrl == null) {
-                    Glide.with(requireContext()).load(R.drawable.ic_group).into(binding.groupPhotoImageView)
+                    Glide.with(requireContext()).load(R.drawable.ic_group)
+                        .into(binding.groupPhotoImageView)
                     binding.photoProgressBar.visibility = GONE
                 } else {
                     val options = RequestOptions()
@@ -484,7 +489,8 @@ class GroupInfoFragment :
 
                     binding.groupPhotoImageView.visibility = VISIBLE
                     //using custom glide image loader to indicate progress in time
-                    GlideImageLoader(binding.groupPhotoImageView, binding.photoProgressBar).load(photoUrl, options);
+                    GlideImageLoader(binding.groupPhotoImageView, binding.photoProgressBar)
+                        .load(photoUrl, options);
                 }
             }
     }

@@ -131,7 +131,9 @@ class PostLikesFragment(
         currentUser = auth.currentUser!!
 
         // get the view model
-        viewModel = ViewModelProvider(this, ViewModelFactory(owner = this, repository = DatabaseRepository()))
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(owner = this, repository = DatabaseRepository()))
             .get(PostLikesViewModel::class.java)
 
         //initialize query reference to post likes whose value equals true

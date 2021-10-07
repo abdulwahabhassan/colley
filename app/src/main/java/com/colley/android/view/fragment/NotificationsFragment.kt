@@ -85,9 +85,9 @@ class NotificationsFragment : Fragment(),
         //initialize adapter
         notificationsAdapter = NotificationsPagingAdapter(
             requireContext(),
-            currentUser,
             this,
-            dbRef)
+            dbRef
+        )
 
         //set recycler view layout manager
         manager =  WrapContentLinearLayoutManager(
