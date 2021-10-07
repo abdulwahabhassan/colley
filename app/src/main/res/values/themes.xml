@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Colley" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Colley" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/pearl</item>
         <item name="colorPrimaryVariant">@color/black</item>
