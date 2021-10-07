@@ -34,4 +34,20 @@
         android:drawableEnd="@drawable/ic_home"
         android:text="@string/continue_to_home_text" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/signInButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/pearl"
+        android:textColor="@color/light_pearl"
+        android:textAllCaps="false"
+        android:visibility="invisible"
+        android:textSize="@dimen/text_size_15sp"
+        android:padding="@dimen/padding_8dp"
+        android:drawablePadding="@dimen/padding_4dp"
+        android:background="@drawable/ripple_effect_curved_edges_8dp"
+        android:layout_marginTop="@dimen/margin_16dp"
+        android:drawableEnd="@drawable/ic_sign_in_arrow"
+        android:text="@string/sign_in_text" />
+
 </LinearLayout>

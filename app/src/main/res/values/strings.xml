@@ -94,5 +94,6 @@
     <string name="no_issues_currently">No issues currently</string>
     <string name="no_notifications_currently">No notifications currently</string>
     <string name="not_a_member_of_any_group_text">Not a member of any group</string>
+    <string name="sign_in_text">Sign in</string>
 
 </resources>

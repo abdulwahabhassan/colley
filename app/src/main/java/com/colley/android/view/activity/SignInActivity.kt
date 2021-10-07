@@ -3,6 +3,7 @@ package com.colley.android.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -29,6 +30,17 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var dbRef: DatabaseReference
+    private val signInIntent = AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setLogo(R.drawable.ic_sign_in)
+        .setAvailableProviders(listOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build()
+        )) //these are lists of authentication providers we defined for the app as specified in
+        //the firebase project and allow firebase auth UI to build respective UI for each signup screen.
+        //Each of these will represent a button
+        .setTheme(R.style.Theme_Colley)
+        .build()
 
     //register a callback onSignInResult for the result that is returned from a launched contract with
     //with a given intent
@@ -43,6 +55,20 @@ class SignInActivity : AppCompatActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //init Realtime Database
+        dbRef = Firebase.database.reference
+
+        //init Firebase Auth
+        auth = Firebase.auth
+
+        ///authenticate user
+        authenticateUser()
+
+        binding.signInButton.setOnClickListener {
+            signIn.launch(signInIntent)
+            it.visibility = GONE
+        }
+
         binding.continueButton.setOnClickListener {
             it.isEnabled = false
             val intent = Intent(this, MainActivity::class.java)
@@ -55,29 +81,11 @@ class SignInActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        //init Realtime Database
-        dbRef = Firebase.database.reference
-
-        //init Firebase Auth
-        auth = Firebase.auth
-
-        authenticateUser()
     }
 
     private fun authenticateUser() {
         if (auth.currentUser == null) {
 
-            val signInIntent = AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setLogo(R.drawable.ic_sign_in)
-                .setAvailableProviders(listOf(
-                    AuthUI.IdpConfig.EmailBuilder().build(),
-                    AuthUI.IdpConfig.GoogleBuilder().build()
-                )) //these are lists of authentication providers we defined for the app as specified in
-                //the firebase project and allow firebase auth UI to build respective UI for each signup screen.
-                //Each of these will represent a button
-                .setTheme(R.style.Theme_Colley)
-                .build()
             signIn.launch(signInIntent)
         } else {
             with(binding) {
@@ -88,6 +96,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+
         if (result.resultCode == RESULT_OK) {
             Snackbar.make(
                 binding.root,
@@ -97,11 +106,13 @@ class SignInActivity : AppCompatActivity() {
                 .show()
             addUserToDataBase()
         } else {
+
+            binding.signInButton.visibility = VISIBLE
             //otherwise, we  inform user that there was an error
-            Toast.makeText(
-                this,
-                "Error signing in",
-                Toast.LENGTH_LONG).show()
+//            Toast.makeText(
+//                this,
+//                "Error signing in",
+//                Toast.LENGTH_LONG).show()
             val response = result.idpResponse
             if (response == null) {
                 Log.w(TAG, "Sign in canceled")
@@ -114,27 +125,22 @@ class SignInActivity : AppCompatActivity() {
     //add user to database only if user doesn't already exist
     private fun addUserToDataBase() {
 
-        dbRef.child("users").child(auth.currentUser?.uid!!).addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val user = snapshot.getValue<User>()
-                    if ( user == null) {
-                        dbRef.child("users").child(auth.currentUser?.uid!!)
-                            .setValue(User(auth.currentUser?.uid, auth.currentUser?.email))
-                        binding.welcomeTextView.text = getString(R.string.welcome_text)
-                    } else {
-                        binding.welcomeTextView.text = getString(R.string.welcome_back_text)
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.w(TAG, "getUser:onCancelled", error.toException())
-                    Snackbar.make(binding.root,
-                        "Error in fetching user data",
-                        Snackbar.LENGTH_LONG).show()
-                }
+        dbRef.child("users").child(auth.currentUser?.uid!!).get().addOnSuccessListener {
+            dataSnapshot ->
+            val user = dataSnapshot.getValue(User::class.java)
+            if ( user == null) {
+                dbRef.child("users").child(auth.currentUser?.uid!!)
+                    .setValue(User(auth.currentUser?.uid, auth.currentUser?.email))
+                binding.welcomeTextView.text = getString(R.string.welcome_text)
+                binding.welcomeTextView.visibility = VISIBLE
+                binding.continueButton.visibility =  VISIBLE
+            } else {
+                binding.welcomeTextView.text = getString(R.string.welcome_back_text)
+                binding.welcomeTextView.visibility = VISIBLE
+                binding.continueButton.visibility =  VISIBLE
             }
-        )
+        }
+
 
         dbRef.child("profiles").child(auth.currentUser?.uid!!).addListenerForSingleValueEvent(
             object : ValueEventListener {
@@ -157,8 +163,7 @@ class SignInActivity : AppCompatActivity() {
         )
     }
 
-
     companion object {
-        private const val TAG = "SignInActivity"
+        private const val TAG = "Stoktic"
     }
 }
