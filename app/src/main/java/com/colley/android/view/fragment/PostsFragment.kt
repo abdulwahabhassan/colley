@@ -112,9 +112,6 @@ class PostsFragment : Fragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //fragment can participate in populating the options menu
-//        setHasOptionsMenu(true)
-
         //initialize Realtime Database
         dbRef = Firebase.database.reference
 
@@ -125,22 +122,6 @@ class PostsFragment : Fragment(),
         currentUser = auth.currentUser!!
 
     }
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        super.onCreateOptionsMenu(menu, inflater)
-//        menu.clear()
-//        inflater.inflate(R.menu.posts_menu, menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return when (item.itemId) {
-//            R.id.search_posts_menu_item -> {
-//                Toast.makeText(context, "Searching posts", Toast.LENGTH_LONG).show()
-//                true
-//            }
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
