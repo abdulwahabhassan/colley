@@ -34,7 +34,8 @@ import kotlinx.coroutines.launch
 class PostCommentsFragment(
     private val postId: String?,
     private val parentContext: Context,
-    private val postView: View
+    private val postView: View,
+    private val postCommentsListener: PostCommentsListener
 ) : Fragment(),
     PostCommentsPagingAdapter.PostCommentItemClickedListener {
 
@@ -51,6 +52,10 @@ class PostCommentsFragment(
     private var manager: WrapContentLinearLayoutManager? = null
     private val uid: String
         get() = currentUser.uid
+
+    interface PostCommentsListener {
+        fun onDeleteComment(currentData: DataSnapshot?)
+    }
 
     //value event listener for commentsCount
     private val commentsCountValueEventListener = object : ValueEventListener {
@@ -321,15 +326,16 @@ class PostCommentsFragment(
                                                                         "Deleted, Refresh to see changes",
                                                                         Toast.LENGTH_SHORT
                                                                     ).show()
+                                                                    //communicate back to PostBottomSheetDialogFragment
+                                                                    //to update viewHolder to reflect change in comments count
+                                                                    postCommentsListener.onDeleteComment(currentData)
                                                                 }
                                                             }
-
                                                         })
                                                 }
                                             }
                                     }
                                 }
-
                         }
                     }
                     dialog.dismiss()

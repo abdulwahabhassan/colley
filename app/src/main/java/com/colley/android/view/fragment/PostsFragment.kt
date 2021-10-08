@@ -519,6 +519,14 @@ class PostsFragment : Fragment(),
         updateLikeCountTextView(currentData, liked)
     }
 
+    //update view holder ui to display updated comments count
+    //interface from post dialog listener
+    override fun onCommentDeleted(currentData: DataSnapshot?) {
+        if (postViewHolder != null) {
+            updateCommentCountTextView(currentData)
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun updateLikeCountTextView(currentData: DataSnapshot?, liked: Boolean?) {
         when (currentData?.getValue(Int::class.java)) {

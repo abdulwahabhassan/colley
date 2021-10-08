@@ -34,7 +34,8 @@ class PostBottomSheetDialogFragment (
     private val actionsDialogListener: ActionsDialogListener
         ) :
     BottomSheetDialogFragment(),
-    CommentOnPostBottomSheetDialogFragment.CommentListener{
+    CommentOnPostBottomSheetDialogFragment.CommentListener,
+    PostCommentsFragment.PostCommentsListener {
 
     private var postId: String? = null
     private var postUserId: String? = null
@@ -52,6 +53,7 @@ class PostBottomSheetDialogFragment (
     interface ActionsDialogListener {
         fun onCommented(currentData: DataSnapshot?)
         fun onLiked(currentData: DataSnapshot?, liked: Boolean?)
+        fun onCommentDeleted(currentData: DataSnapshot?)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +94,11 @@ class PostBottomSheetDialogFragment (
         //set up viewPager
         viewPagerAdapter = object : FragmentStateAdapter(childFragmentManager, lifecycle) {
             private val fragments = arrayOf(
-                PostCommentsFragment(postId, parentContext, postView),
+                PostCommentsFragment(
+                    postId,
+                    parentContext,
+                    postView,
+                    this@PostBottomSheetDialogFragment),
                 PostLikesFragment(postId, parentContext, postView)
             )
 
@@ -275,6 +281,11 @@ class PostBottomSheetDialogFragment (
 
     override fun onComment(currentData: DataSnapshot?) {
         actionsDialogListener.onCommented(currentData)
+    }
+
+    override fun onDeleteComment(currentData: DataSnapshot?) {
+        //notify parent fragment to update viewHolder comments count
+        actionsDialogListener.onCommentDeleted(currentData)
     }
 
 }

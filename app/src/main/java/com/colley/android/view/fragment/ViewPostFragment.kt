@@ -476,6 +476,10 @@ class ViewPostFragment : Fragment(),
         updateLikeCountTextView(currentData, liked)
     }
 
+    override fun onCommentDeleted(currentData: DataSnapshot?) {
+        updateCommentCountTextView(currentData)
+    }
+
     //navigate back on delete post
     override fun onDeletePost(postId: String?) {
         Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show()
