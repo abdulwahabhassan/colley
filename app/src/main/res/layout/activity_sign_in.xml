@@ -9,14 +9,26 @@
     android:gravity="center"
     tools:context=".view.activity.SignInActivity">
 
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="65dp"
+        android:src="@drawable/colley_image"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:src="@drawable/sign_in_activity_vector_image"/>
+
     <TextView
         android:id="@+id/welcomeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_16dp"
         android:textStyle="bold"
+        android:letterSpacing="0.06"
         android:textSize="@dimen/text_size_15sp"
         android:visibility="invisible"
-        android:textColor="@color/pearl"/>
+        android:textColor="@color/light_pearl"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/continueButton"
@@ -26,8 +38,9 @@
         android:textColor="@color/light_pearl"
         android:visibility="invisible"
         android:textAllCaps="false"
-        android:textSize="@dimen/text_size_15sp"
         android:padding="@dimen/padding_8dp"
+        android:textStyle="bold"
+        android:letterSpacing="0.06"
         android:drawablePadding="@dimen/padding_4dp"
         android:background="@drawable/ripple_effect_curved_edges_8dp"
         android:layout_marginTop="@dimen/margin_16dp"
@@ -42,7 +55,8 @@
         android:textColor="@color/light_pearl"
         android:textAllCaps="false"
         android:visibility="invisible"
-        android:textSize="@dimen/text_size_15sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.06"
         android:padding="@dimen/padding_8dp"
         android:drawablePadding="@dimen/padding_4dp"
         android:background="@drawable/ripple_effect_curved_edges_8dp"

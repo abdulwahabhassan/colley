@@ -3,8 +3,7 @@ package com.colley.android.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
@@ -32,7 +31,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var dbRef: DatabaseReference
     private val signInIntent = AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setLogo(R.drawable.ic_sign_in)
+        .setLogo(R.drawable.sign_in_options_activity_vector_image)
         .setAvailableProviders(listOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build()
@@ -66,7 +65,7 @@ class SignInActivity : AppCompatActivity() {
 
         binding.signInButton.setOnClickListener {
             signIn.launch(signInIntent)
-            it.visibility = GONE
+            it.visibility = INVISIBLE
         }
 
         binding.continueButton.setOnClickListener {
