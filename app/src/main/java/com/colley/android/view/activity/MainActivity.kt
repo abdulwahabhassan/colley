@@ -1,5 +1,6 @@
 package com.colley.android.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -165,7 +166,9 @@ class MainActivity : AppCompatActivity() {
             .setMessage("Confirm logout?")
             .setPositiveButton("Yes") {
                     dialog, which -> AuthUI.getInstance().signOut(this)
-            finish()
+                val intent = Intent(this, SignInActivity::class.java)
+                startActivity(intent)
+                finish()
             }.setNegativeButton("No") {
                     dialog, which -> dialog.dismiss()
             }.show()
