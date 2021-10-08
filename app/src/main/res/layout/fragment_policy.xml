@@ -4,15 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/padding_16dp"
     tools:context=".view.fragment.PolicyFragment">
 
     <TextView
+        android:id="@+id/policyStatement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/policy_label"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:justificationMode="inter_word"
+        android:text="@string/policy_statement_text"
+        android:textColor="@color/light_pearl"
+        app:layout_constraintEnd_toEndOf="@+id/agreemenImage"
+        app:layout_constraintStart_toStartOf="@+id/agreemenImage"
+        app:layout_constraintTop_toBottomOf="@id/agreemenImage" />
+
+    <ImageView
+        android:id="@+id/agreemenImage"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:src="@drawable/agreement_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

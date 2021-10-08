@@ -95,5 +95,13 @@
     <string name="no_notifications_currently">No notifications currently</string>
     <string name="not_a_member_of_any_group_text">Not a member of any group</string>
     <string name="sign_in_text">Sign in</string>
+    <string name="policy_statement_text">Messages in this app are not end to end encrypted.
+        This app is a work in progress and may likely undergo changes that will affect your data.
+        In as much as we will try to protect user privacy, we will not be responsible for any
+        consequences that may arise from the usage of this app.
+        Feel free to share with us any idea on how you think we could improve some of it’s features
+        and also recommend whatever feature you’ll like to see in the next update.
+        Continued usage of this app after reading this brief policy statement means that you
+        understand and accept the risks, terms and conditions associated with it’s use. Thank you for your patronage.</string>
 
 </resources>
