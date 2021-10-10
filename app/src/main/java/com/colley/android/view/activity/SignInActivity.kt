@@ -68,6 +68,7 @@ class SignInActivity : AppCompatActivity() {
             it.visibility = INVISIBLE
         }
 
+
         binding.continueButton.setOnClickListener {
             it.isEnabled = false
             val intent = Intent(this, MainActivity::class.java)
@@ -78,11 +79,9 @@ class SignInActivity : AppCompatActivity() {
 
     private fun authenticateUser() {
         if (auth.currentUser == null) {
-
             signIn.launch(signInIntent)
         } else {
             with(binding) {
-                welcomeTextView.visibility = VISIBLE
                 continueButton.visibility = VISIBLE
             }
         }

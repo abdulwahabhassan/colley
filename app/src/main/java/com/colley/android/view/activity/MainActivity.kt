@@ -165,10 +165,12 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setMessage("Confirm logout?")
             .setPositiveButton("Yes") {
-                    dialog, which -> AuthUI.getInstance().signOut(this)
+                    dialog, which -> AuthUI.getInstance().signOut(this).addOnSuccessListener {
                 val intent = Intent(this, SignInActivity::class.java)
                 startActivity(intent)
                 finish()
+            }
+
             }.setNegativeButton("No") {
                     dialog, which -> dialog.dismiss()
             }.show()
