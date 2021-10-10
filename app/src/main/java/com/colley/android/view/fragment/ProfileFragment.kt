@@ -2,29 +2,26 @@ package com.colley.android.view.fragment
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
-import com.colley.android.glide.GlideImageLoader
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentProfileBinding
+import com.colley.android.glide.GlideImageLoader
 import com.colley.android.model.Profile
 import com.colley.android.view.dialog.EditBioBottomSheetDialogFragment
 import com.colley.android.view.dialog.EditProfileBottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
@@ -37,7 +34,7 @@ class ProfileFragment :
     EditBioBottomSheetDialogFragment.EditBioListener {
 
     private var _binding: FragmentProfileBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding
     private var editProfileBottomSheetDialog: EditProfileBottomSheetDialogFragment? = null
     private var editBioBottomSheetDialog: EditBioBottomSheetDialogFragment? = null
     private lateinit var auth: FirebaseAuth
@@ -64,7 +61,7 @@ class ProfileFragment :
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,13 +77,13 @@ class ProfileFragment :
         getPhoto()
 
         //bundle pre-existing profile data
-        binding.editInfoTextView.setOnClickListener {
+        binding?.editInfoTextView?.setOnClickListener {
 
             val bundle = bundleOf(
-                "nameKey" to binding.nameTextView.text.toString(),
-                "schoolKey" to binding.schoolNameTextView.text.toString(),
-                "courseKey" to binding.courseOfStudyTextView.text.toString(),
-                "statusKey" to binding.statusTitleTextView.text.toString())
+                "nameKey" to binding?.nameTextView?.text.toString(),
+                "schoolKey" to binding?.schoolNameTextView?.text.toString(),
+                "courseKey" to binding?.courseOfStudyTextView?.text.toString(),
+                "statusKey" to binding?.statusTitleTextView?.text.toString())
 
             //init dialog
             editProfileBottomSheetDialog = EditProfileBottomSheetDialogFragment(
@@ -99,16 +96,16 @@ class ProfileFragment :
         }
 
         //show dialog to edit bio
-        binding.editBioTextView.setOnClickListener {
+        binding?.editBioTextView?.setOnClickListener {
             editBioBottomSheetDialog = EditBioBottomSheetDialogFragment(
                 requireContext(),
                 this)
             editBioBottomSheetDialog?.arguments =
-                bundleOf("bioKey" to binding.bioTextView.text.toString())
+                bundleOf("bioKey" to binding?.bioTextView?.text.toString())
             editBioBottomSheetDialog?.show(childFragmentManager, null)
         }
 
-        binding.addPhotoFab.setOnClickListener {
+        binding?.addPhotoFab?.setOnClickListener {
             openDocument.launch(arrayOf("image/*"))
         }
     }
@@ -119,12 +116,10 @@ class ProfileFragment :
                 dataSnapshot ->
             val profile = dataSnapshot.getValue<Profile>()
             if (profile != null) {
-                with(binding) {
-                    nameTextView.text = profile.name
-                    schoolNameTextView.text = profile.school
-                    courseOfStudyTextView.text = profile.course
-                    statusTitleTextView.text = profile.role
-                }
+                    binding?.nameTextView?.text = profile.name
+                    binding?.schoolNameTextView?.text = profile.school
+                    binding?.courseOfStudyTextView?.text = profile.course
+                    binding?.statusTitleTextView?.text = profile.role
             }
         }
     }
@@ -134,21 +129,21 @@ class ProfileFragment :
         dbRef.child("photos").child(uid).get().addOnSuccessListener {
                 dataSnapshot ->
             val photo = dataSnapshot.getValue<String>()
-            with(binding) {
                 if (photo == null) {
-                    Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl)
-                        .into(profilePhotoImageView)
-                    photoProgressBar.visibility = GONE
+                    binding?.profilePhotoImageView?.let {
+                        Glide.with(requireContext()).load(R.drawable.ic_person_light_pearl)
+                            .into(it)
+                    }
+                    binding?.photoProgressBar?.visibility = GONE
                 } else {
                     val options = RequestOptions()
                         .error(R.drawable.ic_downloading)
                         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
 
-                    profilePhotoImageView.visibility = VISIBLE
+                    binding?.profilePhotoImageView?.visibility = VISIBLE
                     //using custom glide image loader to indicate progress in time
-                    GlideImageLoader(profilePhotoImageView, photoProgressBar).load(photo, options);
+                    GlideImageLoader(binding?.profilePhotoImageView, binding?.photoProgressBar).load(photo, options);
                 }
-            }
 
         }
     }
@@ -159,16 +154,16 @@ class ProfileFragment :
                 dataSnapshot ->
             val bio = dataSnapshot.getValue<String>()
             if (bio == null || bio == "") {
-                binding.bioTextView.hint = "Talk about yourself"
-                binding.bioTextView.text = bio
+                binding?.bioTextView?.hint = "Talk about yourself"
+                binding?.bioTextView?.text = bio
             } else {
-                binding.bioTextView.text = bio
+                binding?.bioTextView?.text = bio
             }
         }
     }
 
     private fun onImageSelected(uri: Uri) {
-        binding.photoProgressBar.visibility = VISIBLE
+        binding?.photoProgressBar?.visibility = VISIBLE
                     val storageReference = Firebase.storage
                         .getReference(uid)
                         .child("$uid-profile-photo")
