@@ -87,7 +87,6 @@ class NewPostBottomSheetDialogFragment(
 
         binding?.postButton?.setOnClickListener {
 
-
             //Disable editing during creation
             setEditingEnabled(false)
 

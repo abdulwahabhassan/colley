@@ -187,17 +187,8 @@ class ProfileFragment :
                         dbRef.child("photos").child(uid).setValue(uri.toString())
                             .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Updated",
-                                    Toast.LENGTH_LONG).show()
                                 //get photo to show display updated photo
                                 getPhoto()
-                            } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Unsuccessful",
-                                    Toast.LENGTH_LONG).show()
                             }
                         }
                     }
