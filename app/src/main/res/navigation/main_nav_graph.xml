@@ -6,15 +6,6 @@
     app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/schoolsFragment"
-        android:name="com.colley.android.view.fragment.SchoolsFragment"
-        android:label="Welcome"
-        tools:layout="@layout/fragment_schools" >
-        <action
-            android:id="@+id/action_findYourSchoolFragment_to_signupFragment"
-            app:destination="@id/signupFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/homeFragment"
         android:name="com.colley.android.view.fragment.HomeFragment"
         android:label="Home"
@@ -30,39 +21,10 @@
             app:destination="@id/userInfoFragment" />
     </fragment>
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.colley.android.view.fragment.SettingsFragment"
-        android:label="@string/menu_item_settings_title"
-        tools:layout="@layout/fragment_settings" />
-    <fragment
         android:id="@+id/profileFragment"
         android:name="com.colley.android.view.fragment.ProfileFragment"
         android:label="@string/menu_item_profile_title"
         tools:layout="@layout/fragment_profile" />
-    <fragment
-        android:id="@+id/signupFragment"
-        android:name="com.colley.android.view.fragment.SignupFragment"
-        android:label="@string/sign_up_label"
-        tools:layout="@layout/fragment_signup" >
-        <argument
-            android:name="schoolName"
-            app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.colley.android.view.fragment.LoginFragment"
-        android:label="@string/login_label"
-        tools:layout="@layout/fragment_login" />
-    <fragment
-        android:id="@+id/contactUsFragment"
-        android:name="com.colley.android.view.fragment.ContactUsFragment"
-        android:label="@string/contact_us_label"
-        tools:layout="@layout/fragment_contact_us" />
-    <fragment
-        android:id="@+id/FAQSFragment"
-        android:name="com.colley.android.view.fragment.FAQSFragment"
-        android:label="@string/faqs_label"
-        tools:layout="@layout/fragment_faqs" />
     <fragment
         android:id="@+id/policyFragment"
         android:name="com.colley.android.view.fragment.PolicyFragment"
@@ -80,11 +42,6 @@
             android:id="@+id/action_notificationsFragment_to_viewPostFragment"
             app:destination="@id/viewPostFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/rateAppFragment"
-        android:name="com.colley.android.view.fragment.RateUsFragment"
-        android:label="@string/rate_app_label"
-        tools:layout="@layout/fragment_rate_app" />
     <fragment
         android:id="@+id/groupMessageFragment"
         android:name="com.colley.android.view.fragment.GroupMessageFragment"

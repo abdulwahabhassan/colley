@@ -10,7 +10,7 @@
         android:name=".ColleyApp"
         android:icon="@drawable/colley_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/colley_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Colley"
         android:fullBackupContent="true"
