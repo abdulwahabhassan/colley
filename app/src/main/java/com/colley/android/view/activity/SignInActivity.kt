@@ -31,7 +31,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var dbRef: DatabaseReference
     private val signInIntent = AuthUI.getInstance()
         .createSignInIntentBuilder()
-        .setLogo(R.drawable.sign_in_options_activity_vector_image)
+        .setLogo(R.drawable.signin_image)
         .setAvailableProviders(listOf(
             AuthUI.IdpConfig.EmailBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build()

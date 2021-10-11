@@ -7,12 +7,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@drawable/college_image_sign_in"
     tools:context=".view.activity.SignInActivity">
-
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="65dp"
-        android:src="@drawable/colley_image"/>
 
 
 
@@ -25,13 +21,12 @@
         android:letterSpacing="0.06"
         android:textSize="@dimen/text_size_15sp"
         android:visibility="invisible"
-        android:textColor="@color/light_pearl"/>
+        android:textColor="@color/lightest_pearl"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/continueButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/pearl"
         android:textColor="@color/light_pearl"
         android:visibility="invisible"
         android:textAllCaps="false"
@@ -39,7 +34,7 @@
         android:textStyle="bold"
         android:letterSpacing="0.06"
         android:drawablePadding="@dimen/padding_4dp"
-        android:background="@drawable/ripple_effect_curved_edges_8dp"
+        android:background="@drawable/selected_chat_background"
         android:layout_marginTop="@dimen/margin_16dp"
         android:drawableEnd="@drawable/ic_home"
         android:text="@string/continue_to_home_text" />
@@ -48,7 +43,6 @@
         android:id="@+id/signInButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/pearl"
         android:textColor="@color/light_pearl"
         android:textAllCaps="false"
         android:visibility="invisible"
@@ -56,7 +50,7 @@
         android:letterSpacing="0.06"
         android:padding="@dimen/padding_8dp"
         android:drawablePadding="@dimen/padding_4dp"
-        android:background="@drawable/ripple_effect_curved_edges_8dp"
+        android:background="@drawable/selected_chat_background"
         android:layout_marginTop="@dimen/margin_16dp"
         android:drawableEnd="@drawable/ic_sign_in_arrow"
         android:text="@string/sign_in_text" />
