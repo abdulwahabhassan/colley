@@ -11,7 +11,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
-import com.colley.android.glide.ProgressAppGlideModule
 
 //custom class for glide image loader with which to indicate progress in time
 class GlideImageLoader(imageView: ImageView?, progressBar: ProgressBar?) {

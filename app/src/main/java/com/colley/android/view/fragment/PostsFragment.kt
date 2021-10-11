@@ -2,8 +2,10 @@ package com.colley.android.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.*
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
@@ -15,16 +17,16 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.colley.android.R
-import com.colley.android.adapter.*
+import com.colley.android.adapter.PostViewHolder
+import com.colley.android.adapter.PostsPagingAdapter
 import com.colley.android.databinding.FragmentPostsBinding
-import com.colley.android.repository.DatabaseRepository
-import com.colley.android.view.dialog.CommentOnPostBottomSheetDialogFragment
-import com.colley.android.viewmodel.PostsViewModel
 import com.colley.android.factory.ViewModelFactory
 import com.colley.android.model.Notification
-import com.colley.android.view.dialog.PostOptionsBottomSheetDialogFragment
+import com.colley.android.repository.DatabaseRepository
+import com.colley.android.view.dialog.CommentOnPostBottomSheetDialogFragment
 import com.colley.android.view.dialog.PostBottomSheetDialogFragment
+import com.colley.android.view.dialog.PostOptionsBottomSheetDialogFragment
+import com.colley.android.viewmodel.PostsViewModel
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -38,7 +40,6 @@ import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class PostsFragment : Fragment(),

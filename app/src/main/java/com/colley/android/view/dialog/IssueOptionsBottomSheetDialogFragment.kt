@@ -1,27 +1,21 @@
 package com.colley.android.view.dialog
 
 import android.content.Context
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.colley.android.databinding.BottomSheetDialogFragmentIssueOptionsBinding
-import com.colley.android.databinding.BottomSheetDialogFragmentMoreBinding
-import com.firebase.ui.auth.AuthUI
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 
 class IssueOptionsBottomSheetDialogFragment (
     private val parentContext: Context,

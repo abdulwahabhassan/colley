@@ -1,9 +1,11 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
-import android.util.Log
-import android.view.*
-import android.view.View.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,12 +15,11 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.colley.android.R
 import com.colley.android.adapter.IssuesPagingAdapter
 import com.colley.android.databinding.FragmentIssuesBinding
+import com.colley.android.factory.ViewModelFactory
 import com.colley.android.repository.DatabaseRepository
 import com.colley.android.viewmodel.IssuesViewModel
-import com.colley.android.factory.ViewModelFactory
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

@@ -9,7 +9,6 @@ import android.widget.Toast
 import com.colley.android.R
 import com.colley.android.databinding.BottomSheetDialogFragmentEditGroupAboutBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference

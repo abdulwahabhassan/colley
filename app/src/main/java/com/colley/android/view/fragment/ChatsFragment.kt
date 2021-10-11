@@ -1,7 +1,6 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -20,16 +19,12 @@ import com.colley.android.model.PrivateChat
 import com.colley.android.model.PrivateMessage
 import com.colley.android.view.dialog.NewMessageBottomSheetDialogFragment
 import com.colley.android.wrapper.WrapContentLinearLayoutManager
-import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.database.ObservableSnapshotArray
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase

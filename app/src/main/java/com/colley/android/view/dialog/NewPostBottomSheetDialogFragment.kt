@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -16,7 +15,6 @@ import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.BottomSheetDialogFragmentNewPostBinding
 import com.colley.android.model.Post
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*

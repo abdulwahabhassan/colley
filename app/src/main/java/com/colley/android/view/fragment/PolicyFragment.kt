@@ -1,13 +1,11 @@
 package com.colley.android.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.colley.android.R
+import androidx.fragment.app.Fragment
 import com.colley.android.databinding.FragmentPolicyBinding
-import com.colley.android.databinding.FragmentSettingsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth

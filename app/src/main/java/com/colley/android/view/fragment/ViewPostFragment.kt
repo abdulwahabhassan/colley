@@ -2,21 +2,19 @@ package com.colley.android.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
-import com.colley.android.databinding.FragmentViewIssueBinding
 import com.colley.android.databinding.FragmentViewPostBinding
 import com.colley.android.glide.GlideImageLoader
 import com.colley.android.model.Notification
@@ -35,7 +33,6 @@ import com.google.firebase.ktx.Firebase
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ViewPostFragment : Fragment(),
     CommentOnPostBottomSheetDialogFragment.CommentListener,
@@ -199,7 +196,6 @@ class ViewPostFragment : Fragment(),
 
             //click post to show post interactions (comments, likes and promotions)
             binding.constraintLayout.setOnClickListener {
-                Log.w("clickListener", "${post?.postId}")
                 if(post?.postId != null && post.userId != null) {
                     postDialog = PostBottomSheetDialogFragment(
                         requireContext(),

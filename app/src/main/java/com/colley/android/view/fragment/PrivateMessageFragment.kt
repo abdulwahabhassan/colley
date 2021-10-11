@@ -3,7 +3,6 @@ package com.colley.android.view.fragment
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -220,10 +219,6 @@ class PrivateMessageFragment :
                 tempMessage,
                 DatabaseReference.CompletionListener { databaseError, databaseReference ->
                     if (databaseError != null) {
-                        Log.w(
-                            TAG, "Unable to write message to database.",
-                            databaseError.toException()
-                        )
                         return@CompletionListener
                     }
                     // Build a StorageReference and then upload the file

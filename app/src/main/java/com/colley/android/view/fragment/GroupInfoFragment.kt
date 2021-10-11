@@ -2,7 +2,6 @@ package com.colley.android.view.fragment
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -20,9 +19,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.colley.android.R
 import com.colley.android.adapter.GroupMembersRecyclerAdapter
-import com.colley.android.glide.GlideImageLoader
 import com.colley.android.contract.OpenDocumentContract
 import com.colley.android.databinding.FragmentGroupInfoBinding
+import com.colley.android.glide.GlideImageLoader
 import com.colley.android.model.Profile
 import com.colley.android.view.dialog.AddMoreGroupMemberBottomSheetDialogFragment
 import com.colley.android.view.dialog.EditGroupAboutBottomSheetDialogFragment

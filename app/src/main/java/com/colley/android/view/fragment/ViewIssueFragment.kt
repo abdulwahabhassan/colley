@@ -2,7 +2,6 @@ package com.colley.android.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.View.*
 import android.widget.Toast
