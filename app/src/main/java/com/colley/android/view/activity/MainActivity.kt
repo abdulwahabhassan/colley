@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         //connect action bar to navController and provide app bar configuration
         //(this controls how the navigation button is displayed: up button or drawer button)
+        //the title in the action bar will automatically be updated when the destination changes (assuming there is a valid label).
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         //sets up navigation view for use with navController
@@ -175,6 +176,4 @@ class MainActivity : AppCompatActivity() {
                     dialog, which -> dialog.dismiss()
             }.show()
     }
-
-
 }

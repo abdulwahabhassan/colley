@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sign_in_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@drawable/college_image_sign_in"
     tools:context=".view.activity.SignInActivity">
-
-
 
     <TextView
         android:id="@+id/welcomeTextView"
@@ -21,7 +17,7 @@
         android:letterSpacing="0.06"
         android:textSize="@dimen/text_size_15sp"
         android:visibility="invisible"
-        android:textColor="@color/lightest_pearl"/>
+        android:textColor="@color/light_pearl"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/continueButton"
@@ -34,7 +30,7 @@
         android:textStyle="bold"
         android:letterSpacing="0.06"
         android:drawablePadding="@dimen/padding_4dp"
-        android:background="@drawable/selected_chat_background"
+        android:background="@drawable/comment_background"
         android:layout_marginTop="@dimen/margin_16dp"
         android:drawableEnd="@drawable/ic_home"
         android:text="@string/continue_to_home_text" />
@@ -50,9 +46,8 @@
         android:letterSpacing="0.06"
         android:padding="@dimen/padding_8dp"
         android:drawablePadding="@dimen/padding_4dp"
-        android:background="@drawable/selected_chat_background"
+        android:background="@drawable/comment_background"
         android:layout_marginTop="@dimen/margin_16dp"
-        android:drawableEnd="@drawable/ic_sign_in_arrow"
         android:text="@string/sign_in_text" />
 
 </LinearLayout>
